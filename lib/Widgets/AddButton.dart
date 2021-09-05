@@ -1,11 +1,15 @@
+import 'package:diplomska1/Classes/Enums.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'NewTaskDialog.dart';
 
-class NewTaskButton extends StatelessWidget {
+class AddButton extends StatelessWidget {
   final Function refreshParent;
-  const NewTaskButton({Key? key, required this.refreshParent}) : super(key: key);
+  final String text;
+  final Position? position;
+  final Color? color;
+  const AddButton({Key? key, required this.refreshParent, required this.text, this.position, this.color }) : super(key: key);
 
   Future<void> showNewTaskDialog(BuildContext context) async {
     return await showDialog(
@@ -20,7 +24,8 @@ class NewTaskButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Positioned(
       bottom: 20,
-      right: 10,
+      right: position == Position.bottomRight? 10 : null,
+      left: position == Position.bottomLeft? 10 : null,
       child: GestureDetector(
         onTap: () async {
           await showNewTaskDialog(context);
@@ -31,7 +36,7 @@ class NewTaskButton extends StatelessWidget {
             padding: const EdgeInsets.all(10.0),
             child: Center(
               child: Text(
-                "New task",
+                text,
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 22,
@@ -41,7 +46,7 @@ class NewTaskButton extends StatelessWidget {
             ),
           ),
           decoration: BoxDecoration(
-            color: Colors.green,
+            color: color ?? Colors.green[700],
             borderRadius: BorderRadius.circular(20),
           ),
         ),

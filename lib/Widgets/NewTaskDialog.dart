@@ -80,11 +80,8 @@ class _NewTaskDialogState extends State<NewTaskDialog> {
             if (formKey.currentState!.validate()){
               final task = Task(
                 title: title,
-                description: 'default description',
                 createdTime: DateTime.now(),
-                input: int.parse(input),
-                output: int.parse(output),
-                finished: false,
+                isRepeating: false,
               );
 
               DatabaseHelper.instance.createTask(task);

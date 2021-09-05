@@ -1,3 +1,7 @@
+import 'package:diplomska1/Classes/Habit.dart';
+import 'package:diplomska1/Classes/Week.dart';
+import 'package:diplomska1/Classes/WeeklyHabit.dart';
+import 'package:diplomska1/Classes/WeeklyTask.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -28,13 +32,43 @@ class DatabaseHelper {
         CREATE TABLE $tasksTable (
           ${TaskFields.id} INTEGER PRIMARY KEY AUTOINCREMENT,
           ${TaskFields.title} TEXT NOT NULL,
-          ${TaskFields.description} Text,
-          ${TaskFields.input} INTEGER NOT NULL,
-          ${TaskFields.output} INTEGER NOT NULL,
-          ${TaskFields.finished} BOOLEAN NOT NULL,
           ${TaskFields.createdTime} TEXT NOT NULL,
-          ${TaskFields.finishedTime} TEXT
-          )'''
+          ${TaskFields.isRepeating} BOOLEAN NOT NULL
+        );
+        CREATE TABLE $weeksTable (
+          ${WeekFields.id} INTEGER PRIMARY KEY AUTOINCREMENT,
+          ${WeekFields.index} INTEGER NOT NULL,
+          ${WeekFields.startTime} TEXT NOT NULL,
+          ${WeekFields.endTime} TEXT NOT NULL
+        );
+        CREATE TABLE $habitsTable (
+          ${HabitFields.id} INTEGER PRIMARY KEY AUTOINCREMENT,
+          ${HabitFields.title} TEXT NOT NULL,
+          ${HabitFields.createdTime} TEXT NOT NULL
+        );
+        CREATE TABLE $weeklyTasksTable (
+          ${WeeklyTaskFields.id} INTEGER PRIMARY KEY AUTOINCREMENT,
+          ${WeeklyTaskFields.taskFK} INTEGER NOT NULL,
+          ${WeeklyTaskFields.weekFK} INTEGER NOT NULL,
+          ${WeeklyTaskFields.input} INTEGER NOT NULL,
+          ${WeeklyTaskFields.output} INTEGER NOT NULL,
+          ${WeeklyTaskFields.isGoal} BOOLEAN NOT NULL,
+          ${WeeklyTaskFields.isFinished} BOOLEAN NOT NULL,
+          FOREIGN KEY(${WeeklyTaskFields.taskFK}) REFERENCES $tasksTable(${TaskFields.id}),
+          FOREIGN KEY(${WeeklyTaskFields.weekFK}) REFERENCES $weeksTable(${WeekFields.id})
+        );
+        CREATE TABLE $weeklyHabitsTable (
+          ${WeeklyHabitFields.id} INTEGER PRIMARY KEY AUTOINCREMENT,
+          ${WeeklyHabitFields.habitFK} INTEGER NOT NULL,
+          ${WeeklyHabitFields.weekFK} INTEGER NOT NULL,
+          ${WeeklyHabitFields.inputSingle} INTEGER NOT NULL,
+          ${WeeklyHabitFields.outputSingle} INTEGER NOT NULL,
+          ${WeeklyHabitFields.times} INTEGER NOT NULL,
+          ${WeeklyHabitFields.finishedTimes} INTEGER NOT NULL,
+          ${WeeklyHabitFields.goalTimes} INTEGER NOT NULL,
+          FOREIGN KEY(${WeeklyHabitFields.habitFK}) REFERENCES $habitsTable(${HabitFields.id}),
+          FOREIGN KEY(${WeeklyHabitFields.weekFK}) REFERENCES $weeksTable(${WeekFields.id})
+        );'''
     );
   }
 

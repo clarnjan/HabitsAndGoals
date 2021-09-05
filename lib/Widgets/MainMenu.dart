@@ -14,6 +14,9 @@ class MainMenu extends StatelessWidget {
             height: 20,
           ),
           ListTile(
+            onTap: () {
+              Navigator.of(context).pushNamed("/habits");
+            },
             title: Text(
               "Habits",
               style: TextStyle(
@@ -33,6 +36,9 @@ class MainMenu extends StatelessWidget {
             endIndent: 10,
           ),
           ListTile(
+            onTap: () {
+              Navigator.of(context).pushNamed("/tasks");
+            },
             title: Text(
               "Tasks",
               style: TextStyle(

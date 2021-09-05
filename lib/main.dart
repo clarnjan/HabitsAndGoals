@@ -3,6 +3,9 @@ import 'package:diplomska1/Widgets/NewTaskDialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'Widgets/Habits.dart';
+import 'Widgets/Tasks.dart';
+
 void main() {
   runApp(MyApp());
 }
@@ -23,6 +26,8 @@ class MyApp extends StatelessWidget {
         initialRoute: '/',
         routes: {
           '/': (context) => Home(),
+          '/habits': (context) => Habits(),
+          '/tasks': (context) => Tasks(),
         });
   }
 }

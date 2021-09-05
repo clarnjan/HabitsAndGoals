@@ -41,31 +41,31 @@ class _TaskCardState extends State<TaskCard> {
             margin: EdgeInsets.only(
                 right: 10
             ),
-            child: Text(
-              widget.task.input.toString() +
-                  ' - ' +
-                  widget.task.output.toString(),
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 20,
-                color: Colors.white,
-              ),
-            ),
+            // child: Text(
+            //   widget.task.input.toString() +
+            //       ' - ' +
+            //       widget.task.output.toString(),
+            //   style: TextStyle(
+            //     fontWeight: FontWeight.bold,
+            //     fontSize: 20,
+            //     color: Colors.white,
+            //   ),
+            // ),
           ),
           Transform.scale(
             scale: 1.5,
-            child: Checkbox(
-              checkColor: Colors.white,
-              value: widget.task.finished,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(6),
-              ),
-              onChanged: (bool? value) {
-                setState(() {
-                  widget.task.finished = value!;
-                });
-              },
-            ),
+            // child: Checkbox(
+            //   checkColor: Colors.white,
+            //   value: widget.task.finished,
+            //   shape: RoundedRectangleBorder(
+            //     borderRadius: BorderRadius.circular(6),
+            //   ),
+            //   onChanged: (bool? value) {
+            //     setState(() {
+            //       widget.task.finished = value!;
+            //     });
+            //   },
+            // ),
           )
         ],
       ),
