@@ -1,3 +1,4 @@
+import 'package:diplomska1/Classes/Goal.dart';
 import 'package:diplomska1/Classes/Habit.dart';
 import 'package:diplomska1/Classes/Week.dart';
 import 'package:diplomska1/Classes/WeeklyHabit.dart';
@@ -29,22 +30,30 @@ class DatabaseHelper {
 
   Future _createDB(Database db, int version) async {
     return db.execute('''
-        CREATE TABLE $tasksTable (
-          ${TaskFields.id} INTEGER PRIMARY KEY AUTOINCREMENT,
-          ${TaskFields.title} TEXT NOT NULL,
-          ${TaskFields.createdTime} TEXT NOT NULL,
-          ${TaskFields.isRepeating} BOOLEAN NOT NULL
-        );
         CREATE TABLE $weeksTable (
           ${WeekFields.id} INTEGER PRIMARY KEY AUTOINCREMENT,
-          ${WeekFields.index} INTEGER NOT NULL,
-          ${WeekFields.startTime} TEXT NOT NULL,
-          ${WeekFields.endTime} TEXT NOT NULL
+          ${GoalFields.title} TEXT NOT NULL,
+          ${WeekFields.startDate} TEXT NOT NULL,
+          ${WeekFields.endDate} TEXT NOT NULL
+        );
+        CREATE TABLE $goalsTable (
+          ${GoalFields.id} INTEGER PRIMARY KEY AUTOINCREMENT,
+          ${GoalFields.title} TEXT NOT NULL,
+          ${GoalFields.isFinished} BOOLEAN NOT NULL,
+          ${GoalFields.createdTime} TEXT NOT NULL
         );
         CREATE TABLE $habitsTable (
           ${HabitFields.id} INTEGER PRIMARY KEY AUTOINCREMENT,
           ${HabitFields.title} TEXT NOT NULL,
           ${HabitFields.createdTime} TEXT NOT NULL
+        );
+        CREATE TABLE $tasksTable (
+          ${TaskFields.id} INTEGER PRIMARY KEY AUTOINCREMENT,
+          ${TaskFields.goalFK} INTEGER,
+          ${TaskFields.title} TEXT NOT NULL,
+          ${TaskFields.createdTime} TEXT NOT NULL,
+          ${TaskFields.isRepeating} BOOLEAN NOT NULL,
+          FOREIGN KEY(${TaskFields.goalFK}) REFERENCES $goalsTable(${GoalFields.id})
         );
         CREATE TABLE $weeklyTasksTable (
           ${WeeklyTaskFields.id} INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -77,10 +86,16 @@ class DatabaseHelper {
     db.close();
   }
 
-  Future<Task> createTask(Task task) async {
+  Future<List<Week>> getAllWeeks() async {
     final db = await instance.database;
-    final id = await db.insert(tasksTable, task.toJson());
-    return task.copy(id: id);
+    final result = await db.query(weeksTable);
+    return result.map((json) => Week.fromJson(json)).toList();
+  }
+
+  Future<List<Task>> getAllTasks() async {
+    final db = await instance.database;
+    final result = await db.query(tasksTable);
+    return result.map((json) => Task.fromJson(json)).toList();
   }
 
   Future<Task> getTask(int id) async {
@@ -93,10 +108,16 @@ class DatabaseHelper {
     }
   }
 
-  Future<List<Task>> getAllTasks() async {
+  Future<Week> createWeek(Week week) async {
     final db = await instance.database;
-    final result = await db.query(tasksTable);
-    return result.map((json) => Task.fromJson(json)).toList();
+    final id = await db.insert(weeksTable, week.toJson());
+    return week.copy(id: id);
+  }
+
+  Future<Task> createTask(Task task) async {
+    final db = await instance.database;
+    final id = await db.insert(tasksTable, task.toJson());
+    return task.copy(id: id);
   }
 
   Future<int> updateTask(Task task) async {

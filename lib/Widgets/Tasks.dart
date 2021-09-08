@@ -69,7 +69,7 @@ class _TasksState extends State<Tasks> {
                 ),
               ]),
             ),
-            AddButton(refreshParent: refresh, text: "Add Task",position: Position.bottomRight,),
+            AddButton(refreshParent: refresh, text: "Add Task",position: Position.bottomRight, type: AddButtonType.addTask,),
           ],
         ),
       ),

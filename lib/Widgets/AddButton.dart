@@ -2,20 +2,25 @@ import 'package:diplomska1/Classes/Enums.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'NewTaskDialog.dart';
+import 'AddTaskDialog.dart';
+import 'AddWeekDialog.dart';
 
 class AddButton extends StatelessWidget {
   final Function refreshParent;
   final String text;
   final Position? position;
   final Color? color;
-  const AddButton({Key? key, required this.refreshParent, required this.text, this.position, this.color }) : super(key: key);
+  final AddButtonType type;
+  const AddButton({Key? key, required this.refreshParent, required this.text, this.position, this.color, required this.type }) : super(key: key);
 
-  Future<void> showNewTaskDialog(BuildContext context) async {
+  Future<void> onTap(BuildContext context) async {
     return await showDialog(
       context: context,
       builder: (context) {
-        return NewTaskDialog(refreshParent: refreshParent);
+        if (type == AddButtonType.addWeek) {
+          return AddWeekDialog(refreshParent: refreshParent);
+        }
+        return AddTaskDialog(refreshParent: refreshParent);
       },
     );
   }
@@ -28,7 +33,7 @@ class AddButton extends StatelessWidget {
       left: position == Position.bottomLeft? 10 : null,
       child: GestureDetector(
         onTap: () async {
-          await showNewTaskDialog(context);
+          await onTap(context);
         },
         child: Container(
           height: 50,

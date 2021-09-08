@@ -1,4 +1,3 @@
-import 'package:diplomska1/Classes/DatabaseHelper.dart';
 import 'package:diplomska1/Classes/Enums.dart';
 import 'package:diplomska1/Classes/Habit.dart';
 import 'package:flutter/cupertino.dart';
@@ -6,7 +5,6 @@ import 'package:flutter/material.dart';
 
 import 'MainMenu.dart';
 import 'AddButton.dart';
-import 'TaskCard.dart';
 
 class Habits extends StatefulWidget {
   const Habits({Key? key}) : super(key: key);
@@ -44,32 +42,32 @@ class _HabitsState extends State<Habits> {
       body: SafeArea(
         child: Stack(
           children: [
-            Container(
-              color: Colors.grey[800],
-              width: double.infinity,
-              padding: EdgeInsets.all(10),
-              child: Flex(direction: Axis.vertical, children: [
-                isLoading
-                    ? Expanded(
-                  child: Center(
-                    child: CircularProgressIndicator(),
-                  ),
-                )
-                    : Expanded(
-                  child: ListView.builder(
-                      itemCount: habits.length,
-                      itemBuilder: (context, index) {
-                        final habit = habits[index];
-                        return Container(
-                          margin: index == habits.length - 1
-                              ? EdgeInsets.only(bottom: 50)
-                              : EdgeInsets.only(bottom: 0),
-                        );
-                      }),
-                ),
-              ]),
-            ),
-            AddButton(refreshParent: refresh, text: "Add Task",position: Position.bottomRight,),
+            // Container(
+            //   color: Colors.grey[800],
+            //   width: double.infinity,
+            //   padding: EdgeInsets.all(10),
+            //   child: Flex(direction: Axis.vertical, children: [
+            //     isLoading
+            //         ? Expanded(
+            //       child: Center(
+            //         child: CircularProgressIndicator(),
+            //       ),
+            //     )
+            //         : Expanded(
+            //       child: ListView.builder(
+            //           itemCount: habits.length,
+            //           itemBuilder: (context, index) {
+            //             final habit = habits[index];
+            //             return Container(
+            //               margin: index == habits.length - 1
+            //                   ? EdgeInsets.only(bottom: 50)
+            //                   : EdgeInsets.only(bottom: 0),
+            //             );
+            //           }),
+            //     ),
+            //   ]),
+            // ),
+            AddButton(refreshParent: refresh, text: "Add Habit",position: Position.bottomRight, type: AddButtonType.addHabit,),
           ],
         ),
       ),

@@ -3,17 +3,17 @@ import 'package:diplomska1/Classes/Task.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-class NewTaskDialog extends StatefulWidget {
+class AddTaskDialog extends StatefulWidget {
   final Task? task;
   final Function refreshParent;
 
-  const NewTaskDialog({Key? key, this.task, required this.refreshParent}) : super(key: key);
+  const AddTaskDialog({Key? key, this.task, required this.refreshParent}) : super(key: key);
 
   @override
-  _NewTaskDialogState createState() => _NewTaskDialogState();
+  _AddTaskDialogState createState() => _AddTaskDialogState();
 }
 
-class _NewTaskDialogState extends State<NewTaskDialog> {
+class _AddTaskDialogState extends State<AddTaskDialog> {
   String title = '';
   String input = '';
   String output = '';

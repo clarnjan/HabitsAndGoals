@@ -1,4 +1,12 @@
 enum Position {
   bottomLeft,
-  bottomRight
+  bottomRight,
+  bottomCenter
+}
+
+enum AddButtonType {
+  addWeek,
+  addTask,
+  addHabit,
+  addGoal
 }

@@ -1,5 +1,5 @@
 import 'package:diplomska1/Widgets/Home.dart';
-import 'package:diplomska1/Widgets/NewTaskDialog.dart';
+import 'package:diplomska1/Widgets/AddTaskDialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 

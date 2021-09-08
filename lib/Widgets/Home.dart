@@ -1,7 +1,9 @@
 import 'package:diplomska1/Classes/DatabaseHelper.dart';
 import 'package:diplomska1/Classes/Enums.dart';
 import 'package:diplomska1/Classes/Task.dart';
+import 'package:diplomska1/Classes/Week.dart';
 import 'package:diplomska1/Widgets/TaskCard.dart';
+import 'package:diplomska1/Widgets/WeekCard.dart';
 import 'package:flutter/material.dart';
 import 'MainMenu.dart';
 import 'AddButton.dart';
@@ -12,7 +14,7 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  late List<Task> tasks;
+  late List<Week> weeks;
   bool isLoading = true;
 
   @override
@@ -25,7 +27,7 @@ class _HomeState extends State<Home> {
     setState(() {
       isLoading = true;
     });
-    this.tasks = await DatabaseHelper.instance.getAllTasks();
+    this.weeks = await DatabaseHelper.instance.getAllWeeks();
     setState(() {
       isLoading = false;
     });
@@ -53,21 +55,21 @@ class _HomeState extends State<Home> {
                       )
                     : Expanded(
                         child: ListView.builder(
-                            itemCount: tasks.length,
+                            itemCount: weeks.length,
                             itemBuilder: (context, index) {
-                              final task = tasks[index];
+                              final week = weeks[index];
                               return Container(
-                                margin: index == tasks.length - 1
+                                margin: index == weeks.length - 1
                                     ? EdgeInsets.only(bottom: 50)
                                     : EdgeInsets.only(bottom: 0),
-                                child: TaskCard(task: task),
+                                child: WeekCard(week: week),
                               );
                             }),
                       ),
               ]),
             ),
-            AddButton(refreshParent: refresh, text: "Add Task",position: Position.bottomRight,),
-            AddButton(refreshParent: refresh, text: "Add Habit",position: Position.bottomLeft, color: Colors.blue[700],),
+            AddButton(refreshParent: refresh, text: "Add Week",position: Position.bottomRight, type: AddButtonType.addWeek,),
+            //AddButton(refreshParent: refresh, text: "Add Habit",position: Position.bottomLeft, color: Colors.blue[700],),
 
           ],
         ),
