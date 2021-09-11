@@ -2,8 +2,8 @@ import 'package:diplomska1/Classes/Enums.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'AddTaskDialog.dart';
-import 'AddWeekDialog.dart';
+import 'Task widgets/AddTaskDialog.dart';
+import 'Week widgets/AddWeekDialog.dart';
 
 class AddButton extends StatelessWidget {
   final Function refreshParent;

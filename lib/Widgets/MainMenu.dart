@@ -58,6 +58,9 @@ class MainMenu extends StatelessWidget {
             endIndent: 10,
           ),
           ListTile(
+            onTap: () {
+              Navigator.of(context).pushNamed("/weeks");
+            },
             title: Text(
               "Weeks",
               style: TextStyle(
@@ -77,6 +80,9 @@ class MainMenu extends StatelessWidget {
             endIndent: 10,
           ),
           ListTile(
+            onTap: () {
+              Navigator.of(context).pushNamed("/goals");
+            },
             title: Text(
               "Goals",
               style: TextStyle(

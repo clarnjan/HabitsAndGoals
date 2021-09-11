@@ -1,25 +1,33 @@
 import 'package:diplomska1/Classes/DatabaseHelper.dart';
-import 'package:diplomska1/Classes/Task.dart';
 import 'package:diplomska1/Classes/Week.dart';
 import 'package:flutter/material.dart';
-
 import 'WeekDetails.dart';
 
 class WeekCard extends StatefulWidget {
-  Week week;
+  final Week week;
+  final Function refreshParent;
 
-  WeekCard({required this.week});
+  WeekCard({required this.week, required this.refreshParent});
 
   @override
   _WeekCardState createState() => _WeekCardState();
 }
 
 class _WeekCardState extends State<WeekCard> {
+  bool canDelete = false;
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.push(context, MaterialPageRoute(builder: (context) => WeekDetails(widget.week)));
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => WeekDetails(widget.week)));
+      },
+      onLongPress: () {
+        print('long press');
+        setState(() {
+          canDelete = !canDelete;
+        });
       },
       child: Container(
         width: double.infinity,
@@ -30,6 +38,9 @@ class _WeekCardState extends State<WeekCard> {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
           color: Colors.grey[600],
+        ),
+        constraints: BoxConstraints(
+          minHeight: 70
         ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -44,36 +55,23 @@ class _WeekCardState extends State<WeekCard> {
                 ),
               ),
             ),
-            Container(
-              margin: EdgeInsets.only(
-                  right: 10
+            Text(
+              '${widget.week.startDate.day}/${widget.week.startDate.month} - '
+              '${widget.week.endDate.day}/${widget.week.endDate.month}',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 20,
+                color: Colors.white,
               ),
-              // child: Text(
-              //   widget.task.input.toString() +
-              //       ' - ' +
-              //       widget.task.output.toString(),
-              //   style: TextStyle(
-              //     fontWeight: FontWeight.bold,
-              //     fontSize: 20,
-              //     color: Colors.white,
-              //   ),
-              // ),
             ),
-            Transform.scale(
-              scale: 1.5,
-              // child: Checkbox(
-              //   checkColor: Colors.white,
-              //   value: widget.task.finished,
-              //   shape: RoundedRectangleBorder(
-              //     borderRadius: BorderRadius.circular(6),
-              //   ),
-              //   onChanged: (bool? value) {
-              //     setState(() {
-              //       widget.task.finished = value!;
-              //     });
-              //   },
-              // ),
-            )
+            if (canDelete)
+              IconButton(
+                onPressed: () async {
+                  DatabaseHelper.instance.deleteWeek(widget.week.id!);
+                  await widget.refreshParent();
+                },
+                icon: Icon(Icons.delete),
+              ),
           ],
         ),
       ),

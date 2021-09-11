@@ -1,10 +1,8 @@
-import 'package:diplomska1/Widgets/Home.dart';
-import 'package:diplomska1/Widgets/AddTaskDialog.dart';
+import 'package:diplomska1/Widgets/Week%20widgets/Weeks.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
-import 'Widgets/Habits.dart';
-import 'Widgets/Tasks.dart';
+import 'Widgets/Habit widgets/Habits.dart';
+import 'Widgets/Task widgets/Tasks.dart';
 
 void main() {
   runApp(MyApp());
@@ -23,9 +21,9 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.green,
           unselectedWidgetColor: Colors.white, // <-- your color
         ),
-        initialRoute: '/',
+        initialRoute: '/weeks',
         routes: {
-          '/': (context) => Home(),
+          '/weeks': (context) => Weeks(),
           '/habits': (context) => Habits(),
           '/tasks': (context) => Tasks(),
         });

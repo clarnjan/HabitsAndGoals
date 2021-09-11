@@ -3,8 +3,8 @@ import 'package:diplomska1/Classes/Enums.dart';
 import 'package:diplomska1/Classes/Task.dart';
 import 'package:flutter/material.dart';
 
-import 'MainMenu.dart';
-import 'AddButton.dart';
+import '../MainMenu.dart';
+import '../AddButton.dart';
 import 'TaskCard.dart';
 
 class Tasks extends StatefulWidget {

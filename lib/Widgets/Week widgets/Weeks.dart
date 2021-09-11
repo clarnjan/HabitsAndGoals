@@ -1,21 +1,20 @@
 import 'package:diplomska1/Classes/DatabaseHelper.dart';
 import 'package:diplomska1/Classes/Enums.dart';
-import 'package:diplomska1/Classes/Task.dart';
 import 'package:diplomska1/Classes/Week.dart';
-import 'package:diplomska1/Widgets/TaskCard.dart';
-import 'package:diplomska1/Widgets/WeekCard.dart';
+import 'package:diplomska1/Widgets/Week%20widgets/WeekCard.dart';
 import 'package:flutter/material.dart';
-import 'MainMenu.dart';
-import 'AddButton.dart';
+import '../MainMenu.dart';
+import '../AddButton.dart';
 
-class Home extends StatefulWidget {
+class Weeks extends StatefulWidget {
   @override
-  _HomeState createState() => _HomeState();
+  _WeeksState createState() => _WeeksState();
 }
 
-class _HomeState extends State<Home> {
+class _WeeksState extends State<Weeks> {
   late List<Week> weeks;
   bool isLoading = true;
+  GlobalKey<RefreshIndicatorState> refreshState = GlobalKey<RefreshIndicatorState>();
 
   @override
   void initState() {
@@ -54,23 +53,27 @@ class _HomeState extends State<Home> {
                         ),
                       )
                     : Expanded(
-                        child: ListView.builder(
-                            itemCount: weeks.length,
-                            itemBuilder: (context, index) {
-                              final week = weeks[index];
-                              return Container(
-                                margin: index == weeks.length - 1
-                                    ? EdgeInsets.only(bottom: 50)
-                                    : EdgeInsets.only(bottom: 0),
-                                child: WeekCard(week: week),
-                              );
-                            }),
+                        child: RefreshIndicator(
+                          key: refreshState,
+                          onRefresh: () async {
+                            await refresh();
+                          },
+                          child: ListView.builder(
+                              itemCount: weeks.length,
+                              itemBuilder: (context, index) {
+                                final week = weeks[index];
+                                return Container(
+                                  margin: index == weeks.length - 1
+                                      ? EdgeInsets.only(bottom: 50)
+                                      : EdgeInsets.only(bottom: 0),
+                                  child: WeekCard(week: week,refreshParent: refresh),
+                                );
+                              }),
+                        ),
                       ),
               ]),
             ),
             AddButton(refreshParent: refresh, text: "Add Week",position: Position.bottomRight, type: AddButtonType.addWeek,),
-            //AddButton(refreshParent: refresh, text: "Add Habit",position: Position.bottomLeft, color: Colors.blue[700],),
-
           ],
         ),
       ),

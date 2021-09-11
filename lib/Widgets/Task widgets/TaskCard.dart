@@ -1,9 +1,8 @@
-import 'package:diplomska1/Classes/DatabaseHelper.dart';
 import 'package:diplomska1/Classes/Task.dart';
 import 'package:flutter/material.dart';
 
 class TaskCard extends StatefulWidget {
-  Task task;
+  final Task task;
 
   TaskCard({required this.task});
 

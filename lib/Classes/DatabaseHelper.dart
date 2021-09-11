@@ -29,24 +29,28 @@ class DatabaseHelper {
   }
 
   Future _createDB(Database db, int version) async {
-    return db.execute('''
+    Batch batch = db.batch();
+    batch.execute('''
         CREATE TABLE $weeksTable (
           ${WeekFields.id} INTEGER PRIMARY KEY AUTOINCREMENT,
           ${GoalFields.title} TEXT NOT NULL,
           ${WeekFields.startDate} TEXT NOT NULL,
           ${WeekFields.endDate} TEXT NOT NULL
-        );
+        );''');
+    batch.execute('''
         CREATE TABLE $goalsTable (
           ${GoalFields.id} INTEGER PRIMARY KEY AUTOINCREMENT,
           ${GoalFields.title} TEXT NOT NULL,
           ${GoalFields.isFinished} BOOLEAN NOT NULL,
           ${GoalFields.createdTime} TEXT NOT NULL
-        );
+        );''');
+    batch.execute('''
         CREATE TABLE $habitsTable (
           ${HabitFields.id} INTEGER PRIMARY KEY AUTOINCREMENT,
           ${HabitFields.title} TEXT NOT NULL,
           ${HabitFields.createdTime} TEXT NOT NULL
-        );
+        );''');
+    batch.execute('''
         CREATE TABLE $tasksTable (
           ${TaskFields.id} INTEGER PRIMARY KEY AUTOINCREMENT,
           ${TaskFields.goalFK} INTEGER,
@@ -54,7 +58,8 @@ class DatabaseHelper {
           ${TaskFields.createdTime} TEXT NOT NULL,
           ${TaskFields.isRepeating} BOOLEAN NOT NULL,
           FOREIGN KEY(${TaskFields.goalFK}) REFERENCES $goalsTable(${GoalFields.id})
-        );
+        );''');
+    batch.execute('''
         CREATE TABLE $weeklyTasksTable (
           ${WeeklyTaskFields.id} INTEGER PRIMARY KEY AUTOINCREMENT,
           ${WeeklyTaskFields.taskFK} INTEGER NOT NULL,
@@ -65,7 +70,8 @@ class DatabaseHelper {
           ${WeeklyTaskFields.isFinished} BOOLEAN NOT NULL,
           FOREIGN KEY(${WeeklyTaskFields.taskFK}) REFERENCES $tasksTable(${TaskFields.id}),
           FOREIGN KEY(${WeeklyTaskFields.weekFK}) REFERENCES $weeksTable(${WeekFields.id})
-        );
+        );''');
+    batch.execute('''
         CREATE TABLE $weeklyHabitsTable (
           ${WeeklyHabitFields.id} INTEGER PRIMARY KEY AUTOINCREMENT,
           ${WeeklyHabitFields.habitFK} INTEGER NOT NULL,
@@ -77,8 +83,8 @@ class DatabaseHelper {
           ${WeeklyHabitFields.goalTimes} INTEGER NOT NULL,
           FOREIGN KEY(${WeeklyHabitFields.habitFK}) REFERENCES $habitsTable(${HabitFields.id}),
           FOREIGN KEY(${WeeklyHabitFields.weekFK}) REFERENCES $weeksTable(${WeekFields.id})
-        );'''
-    );
+        );''');
+    return await batch.commit();
   }
 
   Future close() async {
@@ -90,6 +96,12 @@ class DatabaseHelper {
     final db = await instance.database;
     final result = await db.query(weeksTable);
     return result.map((json) => Week.fromJson(json)).toList();
+  }
+
+  Future<List<Habit>> getAllHabits() async {
+    final db = await instance.database;
+    final result = await db.query(habitsTable);
+    return result.map((json) => Habit.fromJson(json)).toList();
   }
 
   Future<List<Task>> getAllTasks() async {
@@ -123,6 +135,11 @@ class DatabaseHelper {
   Future<int> updateTask(Task task) async {
     final db = await instance.database;
     return db.update(tasksTable, task.toJson(), where: '${TaskFields.id} = ?', whereArgs: [task.id]);
+  }
+
+  Future<int> deleteWeek(int id) async {
+    final db = await instance.database;
+    return await db.delete(weeksTable, where: '${WeekFields.id} = ?', whereArgs: [id]);
   }
 
   Future<int> deleteTask(int id) async {

@@ -50,7 +50,7 @@ class Task {
 
   static Task fromJson(Map<String, Object?> json) => Task(
     id: json[TaskFields.id] as int,
-    goalFK: json[TaskFields.goalFK] as int,
+    goalFK: json[TaskFields.goalFK] as int?,
     title: json[TaskFields.title] as String,
     isRepeating: json[TaskFields.isRepeating] == 1,
     createdTime: DateTime.parse(json[TaskFields.createdTime] as String),
