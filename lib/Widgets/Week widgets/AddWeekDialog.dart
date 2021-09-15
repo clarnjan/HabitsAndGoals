@@ -1,4 +1,5 @@
 import 'package:diplomska1/Classes/DatabaseHelper.dart';
+import 'package:diplomska1/Classes/DateFormatService.dart';
 import 'package:diplomska1/Classes/Task.dart';
 import 'package:diplomska1/Classes/Week.dart';
 import 'package:flutter/material.dart';
@@ -72,15 +73,14 @@ class _AddWeekDialogState extends State<AddWeekDialog> {
               },
               decoration: InputDecoration(
                 hintText: startDate != null
-                    ? '${startDate!.day}/${startDate!.month}/${startDate!.year}'
+                    ? DateFormatService.formatDate(startDate!)
                     : "Select start date",
               ),
             ),
             TextFormField(
               onTap: pickEndDate,
               validator: (value) {
-                if (endDate == null)
-                  return "End date is mandatory";
+                if (endDate == null) return "End date is mandatory";
                 if (!startDate!.isBefore(endDate!)) {
                   return "End date must be after start date";
                 }
@@ -88,7 +88,7 @@ class _AddWeekDialogState extends State<AddWeekDialog> {
               },
               decoration: InputDecoration(
                 hintText: endDate != null
-                    ? '${endDate!.day}/${endDate!.month}/${endDate!.year}'
+                    ? DateFormatService.formatDate(endDate!)
                     : "Select end date",
               ),
             ),
@@ -100,8 +100,8 @@ class _AddWeekDialogState extends State<AddWeekDialog> {
           child: Text("Add"),
           onPressed: () async {
             if (formKey.currentState!.validate()) {
-              final week = Week(
-                  title: title, startDate: startDate!, endDate: endDate!);
+              final week =
+                  Week(title: title, startDate: startDate!, endDate: endDate!);
 
               DatabaseHelper.instance.createWeek(week);
               await widget.refreshParent();

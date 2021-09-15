@@ -110,6 +110,16 @@ class DatabaseHelper {
     return result.map((json) => Task.fromJson(json)).toList();
   }
 
+  Future<Week> getWeek(int id) async {
+    final db = await instance.database;
+    final result = await db.query(weeksTable,columns: WeekFields.values, where: '${WeekFields.id} = ?', whereArgs: [id]);
+    if (result.isNotEmpty) {
+      return Week.fromJson(result.first);
+    } else {
+      throw Exception('ID: $id not found');
+    }
+  }
+
   Future<Task> getTask(int id) async {
     final db = await instance.database;
     final result = await db.query(tasksTable,columns: TaskFields.values, where: '${TaskFields.id} = ?', whereArgs: [id]);

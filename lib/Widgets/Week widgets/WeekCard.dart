@@ -20,8 +20,10 @@ class _WeekCardState extends State<WeekCard> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => WeekDetails(widget.week)));
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => WeekDetails(widget.week.id!)));
       },
       onLongPress: () {
         print('long press');
@@ -39,9 +41,7 @@ class _WeekCardState extends State<WeekCard> {
           borderRadius: BorderRadius.circular(10),
           color: Colors.grey[600],
         ),
-        constraints: BoxConstraints(
-          minHeight: 70
-        ),
+        constraints: BoxConstraints(minHeight: 70),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
