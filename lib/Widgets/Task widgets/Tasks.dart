@@ -40,38 +40,39 @@ class _TasksState extends State<Tasks> {
       drawer: Drawer(
         child: MainMenu(),
       ),
-      body: SafeArea(
-        child: Stack(
-          children: [
-            Container(
-              color: Colors.grey[800],
-              width: double.infinity,
-              padding: EdgeInsets.all(10),
-              child: Flex(direction: Axis.vertical, children: [
-                isLoading
-                    ? Expanded(
-                  child: Center(
-                    child: CircularProgressIndicator(),
-                  ),
-                )
-                    : Expanded(
-                  child: ListView.builder(
-                      itemCount: tasks.length,
-                      itemBuilder: (context, index) {
-                        final task = tasks[index];
-                        return Container(
-                          margin: index == tasks.length - 1
-                              ? EdgeInsets.only(bottom: 50)
-                              : EdgeInsets.only(bottom: 0),
-                          child: TaskCard(task: task),
-                        );
-                      }),
+      appBar: AppBar(
+        title: Text('Tasks'),
+      ),
+      body: Stack(
+        children: [
+          Container(
+            color: Colors.grey[800],
+            width: double.infinity,
+            padding: EdgeInsets.all(10),
+            child: Flex(direction: Axis.vertical, children: [
+              isLoading
+                  ? Expanded(
+                child: Center(
+                  child: CircularProgressIndicator(),
                 ),
-              ]),
-            ),
-            AddButton(refreshParent: refresh, text: "Add Task",position: Position.bottomRight, type: AddButtonType.addTask,),
-          ],
-        ),
+              )
+                  : Expanded(
+                child: ListView.builder(
+                    itemCount: tasks.length,
+                    itemBuilder: (context, index) {
+                      final task = tasks[index];
+                      return Container(
+                        margin: index == tasks.length - 1
+                            ? EdgeInsets.only(bottom: 50)
+                            : EdgeInsets.only(bottom: 0),
+                        child: TaskCard(task: task),
+                      );
+                    }),
+              ),
+            ]),
+          ),
+          AddButton(refreshParent: refresh, text: "Add Task",position: Position.bottomRight, type: AddButtonType.addTask,),
+        ],
       ),
     );
   }

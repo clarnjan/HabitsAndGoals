@@ -38,44 +38,45 @@ class _WeeksState extends State<Weeks> {
       drawer: Drawer(
         child: MainMenu(),
       ),
-      body: SafeArea(
-        child: Stack(
-          children: [
-            Container(
-              color: Colors.grey[800],
-              width: double.infinity,
-              padding: EdgeInsets.all(10),
-              child: Flex(direction: Axis.vertical, children: [
-                isLoading
-                    ? Expanded(
-                        child: Center(
-                          child: CircularProgressIndicator(),
-                        ),
-                      )
-                    : Expanded(
-                        child: RefreshIndicator(
-                          key: refreshState,
-                          onRefresh: () async {
-                            await refresh();
-                          },
-                          child: ListView.builder(
-                              itemCount: weeks.length,
-                              itemBuilder: (context, index) {
-                                final week = weeks[index];
-                                return Container(
-                                  margin: index == weeks.length - 1
-                                      ? EdgeInsets.only(bottom: 50)
-                                      : EdgeInsets.only(bottom: 0),
-                                  child: WeekCard(week: week,refreshParent: refresh),
-                                );
-                              }),
-                        ),
+      appBar: AppBar(
+        title: Text('Weeks'),
+      ),
+      body: Stack(
+        children: [
+          Container(
+            color: Colors.grey[800],
+            width: double.infinity,
+            padding: EdgeInsets.all(10),
+            child: Flex(direction: Axis.vertical, children: [
+              isLoading
+                  ? Expanded(
+                      child: Center(
+                        child: CircularProgressIndicator(),
                       ),
-              ]),
-            ),
-            AddButton(refreshParent: refresh, text: "Add Week",position: Position.bottomRight, type: AddButtonType.addWeek,),
-          ],
-        ),
+                    )
+                  : Expanded(
+                      child: RefreshIndicator(
+                        key: refreshState,
+                        onRefresh: () async {
+                          await refresh();
+                        },
+                        child: ListView.builder(
+                            itemCount: weeks.length,
+                            itemBuilder: (context, index) {
+                              final week = weeks[index];
+                              return Container(
+                                margin: index == weeks.length - 1
+                                    ? EdgeInsets.only(bottom: 50)
+                                    : EdgeInsets.only(bottom: 0),
+                                child: WeekCard(week: week,refreshParent: refresh),
+                              );
+                            }),
+                      ),
+                    ),
+            ]),
+          ),
+          AddButton(refreshParent: refresh, text: "Add Week",position: Position.bottomRight, type: AddButtonType.addWeek,),
+        ],
       ),
     );
   }

@@ -38,49 +38,50 @@ class _HabitsState extends State<Habits> {
       drawer: Drawer(
         child: MainMenu(),
       ),
-      body: SafeArea(
-        child: Stack(
-          children: [
-            Container(
-              color: Colors.grey[800],
-              width: double.infinity,
-              padding: EdgeInsets.all(10),
-              child: Flex(direction: Axis.vertical, children: [
-                isLoading
-                    ? Expanded(
-                        child: Center(
-                          child: CircularProgressIndicator(),
-                        ),
-                      )
-                    : Expanded(
-                        child: RefreshIndicator(
-                          key: refreshState,
-                          onRefresh: () async {
-                            await refresh();
-                          },
-                          child: ListView.builder(
-                              itemCount: habits.length,
-                              itemBuilder: (context, index) {
-                                final habit = habits[index];
-                                return Container(
-                                  margin: index == habits.length - 1
-                                      ? EdgeInsets.only(bottom: 50)
-                                      : EdgeInsets.only(bottom: 0),
-                                  child: HabitCard(habit: habit, refreshParent: refresh,),
-                                );
-                              }),
-                        ),
+      appBar: AppBar(
+        title: Text('Habits'),
+      ),
+      body: Stack(
+        children: [
+          Container(
+            color: Colors.grey[800],
+            width: double.infinity,
+            padding: EdgeInsets.all(10),
+            child: Flex(direction: Axis.vertical, children: [
+              isLoading
+                  ? Expanded(
+                      child: Center(
+                        child: CircularProgressIndicator(),
                       ),
-              ]),
-            ),
-            AddButton(
-              refreshParent: refresh,
-              text: "Add Habit",
-              position: Position.bottomRight,
-              type: AddButtonType.addHabit,
-            ),
-          ],
-        ),
+                    )
+                  : Expanded(
+                      child: RefreshIndicator(
+                        key: refreshState,
+                        onRefresh: () async {
+                          await refresh();
+                        },
+                        child: ListView.builder(
+                            itemCount: habits.length,
+                            itemBuilder: (context, index) {
+                              final habit = habits[index];
+                              return Container(
+                                margin: index == habits.length - 1
+                                    ? EdgeInsets.only(bottom: 50)
+                                    : EdgeInsets.only(bottom: 0),
+                                child: HabitCard(habit: habit, refreshParent: refresh,),
+                              );
+                            }),
+                      ),
+                    ),
+            ]),
+          ),
+          AddButton(
+            refreshParent: refresh,
+            text: "Add Habit",
+            position: Position.bottomRight,
+            type: AddButtonType.addHabit,
+          ),
+        ],
       ),
     );
   }
