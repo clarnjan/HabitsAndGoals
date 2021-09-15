@@ -1,6 +1,7 @@
 import 'package:diplomska1/Widgets/Week%20widgets/Weeks.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'Widgets/Goal widgets/Goals.dart';
 import 'Widgets/Habit widgets/Habits.dart';
 import 'Widgets/Task widgets/Tasks.dart';
 
@@ -26,6 +27,7 @@ class MyApp extends StatelessWidget {
           '/weeks': (context) => Weeks(),
           '/habits': (context) => Habits(),
           '/tasks': (context) => Tasks(),
+          '/goals': (context) => Goals(),
         });
   }
 }

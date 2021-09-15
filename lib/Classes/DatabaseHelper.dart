@@ -110,6 +110,12 @@ class DatabaseHelper {
     return result.map((json) => Task.fromJson(json)).toList();
   }
 
+  Future<List<Goal>> getAllGoals() async {
+    final db = await instance.database;
+    final result = await db.query(goalsTable);
+    return result.map((json) => Goal.fromJson(json)).toList();
+  }
+
   Future<Week> getWeek(int id) async {
     final db = await instance.database;
     final result = await db.query(weeksTable,columns: WeekFields.values, where: '${WeekFields.id} = ?', whereArgs: [id]);
