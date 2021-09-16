@@ -58,7 +58,7 @@ class _HabitCardState extends State<HabitCard> {
             if (canDelete)
               IconButton(
                 onPressed: () async {
-                  DatabaseHelper.instance.deleteWeek(widget.habit.id!);
+                  DatabaseHelper.instance.deleteHabit(widget.habit.id!);
                   await widget.refreshParent();
                 },
                 icon: Icon(Icons.delete),

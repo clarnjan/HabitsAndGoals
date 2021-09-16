@@ -17,6 +17,7 @@ class Tasks extends StatefulWidget {
 class _TasksState extends State<Tasks> {
   late List<Task> tasks;
   bool isLoading = true;
+  GlobalKey<RefreshIndicatorState> refreshState = GlobalKey<RefreshIndicatorState>();
 
   @override
   void initState() {
@@ -57,17 +58,23 @@ class _TasksState extends State<Tasks> {
                 ),
               )
                   : Expanded(
-                child: ListView.builder(
-                    itemCount: tasks.length,
-                    itemBuilder: (context, index) {
-                      final task = tasks[index];
-                      return Container(
-                        margin: index == tasks.length - 1
-                            ? EdgeInsets.only(bottom: 50)
-                            : EdgeInsets.only(bottom: 0),
-                        child: TaskCard(task: task),
-                      );
-                    }),
+                child: RefreshIndicator(
+                  key: refreshState,
+                  onRefresh: () async {
+                    await refresh();
+                  },
+                  child: ListView.builder(
+                      itemCount: tasks.length,
+                      itemBuilder: (context, index) {
+                        final task = tasks[index];
+                        return Container(
+                          margin: index == tasks.length - 1
+                              ? EdgeInsets.only(bottom: 50)
+                              : EdgeInsets.only(bottom: 0),
+                          child: TaskCard(task: task,refreshParent: refresh,),
+                        );
+                      }),
+                ),
               ),
             ]),
           ),

@@ -16,8 +16,7 @@ class DatabaseHelper {
   DatabaseHelper._init();
 
   Future<Database> get database async {
-    if (_database != null)
-      return _database!;
+    if (_database != null) return _database!;
     _database = await _initDB('todo.db');
     return _database!;
   }
@@ -118,7 +117,10 @@ class DatabaseHelper {
 
   Future<Week> getWeek(int id) async {
     final db = await instance.database;
-    final result = await db.query(weeksTable,columns: WeekFields.values, where: '${WeekFields.id} = ?', whereArgs: [id]);
+    final result = await db.query(weeksTable,
+        columns: WeekFields.values,
+        where: '${WeekFields.id} = ?',
+        whereArgs: [id]);
     if (result.isNotEmpty) {
       return Week.fromJson(result.first);
     } else {
@@ -128,7 +130,10 @@ class DatabaseHelper {
 
   Future<Task> getTask(int id) async {
     final db = await instance.database;
-    final result = await db.query(tasksTable,columns: TaskFields.values, where: '${TaskFields.id} = ?', whereArgs: [id]);
+    final result = await db.query(tasksTable,
+        columns: TaskFields.values,
+        where: '${TaskFields.id} = ?',
+        whereArgs: [id]);
     if (result.isNotEmpty) {
       return Task.fromJson(result.first);
     } else {
@@ -142,24 +147,51 @@ class DatabaseHelper {
     return week.copy(id: id);
   }
 
+  Future<Habit> createHabit(Habit habit) async {
+    final db = await instance.database;
+    final id = await db.insert(habitsTable, habit.toJson());
+    return habit.copy(id: id);
+  }
+
   Future<Task> createTask(Task task) async {
     final db = await instance.database;
     final id = await db.insert(tasksTable, task.toJson());
     return task.copy(id: id);
   }
 
+  Future<Goal> createGoal(Goal goal) async {
+    final db = await instance.database;
+    final id = await db.insert(goalsTable, goal.toJson());
+    return goal.copy(id: id);
+  }
+
   Future<int> updateTask(Task task) async {
     final db = await instance.database;
-    return db.update(tasksTable, task.toJson(), where: '${TaskFields.id} = ?', whereArgs: [task.id]);
+    return db.update(tasksTable, task.toJson(),
+        where: '${TaskFields.id} = ?', whereArgs: [task.id]);
   }
 
   Future<int> deleteWeek(int id) async {
     final db = await instance.database;
-    return await db.delete(weeksTable, where: '${WeekFields.id} = ?', whereArgs: [id]);
+    return await db
+        .delete(weeksTable, where: '${WeekFields.id} = ?', whereArgs: [id]);
+  }
+
+  Future<int> deleteHabit(int id) async {
+    final db = await instance.database;
+    return await db
+        .delete(habitsTable, where: '${HabitFields.id} = ?', whereArgs: [id]);
   }
 
   Future<int> deleteTask(int id) async {
     final db = await instance.database;
-    return await db.delete(tasksTable, where: '${TaskFields.id} = ?', whereArgs: [id]);
+    return await db
+        .delete(tasksTable, where: '${TaskFields.id} = ?', whereArgs: [id]);
+  }
+
+  Future<int> deleteGoal(int id) async {
+    final db = await instance.database;
+    return await db
+        .delete(goalsTable, where: '${GoalFields.id} = ?', whereArgs: [id]);
   }
 }

@@ -14,7 +14,8 @@ class Goals extends StatefulWidget {
 class _GoalsState extends State<Goals> {
   late List<Goal> goals;
   bool isLoading = true;
-  GlobalKey<RefreshIndicatorState> refreshState = GlobalKey<RefreshIndicatorState>();
+  GlobalKey<RefreshIndicatorState> refreshState =
+      GlobalKey<RefreshIndicatorState>();
 
   @override
   void initState() {
@@ -50,32 +51,38 @@ class _GoalsState extends State<Goals> {
             child: Flex(direction: Axis.vertical, children: [
               isLoading
                   ? Expanded(
-                child: Center(
-                  child: CircularProgressIndicator(),
-                ),
-              )
+                      child: Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                    )
                   : Expanded(
-                child: RefreshIndicator(
-                  key: refreshState,
-                  onRefresh: () async {
-                    await refresh();
-                  },
-                  child: ListView.builder(
-                      itemCount: goals.length,
-                      itemBuilder: (context, index) {
-                        final week = goals[index];
-                        return Container(
-                          margin: index == goals.length - 1
-                              ? EdgeInsets.only(bottom: 50)
-                              : EdgeInsets.only(bottom: 0),
-                          child: GoalCard(goal: week,refreshParent: refresh),
-                        );
-                      }),
-                ),
-              ),
+                      child: RefreshIndicator(
+                        key: refreshState,
+                        onRefresh: () async {
+                          await refresh();
+                        },
+                        child: ListView.builder(
+                            itemCount: goals.length,
+                            itemBuilder: (context, index) {
+                              final week = goals[index];
+                              return Container(
+                                margin: index == goals.length - 1
+                                    ? EdgeInsets.only(bottom: 50)
+                                    : EdgeInsets.only(bottom: 0),
+                                child: GoalCard(
+                                    goal: week, refreshParent: refresh),
+                              );
+                            }),
+                      ),
+                    ),
             ]),
           ),
-          AddButton(refreshParent: refresh, text: "Add Goal",position: Position.bottomRight, type: AddButtonType.addGoal,),
+          AddButton(
+            refreshParent: refresh,
+            text: "Add Goal",
+            position: Position.bottomRight,
+            type: AddButtonType.addGoal,
+          ),
         ],
       ),
     );

@@ -66,7 +66,7 @@ class _GoalCardState extends State<GoalCard> {
             if (canDelete)
               IconButton(
                 onPressed: () async {
-                  DatabaseHelper.instance.deleteWeek(widget.goal.id!);
+                  DatabaseHelper.instance.deleteGoal(widget.goal.id!);
                   await widget.refreshParent();
                 },
                 icon: Icon(Icons.delete),

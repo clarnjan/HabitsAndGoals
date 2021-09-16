@@ -1,7 +1,9 @@
 import 'package:diplomska1/Classes/Enums.dart';
+import 'package:diplomska1/Widgets/Goal%20widgets/AddGoalDialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import 'Habit widgets/AddHabitDialog.dart';
 import 'Task widgets/AddTaskDialog.dart';
 import 'Week widgets/AddWeekDialog.dart';
 
@@ -19,6 +21,12 @@ class AddButton extends StatelessWidget {
       builder: (context) {
         if (type == AddButtonType.addWeek) {
           return AddWeekDialog(refreshParent: refreshParent);
+        }
+        if (type == AddButtonType.addHabit) {
+          return AddHabitDialog(refreshParent: refreshParent);
+        }
+        if (type == AddButtonType.addGoal) {
+          return AddGoalDialog(refreshParent: refreshParent);
         }
         return AddTaskDialog(refreshParent: refreshParent);
       },
