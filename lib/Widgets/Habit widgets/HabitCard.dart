@@ -4,24 +4,44 @@ import 'package:diplomska1/Widgets/Habit%20widgets/HabitDetails.dart';
 import 'package:flutter/material.dart';
 
 class HabitCard extends StatefulWidget {
-  final Habit habit;
+  final int habitId;
   final Function refreshParent;
 
-  HabitCard({required this.habit, required this.refreshParent});
+  HabitCard({required this.habitId, required this.refreshParent});
 
   @override
   _HabitCardState createState() => _HabitCardState();
 }
 
 class _HabitCardState extends State<HabitCard> {
+  late Habit habit;
   bool canDelete = false;
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    refresh();
+  }
+
+  refresh() async {
+    setState(() {
+      isLoading = true;
+    });
+    this.habit = await DatabaseHelper.instance.getHabit(widget.habitId);
+    setState(() {
+      isLoading = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => HabitDetails(widget.habit)));
+        if (!isLoading) {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => HabitDetails(habit)));
+        }
       },
       onLongPress: () {
         print('long press');
@@ -39,32 +59,34 @@ class _HabitCardState extends State<HabitCard> {
           borderRadius: BorderRadius.circular(10),
           color: Colors.grey[600],
         ),
-        constraints: BoxConstraints(
-            minHeight: 70
-        ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Expanded(
-              child: Text(
-                widget.habit.title,
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20,
-                  color: Colors.white,
-                ),
+        constraints: BoxConstraints(minHeight: 70),
+        child: isLoading
+            ? Center(
+                child: CircularProgressIndicator(),
+              )
+            : Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: Text(
+                      habit.title,
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                  if (canDelete)
+                    IconButton(
+                      onPressed: () async {
+                        DatabaseHelper.instance.deleteHabit(widget.habitId);
+                        await widget.refreshParent();
+                      },
+                      icon: Icon(Icons.delete),
+                    ),
+                ],
               ),
-            ),
-            if (canDelete)
-              IconButton(
-                onPressed: () async {
-                  DatabaseHelper.instance.deleteHabit(widget.habit.id!);
-                  await widget.refreshParent();
-                },
-                icon: Icon(Icons.delete),
-              ),
-          ],
-        ),
       ),
     );
   }

@@ -68,7 +68,7 @@ class _HabitsState extends State<Habits> {
                                 margin: index == habits.length - 1
                                     ? EdgeInsets.only(bottom: 50)
                                     : EdgeInsets.only(bottom: 0),
-                                child: HabitCard(habit: habit, refreshParent: refresh,),
+                                child: HabitCard(habitId: habit.id!, refreshParent: refresh,),
                               );
                             }),
                       ),

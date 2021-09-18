@@ -2,6 +2,7 @@ import 'package:diplomska1/Classes/DatabaseHelper.dart';
 import 'package:diplomska1/Classes/Enums.dart';
 import 'package:diplomska1/Classes/DateFormatService.dart';
 import 'package:diplomska1/Classes/Week.dart';
+import 'package:diplomska1/Widgets/Habit%20widgets/HabitCard.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -68,9 +69,33 @@ class _WeekDetailsState extends State<WeekDetails> {
             color: Colors.grey[800],
             width: double.infinity,
             padding: EdgeInsets.all(10),
-            child: Column(
-              children: [],
-            ),
+            child: Flex(direction: Axis.vertical, children: [
+              isLoading
+                  ? Expanded(
+                child: Center(
+                  child: CircularProgressIndicator(),
+                ),
+              )
+                  : Expanded(
+                child: RefreshIndicator(
+                  key: refreshState,
+                  onRefresh: () async {
+                    await refresh();
+                  },
+                  child: ListView.builder(
+                      itemCount: week.habits.length,
+                      itemBuilder: (context, index) {
+                        final weeklyHabit = week.habits[index];
+                        return Container(
+                          margin: index == week.habits.length - 1
+                              ? EdgeInsets.only(bottom: 50)
+                              : EdgeInsets.only(bottom: 0),
+                          child: HabitCard(habitId: weeklyHabit.habitFK, refreshParent: refresh,),
+                        );
+                      }),
+                ),
+              ),
+            ]),
           ),
           AddButton(
             refreshParent: refresh,

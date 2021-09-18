@@ -1,6 +1,8 @@
 import 'package:diplomska1/Classes/DatabaseHelper.dart';
 import 'package:diplomska1/Classes/Task.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:numberpicker/numberpicker.dart';
 
 class AddTaskDialog extends StatefulWidget {
   final Task? task;
@@ -14,6 +16,8 @@ class AddTaskDialog extends StatefulWidget {
 
 class _AddTaskDialogState extends State<AddTaskDialog> {
   String title = '';
+  int input = 1;
+  int output = 1;
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final TextEditingController textEditingController = TextEditingController();
 
@@ -37,21 +41,53 @@ class _AddTaskDialogState extends State<AddTaskDialog> {
                 hintText: "Title",
               ),
             ),
-            // TextFormField(
-            //   keyboardType: TextInputType.number,
-            //   validator: (value) {
-            //     setState(() {
-            //       input = value!;
-            //     });
-            //     return value!.isNotEmpty ? null : "Input is mandatory";
-            //   },
-            //   inputFormatters: <TextInputFormatter>[
-            //     FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
-            //   ],
-            //   decoration: InputDecoration(
-            //     hintText: "Input",
-            //   ),
-            // ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text("Input: "),
+                Container(
+                  margin: EdgeInsets.only(top: 5),
+                  child: NumberPicker(
+                    value: input,
+                    minValue: 0,
+                    maxValue: 100,
+                    onChanged: (value) => setState(() => input = value),
+                    itemWidth: 40,
+                    itemHeight: 30,
+                    axis: Axis.horizontal,
+                    selectedTextStyle: TextStyle(
+                      fontSize: 18,
+                      color: CupertinoColors.activeGreen,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    textStyle: TextStyle(
+                      fontSize: 14,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text("Output: "),
+                NumberPicker(
+                  value: output,
+                  minValue: 0,
+                  maxValue: 100,
+                  onChanged: (value) => setState(() => output = value),
+                  itemWidth: 40,
+                  itemHeight: 30,
+                  axis: Axis.horizontal,
+                  selectedTextStyle: TextStyle(
+                    fontSize: 18,
+                    color: CupertinoColors.activeGreen,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  textStyle: TextStyle(fontSize: 14),
+                ),
+              ],
+            ),
           ],
         ),
       ),
@@ -62,6 +98,8 @@ class _AddTaskDialogState extends State<AddTaskDialog> {
             if (formKey.currentState!.validate()){
               final task = Task(
                 title: title,
+                input: input,
+                output: output,
                 isRepeating: false,
                 createdTime: DateTime.now(),
               );

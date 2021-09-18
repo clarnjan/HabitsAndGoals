@@ -51,7 +51,7 @@ class _TaskCardState extends State<TaskCard> {
             if (canDelete)
               IconButton(
                 onPressed: () async {
-                  DatabaseHelper.instance.deleteWeek(widget.task.id!);
+                  DatabaseHelper.instance.deleteTask(widget.task.id!);
                   await widget.refreshParent();
                 },
                 icon: Icon(Icons.delete),

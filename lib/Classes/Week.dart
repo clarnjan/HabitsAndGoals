@@ -1,7 +1,10 @@
+import 'package:diplomska1/Classes/WeeklyHabit.dart';
+import 'package:diplomska1/Classes/WeeklyTask.dart';
+
 final String weeksTable = 'weeks';
 
 class WeekFields {
-  static final List<String> values = [ id, title, startDate, endDate];
+  static final List<String> values = [id, title, startDate, endDate];
   static final String id = '_id';
   static final String title = 'title';
   static final String startDate = 'startDate';
@@ -13,16 +16,20 @@ class Week {
   String title;
   DateTime startDate;
   DateTime endDate;
+  late List<WeeklyHabit> habits;
+  late List<WeeklyTask> tasks;
+
 
   Week({
     this.id,
     required this.title,
     required this.startDate,
     required this.endDate,
+    this.habits = const [],
+    this.tasks = const [],
   });
 
-  Map<String, Object?> toJson() =>
-      {
+  Map<String, Object?> toJson() => {
         WeekFields.id: id,
         WeekFields.title: title,
         WeekFields.startDate: startDate.toIso8601String(),
@@ -43,9 +50,9 @@ class Week {
       );
 
   static Week fromJson(Map<String, Object?> json) => Week(
-    id: json[WeekFields.id] as int,
-    title: json[WeekFields.title] as String,
-    startDate: DateTime.parse(json[WeekFields.startDate] as String),
-    endDate: DateTime.parse(json[WeekFields.endDate] as String),
-  );
+        id: json[WeekFields.id] as int,
+        title: json[WeekFields.title] as String,
+        startDate: DateTime.parse(json[WeekFields.startDate] as String),
+        endDate: DateTime.parse(json[WeekFields.endDate] as String),
+      );
 }

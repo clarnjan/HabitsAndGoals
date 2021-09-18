@@ -47,15 +47,21 @@ class DatabaseHelper {
         CREATE TABLE $habitsTable (
           ${HabitFields.id} INTEGER PRIMARY KEY AUTOINCREMENT,
           ${HabitFields.title} TEXT NOT NULL,
+          ${HabitFields.inputSingle} INTEGER NOT NULL,
+          ${HabitFields.outputSingle} INTEGER NOT NULL,
+          ${HabitFields.repetitions} INTEGER NOT NULL,
+          ${HabitFields.isPaused} BOOLEAN NOT NULL,
           ${HabitFields.createdTime} TEXT NOT NULL
         );''');
     batch.execute('''
         CREATE TABLE $tasksTable (
           ${TaskFields.id} INTEGER PRIMARY KEY AUTOINCREMENT,
-          ${TaskFields.goalFK} INTEGER,
           ${TaskFields.title} TEXT NOT NULL,
-          ${TaskFields.createdTime} TEXT NOT NULL,
+          ${TaskFields.goalFK} INTEGER,
+          ${TaskFields.input} INTEGER NOT NULL,
+          ${TaskFields.output} INTEGER NOT NULL,
           ${TaskFields.isRepeating} BOOLEAN NOT NULL,
+          ${TaskFields.createdTime} TEXT NOT NULL,
           FOREIGN KEY(${TaskFields.goalFK}) REFERENCES $goalsTable(${GoalFields.id})
         );''');
     batch.execute('''
@@ -63,9 +69,6 @@ class DatabaseHelper {
           ${WeeklyTaskFields.id} INTEGER PRIMARY KEY AUTOINCREMENT,
           ${WeeklyTaskFields.taskFK} INTEGER NOT NULL,
           ${WeeklyTaskFields.weekFK} INTEGER NOT NULL,
-          ${WeeklyTaskFields.input} INTEGER NOT NULL,
-          ${WeeklyTaskFields.output} INTEGER NOT NULL,
-          ${WeeklyTaskFields.isGoal} BOOLEAN NOT NULL,
           ${WeeklyTaskFields.isFinished} BOOLEAN NOT NULL,
           FOREIGN KEY(${WeeklyTaskFields.taskFK}) REFERENCES $tasksTable(${TaskFields.id}),
           FOREIGN KEY(${WeeklyTaskFields.weekFK}) REFERENCES $weeksTable(${WeekFields.id})
@@ -75,11 +78,7 @@ class DatabaseHelper {
           ${WeeklyHabitFields.id} INTEGER PRIMARY KEY AUTOINCREMENT,
           ${WeeklyHabitFields.habitFK} INTEGER NOT NULL,
           ${WeeklyHabitFields.weekFK} INTEGER NOT NULL,
-          ${WeeklyHabitFields.inputSingle} INTEGER NOT NULL,
-          ${WeeklyHabitFields.outputSingle} INTEGER NOT NULL,
-          ${WeeklyHabitFields.times} INTEGER NOT NULL,
-          ${WeeklyHabitFields.finishedTimes} INTEGER NOT NULL,
-          ${WeeklyHabitFields.goalTimes} INTEGER NOT NULL,
+          ${WeeklyHabitFields.repetitionsDone} INTEGER NOT NULL,
           FOREIGN KEY(${WeeklyHabitFields.habitFK}) REFERENCES $habitsTable(${HabitFields.id}),
           FOREIGN KEY(${WeeklyHabitFields.weekFK}) REFERENCES $weeksTable(${WeekFields.id})
         );''');
@@ -122,7 +121,31 @@ class DatabaseHelper {
         where: '${WeekFields.id} = ?',
         whereArgs: [id]);
     if (result.isNotEmpty) {
-      return Week.fromJson(result.first);
+      Week week = Week.fromJson(result.first);
+      week.habits = await getWeeklyHabitsForWeek(id);
+      return week;
+    } else {
+      throw Exception('ID: $id not found');
+    }
+  }
+
+  Future<List<WeeklyHabit>> getWeeklyHabitsForWeek(int weekId) async {
+    final db = await instance.database;
+    final result = await db.query(weeklyHabitsTable,
+        columns: WeeklyHabitFields.values,
+        where: '${WeeklyHabitFields.weekFK} = ?',
+        whereArgs: [weekId]);
+      return result.map((json) => WeeklyHabit.fromJson(json)).toList();
+  }
+
+  Future<Habit> getHabit(int id) async {
+    final db = await instance.database;
+    final result = await db.query(habitsTable,
+        columns: HabitFields.values,
+        where: '${HabitFields.id} = ?',
+        whereArgs: [id]);
+    if (result.isNotEmpty) {
+      return Habit.fromJson(result.first);
     } else {
       throw Exception('ID: $id not found');
     }
@@ -163,6 +186,12 @@ class DatabaseHelper {
     final db = await instance.database;
     final id = await db.insert(goalsTable, goal.toJson());
     return goal.copy(id: id);
+  }
+
+  Future<WeeklyHabit> createWeeklyHabit(WeeklyHabit weeklyHabit) async {
+    final db = await instance.database;
+    final id = await db.insert(weeklyHabitsTable, weeklyHabit.toJson());
+    return weeklyHabit.copy(id: id);
   }
 
   Future<int> updateTask(Task task) async {

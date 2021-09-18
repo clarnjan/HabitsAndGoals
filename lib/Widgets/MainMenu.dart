@@ -15,7 +15,7 @@ class MainMenu extends StatelessWidget {
           ),
           ListTile(
             onTap: () {
-              Navigator.of(context).pushNamed("/habits");
+              Navigator.of(context).popAndPushNamed("/habits");
             },
             title: Text(
               "Habits",
@@ -37,7 +37,7 @@ class MainMenu extends StatelessWidget {
           ),
           ListTile(
             onTap: () {
-              Navigator.of(context).pushNamed("/tasks");
+              Navigator.of(context).popAndPushNamed("/tasks");
             },
             title: Text(
               "Tasks",
@@ -59,7 +59,7 @@ class MainMenu extends StatelessWidget {
           ),
           ListTile(
             onTap: () {
-              Navigator.of(context).pushNamed("/weeks");
+              Navigator.of(context).popAndPushNamed("/weeks");
             },
             title: Text(
               "Weeks",
@@ -81,7 +81,7 @@ class MainMenu extends StatelessWidget {
           ),
           ListTile(
             onTap: () {
-              Navigator.of(context).pushNamed("/goals");
+              Navigator.of(context).popAndPushNamed("/goals");
             },
             title: Text(
               "Goals",
