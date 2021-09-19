@@ -24,13 +24,16 @@ class _AddWeekDialogState extends State<AddWeekDialog> {
 
   pickStartDate() async {
     FocusScope.of(context).requestFocus(new FocusNode());
-    final newDate = await showDatePicker(
+    final newDate = await showDateRangePicker(
         context: context,
-        initialDate: DateTime.now(),
         firstDate: DateTime(DateTime.now().year - 1),
-        lastDate: DateTime(DateTime.now().year + 1));
+        lastDate: DateTime(DateTime.now().year + 1),
+      initialDateRange: DateTimeRange(start: DateTime.now(), end: DateTime.now().add(Duration(days: 6))),
+
+    );
+    print(newDate);
     setState(() {
-      startDate = newDate;
+      startDate = newDate!.start;
     });
   }
 
@@ -75,21 +78,6 @@ class _AddWeekDialogState extends State<AddWeekDialog> {
                 hintText: startDate != null
                     ? DateFormatService.formatDate(startDate!)
                     : "Select start date",
-              ),
-            ),
-            TextFormField(
-              onTap: pickEndDate,
-              validator: (value) {
-                if (endDate == null) return "End date is mandatory";
-                if (!startDate!.isBefore(endDate!)) {
-                  return "End date must be after start date";
-                }
-                return null;
-              },
-              decoration: InputDecoration(
-                hintText: endDate != null
-                    ? DateFormatService.formatDate(endDate!)
-                    : "Select end date",
               ),
             ),
           ],

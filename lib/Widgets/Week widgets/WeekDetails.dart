@@ -7,6 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../AddButton.dart';
+import '../CostumPopup.dart';
 import '../MainMenu.dart';
 
 class WeekDetails extends StatefulWidget {
@@ -19,8 +20,10 @@ class WeekDetails extends StatefulWidget {
 }
 
 class _WeekDetailsState extends State<WeekDetails> {
-  late Week week;
+  Week? week;
+  List<String> weeks = [];
   bool isLoading = true;
+  bool shouldShow = false;
   GlobalKey<RefreshIndicatorState> refreshState =
       GlobalKey<RefreshIndicatorState>();
 
@@ -34,6 +37,21 @@ class _WeekDetailsState extends State<WeekDetails> {
     setState(() {
       isLoading = true;
     });
+    weeks.add("A");
+    weeks.add("A");
+    weeks.add("A");
+    weeks.add("A");
+    weeks.add("A");
+    weeks.add("A");
+    weeks.add("A");
+    weeks.add("A");
+    weeks.add("A");
+    weeks.add("A");
+    weeks.add("A");
+    weeks.add("A");
+    weeks.add("A");
+    weeks.add("A");
+    weeks.add("A");
     this.week = await DatabaseHelper.instance.getWeek(widget.weekId);
     setState(() {
       isLoading = false;
@@ -47,21 +65,37 @@ class _WeekDetailsState extends State<WeekDetails> {
         child: MainMenu(),
       ),
       appBar: AppBar(
-        title: isLoading
-            ? Text('loading')
-            : Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(week.title),
-                  Row(
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            week == null
+                ? Text('loading')
+                : Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Text(DateFormatService.formatDate(week.startDate)),
-                      Text(' - '),
-                      Text(DateFormatService.formatDate(week.endDate)),
+                      Text(week!.title.split(" ")[0]),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(DateFormatService.formatDate(week!.startDate)),
+                          Text(' - '),
+                          Text(DateFormatService.formatDate(week!.endDate)),
+                        ],
+                      ),
                     ],
                   ),
-                ],
-              ),
+            isLoading
+                ? SizedBox()
+                : IconButton(
+                    icon: Icon(Icons.arrow_drop_down_outlined),
+                    onPressed: () {
+                      setState(() {
+                        shouldShow = !shouldShow;
+                      });
+                    },
+                  ),
+          ],
+        ),
       ),
       body: Stack(
         children: [
@@ -72,30 +106,44 @@ class _WeekDetailsState extends State<WeekDetails> {
             child: Flex(direction: Axis.vertical, children: [
               isLoading
                   ? Expanded(
-                child: Center(
-                  child: CircularProgressIndicator(),
-                ),
-              )
+                      child: Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                    )
                   : Expanded(
-                child: RefreshIndicator(
-                  key: refreshState,
-                  onRefresh: () async {
-                    await refresh();
-                  },
-                  child: ListView.builder(
-                      itemCount: week.habits.length,
-                      itemBuilder: (context, index) {
-                        final weeklyHabit = week.habits[index];
-                        return Container(
-                          margin: index == week.habits.length - 1
-                              ? EdgeInsets.only(bottom: 50)
-                              : EdgeInsets.only(bottom: 0),
-                          child: HabitCard(habitId: weeklyHabit.habitFK, refreshParent: refresh,),
-                        );
-                      }),
-                ),
-              ),
+                      child: RefreshIndicator(
+                        key: refreshState,
+                        onRefresh: () async {
+                          await refresh();
+                        },
+                        child: ListView.builder(
+                            itemCount: week!.habits.length,
+                            itemBuilder: (context, index) {
+                              final weeklyHabit = week!.habits[index];
+                              return Container(
+                                margin: index == week!.habits.length - 1
+                                    ? EdgeInsets.only(bottom: 50)
+                                    : EdgeInsets.only(bottom: 0),
+                                child: HabitCard(
+                                  habitId: weeklyHabit.habitFK,
+                                  refreshParent: refresh,
+                                ),
+                              );
+                            }),
+                      ),
+                    ),
             ]),
+          ),
+          Positioned(
+            right: 0,
+            top: 0,
+            child: CustomPopup(
+              show: shouldShow,
+              items: weeks,
+              builderFunction: (context, item) {
+                return ListTile(title: Text(item.toString()), onTap: () {});
+              },
+            ),
           ),
           AddButton(
             refreshParent: refresh,

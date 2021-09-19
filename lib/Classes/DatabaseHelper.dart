@@ -1,3 +1,4 @@
+import 'package:diplomska1/Classes/DateFormatService.dart';
 import 'package:diplomska1/Classes/Goal.dart';
 import 'package:diplomska1/Classes/Habit.dart';
 import 'package:diplomska1/Classes/Week.dart';
@@ -82,7 +83,14 @@ class DatabaseHelper {
           FOREIGN KEY(${WeeklyHabitFields.habitFK}) REFERENCES $habitsTable(${HabitFields.id}),
           FOREIGN KEY(${WeeklyHabitFields.weekFK}) REFERENCES $weeksTable(${WeekFields.id})
         );''');
-    return await batch.commit();
+    var result = await batch.commit();
+    DateTime today = DateTime.now();
+    DateTime startDate = today.subtract(Duration(days: today.weekday - 1));
+    startDate = startDate.subtract(Duration(hours: startDate.hour, minutes: startDate.minute, seconds: startDate.second));
+    DateTime endDate = startDate.add(Duration(days: 7));
+    Week week = new Week(title: "Week ${DateFormatService.formatDate(startDate)} - ${DateFormatService.formatDate(endDate)}", startDate: startDate, endDate: endDate);
+    await db.insert(weeksTable, week.toJson());
+    return result;
   }
 
   Future close() async {

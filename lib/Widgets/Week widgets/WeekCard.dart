@@ -55,15 +55,6 @@ class _WeekCardState extends State<WeekCard> {
                 ),
               ),
             ),
-            Text(
-              '${widget.week.startDate.day}/${widget.week.startDate.month} - '
-              '${widget.week.endDate.day}/${widget.week.endDate.month}',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 20,
-                color: Colors.white,
-              ),
-            ),
             if (canDelete)
               IconButton(
                 onPressed: () async {
