@@ -139,10 +139,6 @@ class _WeekDetailsState extends State<WeekDetails> {
             top: 0,
             child: CustomPopup(
               show: shouldShow,
-              items: weeks,
-              builderFunction: (context, item) {
-                return ListTile(title: Text(item.toString()), onTap: () {});
-              },
             ),
           ),
           AddButton(
