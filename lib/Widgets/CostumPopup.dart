@@ -1,4 +1,3 @@
-import 'package:diplomska1/Classes/DateFormatService.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -15,23 +14,56 @@ class CustomPopup extends StatefulWidget {
 
 class _CustomPopupState extends State<CustomPopup> {
   bool isLoading = false;
-  late List<DateTime> weeks = [];
+  late List<int> top = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
+  late List<int> bottom = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
+  final Key centerKey = ValueKey('second-sliver-list');
   final ScrollController scrollController = ScrollController();
+  GlobalKey<RefreshIndicatorState> refreshState =
+      GlobalKey<RefreshIndicatorState>();
 
   @override
   void initState() {
     super.initState();
-    refresh();
+    scrollController.addListener(() {
+      if (scrollController.position.pixels >=
+              scrollController.position.maxScrollExtent &&
+          !isLoading) {
+        addToEnd();
+      }
+      if (scrollController.position.pixels <=
+              scrollController.position.minScrollExtent &&
+          !isLoading) {
+        addToStart();
+      }
+    });
   }
 
-  refresh() async {
+  addToEnd() async {
     setState(() {
       isLoading = true;
     });
-    weeks.addAll([DateTime.now(), DateTime.now(), DateTime.now()]);
+    var i = bottom.last + 1;
+    bottom.addAll([i]);
     setState(() {
       isLoading = false;
     });
+  }
+
+  addToStart() async {
+    setState(() {
+      isLoading = true;
+    });
+    var i = top.last + 1;
+    top.addAll([i]);
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    scrollController.dispose();
   }
 
   @override
@@ -44,30 +76,40 @@ class _CustomPopupState extends State<CustomPopup> {
         width: 120,
         child: Card(
           elevation: 3,
-          child: LayoutBuilder(
-            builder: ((context, constraints) {
-              if (!isLoading) {
-                return ListView.separated(
-                  itemBuilder: (context, index) {
-                    return ListTile(
-                      title: Text(DateFormatService.formatDate(weeks[index])),
+          child: CustomScrollView(
+            controller: scrollController,
+            center: centerKey,
+            slivers: <Widget>[
+              SliverList(
+                delegate: SliverChildBuilderDelegate(
+                  (BuildContext context, int index) {
+                    return Container(
+                      alignment: Alignment.center,
+                      child: Text(
+                        'Item: ${top[index]}',
+                        style: TextStyle(fontSize: 20),
+                      ),
                     );
                   },
-                  separatorBuilder: (context, index) {
-                    return Divider(
-                      height: 1,
+                  childCount: top.length,
+                ),
+              ),
+              SliverList(
+                key: centerKey,
+                delegate: SliverChildBuilderDelegate(
+                  (BuildContext context, int index) {
+                    return Container(
+                      alignment: Alignment.center,
+                      child: Text(
+                        'Item: ${bottom[index]}',
+                        style: TextStyle(fontSize: 20),
+                      ),
                     );
                   },
-                  itemCount: weeks.length,
-                );
-              } else {
-                return Container(
-                  child: Center(
-                    child: CircularProgressIndicator(),
-                  ),
-                );
-              }
-            }),
+                  childCount: bottom.length,
+                ),
+              ),
+            ],
           ),
         ),
       ),
