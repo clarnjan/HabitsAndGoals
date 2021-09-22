@@ -1,69 +1,45 @@
-import 'package:diplomska1/Classes/DatabaseHelper.dart';
+import 'package:diplomska1/Classes/DateFormatService.dart';
 import 'package:diplomska1/Classes/Week.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
 import 'WeekDetails.dart';
 
 class WeekCard extends StatefulWidget {
   final Week week;
-  final Function refreshParent;
+  final bool isCurrent;
 
-  WeekCard({required this.week, required this.refreshParent});
+  WeekCard({required this.week, required this.isCurrent});
 
   @override
   _WeekCardState createState() => _WeekCardState();
 }
 
 class _WeekCardState extends State<WeekCard> {
-  bool canDelete = false;
-
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => WeekDetails(widget.week.id!)));
-      },
-      onLongPress: () {
-        print('long press');
-        setState(() {
-          canDelete = !canDelete;
-        });
+        Navigator.push(context, MaterialPageRoute(builder: (context) => WeekDetails(widget.week.id!)));
       },
       child: Container(
         width: double.infinity,
         padding: EdgeInsets.all(10),
         margin: EdgeInsets.only(
-          bottom: 5,
+          bottom: 1,
         ),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(4),
           color: Colors.grey[600],
         ),
-        constraints: BoxConstraints(minHeight: 70),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Expanded(
-              child: Text(
-                widget.week.title,
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20,
-                  color: Colors.white,
-                ),
-              ),
+        child: Center(
+          child: Text(
+            "${DateFormatService.formatDate(widget.week.startDate)} - ${DateFormatService.formatDate(widget.week.endDate)}",
+            style: TextStyle(
+              color: widget.isCurrent ? Colors.green : Colors.white,
+              fontWeight: FontWeight.bold,
             ),
-            if (canDelete)
-              IconButton(
-                onPressed: () async {
-                  DatabaseHelper.instance.deleteWeek(widget.week.id!);
-                  await widget.refreshParent();
-                },
-                icon: Icon(Icons.delete),
-              ),
-          ],
+          ),
         ),
       ),
     );

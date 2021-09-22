@@ -3,8 +3,9 @@ import 'package:diplomska1/Classes/Enums.dart';
 import 'package:diplomska1/Classes/Week.dart';
 import 'package:diplomska1/Widgets/Week%20widgets/WeekCard.dart';
 import 'package:flutter/material.dart';
-import '../MainMenu.dart';
+
 import '../AddButton.dart';
+import '../MainMenu.dart';
 
 class Weeks extends StatefulWidget {
   @override
@@ -65,17 +66,23 @@ class _WeeksState extends State<Weeks> {
                             itemBuilder: (context, index) {
                               final week = weeks[index];
                               return Container(
-                                margin: index == weeks.length - 1
-                                    ? EdgeInsets.only(bottom: 50)
-                                    : EdgeInsets.only(bottom: 0),
-                                child: WeekCard(week: week,refreshParent: refresh),
+                                margin: index == weeks.length - 1 ? EdgeInsets.only(bottom: 50) : EdgeInsets.only(bottom: 0),
+                                child: WeekCard(
+                                  week: week,
+                                  isCurrent: true,
+                                ),
                               );
                             }),
                       ),
                     ),
             ]),
           ),
-          AddButton(refreshParent: refresh, text: "Add Week",position: Position.bottomRight, type: AddButtonType.addWeek,),
+          AddButton(
+            refreshParent: refresh,
+            text: "Add Week",
+            position: Position.bottomRight,
+            type: AddButtonType.addWeek,
+          ),
         ],
       ),
     );

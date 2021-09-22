@@ -21,11 +21,9 @@ class WeekDetails extends StatefulWidget {
 
 class _WeekDetailsState extends State<WeekDetails> {
   Week? week;
-  List<String> weeks = [];
   bool isLoading = true;
   bool shouldShow = false;
-  GlobalKey<RefreshIndicatorState> refreshState =
-      GlobalKey<RefreshIndicatorState>();
+  GlobalKey<RefreshIndicatorState> refreshState = GlobalKey<RefreshIndicatorState>();
 
   @override
   void initState() {
@@ -37,21 +35,6 @@ class _WeekDetailsState extends State<WeekDetails> {
     setState(() {
       isLoading = true;
     });
-    weeks.add("A");
-    weeks.add("A");
-    weeks.add("A");
-    weeks.add("A");
-    weeks.add("A");
-    weeks.add("A");
-    weeks.add("A");
-    weeks.add("A");
-    weeks.add("A");
-    weeks.add("A");
-    weeks.add("A");
-    weeks.add("A");
-    weeks.add("A");
-    weeks.add("A");
-    weeks.add("A");
     this.week = await DatabaseHelper.instance.getWeek(widget.weekId);
     setState(() {
       isLoading = false;
@@ -127,9 +110,7 @@ class _WeekDetailsState extends State<WeekDetails> {
                               itemBuilder: (context, index) {
                                 final weeklyHabit = week!.habits[index];
                                 return Container(
-                                  margin: index == week!.habits.length - 1
-                                      ? EdgeInsets.only(bottom: 50)
-                                      : EdgeInsets.only(bottom: 0),
+                                  margin: index == week!.habits.length - 1 ? EdgeInsets.only(bottom: 50) : EdgeInsets.only(bottom: 0),
                                   child: HabitCard(
                                     habitId: weeklyHabit.habitFK,
                                     refreshParent: refresh,
@@ -140,13 +121,15 @@ class _WeekDetailsState extends State<WeekDetails> {
                       ),
               ]),
             ),
-            Positioned(
-              right: 0,
-              top: 0,
-              child: CustomPopup(
-                show: shouldShow,
+            if (week != null)
+              Positioned(
+                right: 0,
+                top: 0,
+                child: CustomPopup(
+                  show: shouldShow,
+                  selectedWeek: week!,
+                ),
               ),
-            ),
             AddButton(
               refreshParent: refresh,
               text: "Add Habit",
