@@ -88,7 +88,8 @@ class DatabaseHelper {
     DateTime startDate = today.subtract(Duration(days: today.weekday - 1));
     startDate = startDate.subtract(Duration(hours: startDate.hour, minutes: startDate.minute, seconds: startDate.second));
     DateTime endDate = startDate.add(Duration(days: 7));
-    Week week = new Week(title: "Week ${DateFormatService.formatDate(startDate)} - ${DateFormatService.formatDate(endDate)}", startDate: startDate, endDate: endDate);
+    Week week =
+        new Week(title: "Week ${DateFormatService.formatDate(startDate)} - ${DateFormatService.formatDate(endDate)}", startDate: startDate, endDate: endDate);
     await db.insert(weeksTable, week.toJson());
     return result;
   }
@@ -124,10 +125,7 @@ class DatabaseHelper {
 
   Future<Week> getWeek(int id) async {
     final db = await instance.database;
-    final result = await db.query(weeksTable,
-        columns: WeekFields.values,
-        where: '${WeekFields.id} = ?',
-        whereArgs: [id]);
+    final result = await db.query(weeksTable, columns: WeekFields.values, where: '${WeekFields.id} = ?', whereArgs: [id]);
     if (result.isNotEmpty) {
       Week week = Week.fromJson(result.first);
       week.habits = await getWeeklyHabitsForWeek(id);
@@ -137,21 +135,37 @@ class DatabaseHelper {
     }
   }
 
+  Future<Week> getCurrentWeek() async {
+    final db = await instance.database;
+    final result = await db.query(weeksTable, columns: WeekFields.values);
+    if (result.isNotEmpty) {
+      DateTime today = DateTime.now();
+      DateTime startDate = today.subtract(Duration(days: today.weekday - 1));
+      Week? currentWeek;
+      for (Map<String, Object?> r in result) {
+        Week week = Week.fromJson(r);
+        if (week.startDate.year == startDate.year && week.startDate.month == startDate.month && week.startDate.day == startDate.day) {
+          currentWeek = week;
+          break;
+        }
+      }
+      if (currentWeek != null) {
+        currentWeek.habits = await getWeeklyHabitsForWeek(currentWeek.id!);
+        return currentWeek;
+      }
+    }
+    throw Exception('Current week not found');
+  }
+
   Future<List<WeeklyHabit>> getWeeklyHabitsForWeek(int weekId) async {
     final db = await instance.database;
-    final result = await db.query(weeklyHabitsTable,
-        columns: WeeklyHabitFields.values,
-        where: '${WeeklyHabitFields.weekFK} = ?',
-        whereArgs: [weekId]);
-      return result.map((json) => WeeklyHabit.fromJson(json)).toList();
+    final result = await db.query(weeklyHabitsTable, columns: WeeklyHabitFields.values, where: '${WeeklyHabitFields.weekFK} = ?', whereArgs: [weekId]);
+    return result.map((json) => WeeklyHabit.fromJson(json)).toList();
   }
 
   Future<Habit> getHabit(int id) async {
     final db = await instance.database;
-    final result = await db.query(habitsTable,
-        columns: HabitFields.values,
-        where: '${HabitFields.id} = ?',
-        whereArgs: [id]);
+    final result = await db.query(habitsTable, columns: HabitFields.values, where: '${HabitFields.id} = ?', whereArgs: [id]);
     if (result.isNotEmpty) {
       return Habit.fromJson(result.first);
     } else {
@@ -161,10 +175,7 @@ class DatabaseHelper {
 
   Future<Task> getTask(int id) async {
     final db = await instance.database;
-    final result = await db.query(tasksTable,
-        columns: TaskFields.values,
-        where: '${TaskFields.id} = ?',
-        whereArgs: [id]);
+    final result = await db.query(tasksTable, columns: TaskFields.values, where: '${TaskFields.id} = ?', whereArgs: [id]);
     if (result.isNotEmpty) {
       return Task.fromJson(result.first);
     } else {
@@ -204,31 +215,26 @@ class DatabaseHelper {
 
   Future<int> updateTask(Task task) async {
     final db = await instance.database;
-    return db.update(tasksTable, task.toJson(),
-        where: '${TaskFields.id} = ?', whereArgs: [task.id]);
+    return db.update(tasksTable, task.toJson(), where: '${TaskFields.id} = ?', whereArgs: [task.id]);
   }
 
   Future<int> deleteWeek(int id) async {
     final db = await instance.database;
-    return await db
-        .delete(weeksTable, where: '${WeekFields.id} = ?', whereArgs: [id]);
+    return await db.delete(weeksTable, where: '${WeekFields.id} = ?', whereArgs: [id]);
   }
 
   Future<int> deleteHabit(int id) async {
     final db = await instance.database;
-    return await db
-        .delete(habitsTable, where: '${HabitFields.id} = ?', whereArgs: [id]);
+    return await db.delete(habitsTable, where: '${HabitFields.id} = ?', whereArgs: [id]);
   }
 
   Future<int> deleteTask(int id) async {
     final db = await instance.database;
-    return await db
-        .delete(tasksTable, where: '${TaskFields.id} = ?', whereArgs: [id]);
+    return await db.delete(tasksTable, where: '${TaskFields.id} = ?', whereArgs: [id]);
   }
 
   Future<int> deleteGoal(int id) async {
     final db = await instance.database;
-    return await db
-        .delete(goalsTable, where: '${GoalFields.id} = ?', whereArgs: [id]);
+    return await db.delete(goalsTable, where: '${GoalFields.id} = ?', whereArgs: [id]);
   }
 }

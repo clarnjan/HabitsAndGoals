@@ -11,16 +11,15 @@ import '../CostumPopup.dart';
 import '../MainMenu.dart';
 
 class WeekDetails extends StatefulWidget {
-  final int weekId;
+  Week? week;
 
-  const WeekDetails(this.weekId, {Key? key}) : super(key: key);
+  WeekDetails({this.week});
 
   @override
   _WeekDetailsState createState() => _WeekDetailsState();
 }
 
 class _WeekDetailsState extends State<WeekDetails> {
-  Week? week;
   bool isLoading = true;
   bool shouldShow = false;
   GlobalKey<RefreshIndicatorState> refreshState = GlobalKey<RefreshIndicatorState>();
@@ -35,7 +34,9 @@ class _WeekDetailsState extends State<WeekDetails> {
     setState(() {
       isLoading = true;
     });
-    this.week = await DatabaseHelper.instance.getWeek(widget.weekId);
+    if (widget.week == null) {
+      widget.week = await DatabaseHelper.instance.getCurrentWeek();
+    }
     setState(() {
       isLoading = false;
     });
@@ -57,24 +58,26 @@ class _WeekDetailsState extends State<WeekDetails> {
           title: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              week == null
-                  ? Text('loading')
+              widget.week == null
+                  ? Text('Loading')
                   : Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Text(week!.title.split(" ")[0]),
+                        Text(widget.week!.title.split(" ")[0]),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text(DateFormatService.formatDate(week!.startDate)),
+                            Text(DateFormatService.formatDate(widget.week!.startDate)),
                             Text(' - '),
-                            Text(DateFormatService.formatDate(week!.endDate)),
+                            Text(DateFormatService.formatDate(widget.week!.endDate)),
                           ],
                         ),
                       ],
                     ),
               isLoading
-                  ? SizedBox()
+                  ? SizedBox(
+                      width: 70,
+                    )
                   : IconButton(
                       icon: Icon(Icons.arrow_drop_down_outlined),
                       onPressed: () {
@@ -106,11 +109,11 @@ class _WeekDetailsState extends State<WeekDetails> {
                             await refresh();
                           },
                           child: ListView.builder(
-                              itemCount: week!.habits.length,
+                              itemCount: widget.week!.habits.length,
                               itemBuilder: (context, index) {
-                                final weeklyHabit = week!.habits[index];
+                                final weeklyHabit = widget.week!.habits[index];
                                 return Container(
-                                  margin: index == week!.habits.length - 1 ? EdgeInsets.only(bottom: 50) : EdgeInsets.only(bottom: 0),
+                                  margin: index == widget.week!.habits.length - 1 ? EdgeInsets.only(bottom: 50) : EdgeInsets.only(bottom: 0),
                                   child: HabitCard(
                                     habitId: weeklyHabit.habitFK,
                                     refreshParent: refresh,
@@ -121,13 +124,13 @@ class _WeekDetailsState extends State<WeekDetails> {
                       ),
               ]),
             ),
-            if (week != null)
+            if (widget.week != null)
               Positioned(
                 right: 0,
                 top: 0,
                 child: CustomPopup(
                   show: shouldShow,
-                  selectedWeek: week!,
+                  selectedWeek: widget.week!,
                 ),
               ),
             AddButton(

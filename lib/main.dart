@@ -1,6 +1,7 @@
-import 'package:diplomska1/Widgets/Week%20widgets/Weeks.dart';
+import 'package:diplomska1/Widgets/Week%20widgets/WeekDetails.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
 import 'Widgets/Goal widgets/Goals.dart';
 import 'Widgets/Habit widgets/Habits.dart';
 import 'Widgets/Task widgets/Tasks.dart';
@@ -17,14 +18,14 @@ class MyApp extends StatelessWidget {
       statusBarColor: Colors.grey[800], //or set color with: Color(0xFF0000FF)
     ));
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
+        debugShowCheckedModeBanner: false,
         theme: ThemeData(
           primarySwatch: Colors.green,
           unselectedWidgetColor: Colors.white, // <-- your color
         ),
         initialRoute: '/weeks',
         routes: {
-          '/weeks': (context) => Weeks(),
+          '/weeks': (context) => WeekDetails(),
           '/habits': (context) => Habits(),
           '/tasks': (context) => Tasks(),
           '/goals': (context) => Goals(),
