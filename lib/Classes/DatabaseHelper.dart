@@ -1,9 +1,10 @@
-import 'package:diplomska1/Classes/DateFormatService.dart';
+import 'package:diplomska1/Classes/DateService.dart';
 import 'package:diplomska1/Classes/Goal.dart';
 import 'package:diplomska1/Classes/Habit.dart';
 import 'package:diplomska1/Classes/Week.dart';
 import 'package:diplomska1/Classes/WeeklyHabit.dart';
 import 'package:diplomska1/Classes/WeeklyTask.dart';
+import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -34,8 +35,8 @@ class DatabaseHelper {
         CREATE TABLE $weeksTable (
           ${WeekFields.id} INTEGER PRIMARY KEY AUTOINCREMENT,
           ${GoalFields.title} TEXT NOT NULL,
-          ${WeekFields.startDate} TEXT NOT NULL,
-          ${WeekFields.endDate} TEXT NOT NULL
+          ${WeekFields.startDate} TEXT UNIQUE NOT NULL,
+          ${WeekFields.endDate} TEXT UNIQUE NOT NULL
         );''');
     batch.execute('''
         CREATE TABLE $goalsTable (
@@ -85,11 +86,9 @@ class DatabaseHelper {
         );''');
     var result = await batch.commit();
     DateTime today = DateTime.now();
-    DateTime startDate = today.subtract(Duration(days: today.weekday - 1));
-    startDate = startDate.subtract(Duration(hours: startDate.hour, minutes: startDate.minute, seconds: startDate.second));
-    DateTime endDate = startDate.add(Duration(days: 7));
-    Week week =
-        new Week(title: "Week ${DateFormatService.formatDate(startDate)} - ${DateFormatService.formatDate(endDate)}", startDate: startDate, endDate: endDate);
+    DateTime startDate = DateUtils.dateOnly(today.subtract(Duration(days: today.weekday - 1)));
+    DateTime endDate = DateService.getEndDate(startDate);
+    Week week = new Week(title: "Week ${DateService.formatDate(startDate)} - ${DateService.formatDate(endDate)}", startDate: startDate, endDate: endDate);
     await db.insert(weeksTable, week.toJson());
     return result;
   }
@@ -135,13 +134,11 @@ class DatabaseHelper {
     }
   }
 
-  Future<Week> getCurrentWeek() async {
+  Future<Week> getWeekByStartDate(DateTime startDate) async {
     final db = await instance.database;
     final result = await db.query(weeksTable, columns: WeekFields.values);
+    Week? currentWeek;
     if (result.isNotEmpty) {
-      DateTime today = DateTime.now();
-      DateTime startDate = today.subtract(Duration(days: today.weekday - 1));
-      Week? currentWeek;
       for (Map<String, Object?> r in result) {
         Week week = Week.fromJson(r);
         if (week.startDate.year == startDate.year && week.startDate.month == startDate.month && week.startDate.day == startDate.day) {
@@ -149,12 +146,21 @@ class DatabaseHelper {
           break;
         }
       }
-      if (currentWeek != null) {
-        currentWeek.habits = await getWeeklyHabitsForWeek(currentWeek.id!);
-        return currentWeek;
+      if (currentWeek == null) {
+        DateTime endDate = DateService.getEndDate(startDate);
+        currentWeek = new Week(title: "Week ${DateService.formatDate(startDate)} - ${DateService.formatDate(endDate)}", startDate: startDate, endDate: endDate);
+        currentWeek.id = await db.insert(weeksTable, currentWeek.toJson());
       }
+      currentWeek.habits = await getWeeklyHabitsForWeek(currentWeek.id!);
+      return currentWeek;
     }
-    throw Exception('Current week not found');
+    throw Exception("Error occurred");
+  }
+
+  Future<Week> getCurrentWeek() async {
+    DateTime today = DateTime.now();
+    DateTime startDate = DateUtils.dateOnly(today.subtract(Duration(days: today.weekday - 1)));
+    return await getWeekByStartDate(startDate);
   }
 
   Future<List<WeeklyHabit>> getWeeklyHabitsForWeek(int weekId) async {
@@ -186,6 +192,7 @@ class DatabaseHelper {
   Future<Week> createWeek(Week week) async {
     final db = await instance.database;
     final id = await db.insert(weeksTable, week.toJson());
+    week.habits = await getWeeklyHabitsForWeek(id);
     return week.copy(id: id);
   }
 

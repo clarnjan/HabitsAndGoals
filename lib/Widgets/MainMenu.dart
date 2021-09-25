@@ -15,6 +15,28 @@ class MainMenu extends StatelessWidget {
           ),
           ListTile(
             onTap: () {
+              Navigator.of(context).popAndPushNamed("/week");
+            },
+            title: Text(
+              "Weeks",
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 24,
+              ),
+            ),
+            trailing: Icon(
+              Icons.calendar_view_week,
+              color: Colors.white,
+              size: 24,
+            ),
+          ),
+          Divider(
+            color: Colors.black,
+            indent: 10,
+            endIndent: 10,
+          ),
+          ListTile(
+            onTap: () {
               Navigator.of(context).popAndPushNamed("/habits");
             },
             title: Text(
@@ -48,28 +70,6 @@ class MainMenu extends StatelessWidget {
             ),
             trailing: Icon(
               Icons.task,
-              color: Colors.white,
-              size: 24,
-            ),
-          ),
-          Divider(
-            color: Colors.black,
-            indent: 10,
-            endIndent: 10,
-          ),
-          ListTile(
-            onTap: () {
-              Navigator.of(context).popAndPushNamed("/weeks");
-            },
-            title: Text(
-              "Weeks",
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 24,
-              ),
-            ),
-            trailing: Icon(
-              Icons.calendar_view_week,
               color: Colors.white,
               size: 24,
             ),

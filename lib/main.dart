@@ -23,9 +23,9 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.green,
           unselectedWidgetColor: Colors.white, // <-- your color
         ),
-        initialRoute: '/weeks',
+        initialRoute: '/week',
         routes: {
-          '/weeks': (context) => WeekDetails(),
+          '/week': (context) => WeekDetails(),
           '/habits': (context) => Habits(),
           '/tasks': (context) => Tasks(),
           '/goals': (context) => Goals(),

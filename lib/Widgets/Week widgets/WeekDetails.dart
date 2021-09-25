@@ -1,5 +1,5 @@
 import 'package:diplomska1/Classes/DatabaseHelper.dart';
-import 'package:diplomska1/Classes/DateFormatService.dart';
+import 'package:diplomska1/Classes/DateService.dart';
 import 'package:diplomska1/Classes/Enums.dart';
 import 'package:diplomska1/Classes/Week.dart';
 import 'package:diplomska1/Widgets/Habit%20widgets/HabitCard.dart';
@@ -7,8 +7,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../AddButton.dart';
-import '../CostumPopup.dart';
 import '../MainMenu.dart';
+import 'WeeksPopup.dart';
 
 class WeekDetails extends StatefulWidget {
   Week? week;
@@ -27,15 +27,29 @@ class _WeekDetailsState extends State<WeekDetails> {
   @override
   void initState() {
     super.initState();
-    refresh();
+    fetchData();
+  }
+
+  fetchData() async {
+    setState(() {
+      isLoading = true;
+    });
+    if (widget.week == null) {
+      widget.week = await DatabaseHelper.instance.getCurrentWeek();
+    } else if (widget.week!.id == null) {
+      widget.week = await DatabaseHelper.instance.getWeekByStartDate(widget.week!.startDate);
+    }
+    setState(() {
+      isLoading = false;
+    });
   }
 
   refresh() async {
     setState(() {
       isLoading = true;
     });
-    if (widget.week == null) {
-      widget.week = await DatabaseHelper.instance.getCurrentWeek();
+    if (widget.week?.id != null) {
+      widget.week = await DatabaseHelper.instance.getWeek(widget.week!.id!);
     }
     setState(() {
       isLoading = false;
@@ -67,9 +81,9 @@ class _WeekDetailsState extends State<WeekDetails> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text(DateFormatService.formatDate(widget.week!.startDate)),
+                            Text(DateService.formatDate(widget.week!.startDate)),
                             Text(' - '),
-                            Text(DateFormatService.formatDate(widget.week!.endDate)),
+                            Text(DateService.formatDate(widget.week!.endDate)),
                           ],
                         ),
                       ],
@@ -128,7 +142,7 @@ class _WeekDetailsState extends State<WeekDetails> {
               Positioned(
                 right: 0,
                 top: 0,
-                child: CustomPopup(
+                child: WeeksPopup(
                   show: shouldShow,
                   selectedWeek: widget.week!,
                 ),

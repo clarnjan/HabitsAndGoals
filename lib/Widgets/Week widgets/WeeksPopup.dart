@@ -1,23 +1,23 @@
-import 'package:diplomska1/Classes/DateFormatService.dart';
+import 'package:diplomska1/Classes/DateService.dart';
 import 'package:diplomska1/Classes/Week.dart';
 import 'package:diplomska1/Widgets/Week%20widgets/WeekCard.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class CustomPopup extends StatefulWidget {
+class WeeksPopup extends StatefulWidget {
   final bool show;
   final Week selectedWeek;
 
-  CustomPopup({
+  WeeksPopup({
     required this.show,
     required this.selectedWeek,
   });
 
   @override
-  _CustomPopupState createState() => _CustomPopupState();
+  _WeeksPopupState createState() => _WeeksPopupState();
 }
 
-class _CustomPopupState extends State<CustomPopup> {
+class _WeeksPopupState extends State<WeeksPopup> {
   bool isLoading = false;
   List<Week> pastWeeks = [];
   List<Week> futureWeeks = [];
@@ -43,7 +43,7 @@ class _CustomPopupState extends State<CustomPopup> {
     setState(() {
       isLoading = true;
     });
-    for (DateTime startDate = widget.selectedWeek.startDate; !startDate.isAfter(widget.selectedWeek.startDate.add(Duration(days: 7 * 5)));) {
+    for (DateTime startDate = widget.selectedWeek.startDate; !startDate.isAfter(widget.selectedWeek.startDate.add(Duration(days: 7 * 8)));) {
       futureWeeks.add(getWeek(startDate));
       startDate = startDate.add(Duration(days: 7));
     }
@@ -55,8 +55,8 @@ class _CustomPopupState extends State<CustomPopup> {
   }
 
   Week getWeek(DateTime startDate) {
-    DateTime endDate = startDate.add(Duration(days: 6));
-    String title = "Week ${DateFormatService.formatDate(startDate)} - ${DateFormatService.formatDate(endDate)}";
+    DateTime endDate = DateService.getEndDate(startDate);
+    String title = "Week ${DateService.formatDate(startDate)} - ${DateService.formatDate(endDate)}";
     return new Week(title: title, startDate: startDate, endDate: endDate);
   }
 

@@ -1,4 +1,4 @@
-class DateFormatService {
+class DateService {
   static String formatDate(DateTime date) {
     var year = date.year.toString();
     return '${formatNumber(date.day)}.${formatNumber(date.month)}.${year[2]}${year[3]}';
@@ -9,5 +9,9 @@ class DateFormatService {
       return '0$x';
     else
       return '$x';
+  }
+
+  static DateTime getEndDate(DateTime startDate) {
+    return startDate.add(Duration(days: 7)).subtract(Duration(seconds: 1));
   }
 }

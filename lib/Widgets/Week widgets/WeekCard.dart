@@ -1,4 +1,4 @@
-import 'package:diplomska1/Classes/DateFormatService.dart';
+import 'package:diplomska1/Classes/DateService.dart';
 import 'package:diplomska1/Classes/Week.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -34,7 +34,7 @@ class _WeekCardState extends State<WeekCard> {
         ),
         child: Center(
           child: Text(
-            "${DateFormatService.formatDate(widget.week.startDate)} - ${DateFormatService.formatDate(widget.week.endDate)}",
+            "${DateService.formatDate(widget.week.startDate)} - ${DateService.formatDate(widget.week.endDate)}",
             style: TextStyle(
               color: widget.isCurrent ? Colors.green : Colors.white,
               fontWeight: FontWeight.bold,
