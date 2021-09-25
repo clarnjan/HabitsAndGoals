@@ -20,7 +20,7 @@ class _WeekCardState extends State<WeekCard> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => WeekDetails(week: widget.week)));
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => WeekDetails(initialWeek: widget.week)));
       },
       child: Container(
         width: double.infinity,
