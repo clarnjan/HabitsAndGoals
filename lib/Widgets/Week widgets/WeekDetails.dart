@@ -46,11 +46,8 @@ class _WeekDetailsState extends State<WeekDetails> {
   }
 
   refresh() async {
-    setState(() {
-      isLoading = true;
-    });
-    if (widget.initialWeek?.id != null) {
-      week = await DatabaseHelper.instance.getWeek(widget.initialWeek!.id!);
+    if (week.id != null) {
+      week = await DatabaseHelper.instance.getWeek(week.id!);
     }
     setState(() {
       isLoading = false;
