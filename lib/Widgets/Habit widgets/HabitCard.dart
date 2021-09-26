@@ -1,15 +1,13 @@
 import 'package:diplomska1/Classes/DatabaseHelper.dart';
 import 'package:diplomska1/Classes/Habit.dart';
-import 'package:diplomska1/Widgets/Habit%20widgets/HabitDetails.dart';
 import 'package:flutter/material.dart';
 
 class HabitCard extends StatefulWidget {
   final int habitId;
   final Function refreshParent;
-  final bool isSelectable;
-  final Function? selectFunction;
+  final Function tapFunction;
 
-  HabitCard({required this.habitId, required this.refreshParent, required this.isSelectable, this.selectFunction});
+  HabitCard({required this.habitId, required this.refreshParent, required this.tapFunction});
 
   @override
   _HabitCardState createState() => _HabitCardState();
@@ -42,13 +40,10 @@ class _HabitCardState extends State<HabitCard> {
     return GestureDetector(
       onTap: () {
         if (!isLoading) {
-          if (widget.isSelectable) {
-            setState(() {
-              isSelected = !isSelected;
-            });
-          } else {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => HabitDetails(habit)));
-          }
+          setState(() {
+            isSelected = !isSelected;
+            widget.tapFunction();
+          });
         }
       },
       onLongPress: () {

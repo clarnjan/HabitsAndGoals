@@ -20,15 +20,16 @@ class SelectHabitsDialog extends StatefulWidget {
 
 class _SelectHabitsDialogState extends State<SelectHabitsDialog> {
   late List<Habit> habits;
+  List<Habit> selectedHabits = [];
   bool isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    refresh();
+    init();
   }
 
-  refresh() async {
+  init() async {
     setState(() {
       isLoading = true;
     });
@@ -39,6 +40,32 @@ class _SelectHabitsDialogState extends State<SelectHabitsDialog> {
     setState(() {
       isLoading = false;
     });
+  }
+
+  selectHabit(Habit habit) {
+    if (selectedHabits.contains(habit)) {
+      selectedHabits.remove(habit);
+    } else {
+      selectedHabits.add(habit);
+    }
+  }
+
+  save() async {
+    for (Habit habit in selectedHabits) {
+      if (!widget.week.habits.any((element) => element.habitFK == habit.id)) {
+        if (habit.id == null) {
+          throw Exception("Habit id is null");
+        }
+        if (widget.week.id == null) {
+          throw Exception("Week id is null");
+        } else {
+          WeeklyHabit weeklyHabit = new WeeklyHabit(habitFK: habit.id!, weekFK: widget.week.id!, repetitionsDone: 0);
+          DatabaseHelper.instance.createWeeklyHabit(weeklyHabit);
+        }
+      }
+    }
+    await widget.refreshParent();
+    Navigator.pop(context);
   }
 
   @override
@@ -63,8 +90,10 @@ class _SelectHabitsDialogState extends State<SelectHabitsDialog> {
                       return Container(
                         child: HabitCard(
                           habitId: habit.id!,
-                          refreshParent: refresh,
-                          isSelectable: true,
+                          refreshParent: init,
+                          tapFunction: () {
+                            selectHabit(habit);
+                          },
                         ),
                       );
                     })
@@ -87,7 +116,7 @@ class _SelectHabitsDialogState extends State<SelectHabitsDialog> {
           cancelText: "Cancel",
           submitText: "Save",
           refreshParent: widget.refreshParent,
-          submitFunction: () {},
+          submitFunction: save,
         ),
       ],
     );

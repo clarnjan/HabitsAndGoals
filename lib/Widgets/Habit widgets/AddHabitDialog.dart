@@ -1,7 +1,5 @@
 import 'package:diplomska1/Classes/DatabaseHelper.dart';
 import 'package:diplomska1/Classes/Habit.dart';
-import 'package:diplomska1/Classes/Week.dart';
-import 'package:diplomska1/Classes/WeeklyHabit.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
@@ -40,13 +38,6 @@ class _AddHabitDialogState extends State<AddHabitDialog> {
       );
 
       habit = await DatabaseHelper.instance.createHabit(habit);
-      List<Week> weeks = await DatabaseHelper.instance.getAllWeeks();
-      for (int i = 0; i < weeks.length; i++) {
-        if (weeks[i].endDate.isAfter(habit.createdTime)) {
-          WeeklyHabit weeklyHabit = new WeeklyHabit(habitFK: habit.id!, weekFK: weeks[i].id!, repetitionsDone: 0);
-          DatabaseHelper.instance.createWeeklyHabit(weeklyHabit);
-        }
-      }
       await widget.refreshParent();
       Navigator.of(context).pop();
     }

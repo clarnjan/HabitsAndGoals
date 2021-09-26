@@ -137,7 +137,7 @@ class _WeekDetailsState extends State<WeekDetails> {
                                   child: HabitCard(
                                     habitId: weeklyHabit.habitFK,
                                     refreshParent: refresh,
-                                    isSelectable: false,
+                                    tapFunction: () {},
                                   ),
                                 );
                               }),

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 
 import '../FloatingButton.dart';
 import '../MainMenu.dart';
+import 'HabitDetails.dart';
 
 class Habits extends StatefulWidget {
   @override
@@ -70,7 +71,9 @@ class _HabitsState extends State<Habits> {
                                 child: HabitCard(
                                   habitId: habit.id!,
                                   refreshParent: refresh,
-                                  isSelectable: false,
+                                  tapFunction: () {
+                                    Navigator.push(context, MaterialPageRoute(builder: (context) => HabitDetails(habit)));
+                                  },
                                 ),
                               );
                             }),
