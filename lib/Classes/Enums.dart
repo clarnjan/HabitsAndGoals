@@ -1,12 +1,9 @@
-enum Position {
-  bottomLeft,
-  bottomRight,
-  bottomCenter
-}
+enum Position { bottomLeft, bottomRight, bottomCenter }
 
-enum AddButtonType {
-  addWeek,
+enum FloatingButtonType {
   addTask,
   addHabit,
-  addGoal
+  addGoal,
+  selectTasks,
+  selectHabits,
 }

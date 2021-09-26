@@ -7,12 +7,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:numberpicker/numberpicker.dart';
 
+import '../DialogButtons.dart';
+
 class AddHabitDialog extends StatefulWidget {
   final Habit? habit;
   final Function refreshParent;
 
-  const AddHabitDialog({Key? key, this.habit, required this.refreshParent})
-      : super(key: key);
+  const AddHabitDialog({Key? key, this.habit, required this.refreshParent}) : super(key: key);
 
   @override
   _AddHabitDialogState createState() => _AddHabitDialogState();
@@ -26,6 +27,30 @@ class _AddHabitDialogState extends State<AddHabitDialog> {
 
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final TextEditingController textEditingController = TextEditingController();
+
+  addHabit() async {
+    if (formKey.currentState!.validate()) {
+      Habit habit = Habit(
+        title: title!,
+        inputSingle: inputSingle,
+        outputSingle: outputSingle,
+        repetitions: repetitions,
+        isPaused: false,
+        createdTime: DateTime.now(),
+      );
+
+      habit = await DatabaseHelper.instance.createHabit(habit);
+      List<Week> weeks = await DatabaseHelper.instance.getAllWeeks();
+      for (int i = 0; i < weeks.length; i++) {
+        if (weeks[i].endDate.isAfter(habit.createdTime)) {
+          WeeklyHabit weeklyHabit = new WeeklyHabit(habitFK: habit.id!, weekFK: weeks[i].id!, repetitionsDone: 0);
+          DatabaseHelper.instance.createWeeklyHabit(weeklyHabit);
+        }
+      }
+      await widget.refreshParent();
+      Navigator.of(context).pop();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -71,8 +96,7 @@ class _AddHabitDialogState extends State<AddHabitDialog> {
                 ),
               ],
             ),
-            Divider(
-            ),
+            Divider(),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -124,32 +148,14 @@ class _AddHabitDialogState extends State<AddHabitDialog> {
         ),
       ),
       actions: [
-        TextButton(
-          child: Text("Add"),
-          onPressed: () async {
-            if (formKey.currentState!.validate()) {
-              Habit habit = Habit(
-                title: title!,
-                inputSingle: inputSingle,
-                outputSingle: outputSingle,
-                repetitions: repetitions,
-                isPaused: false,
-                createdTime: DateTime.now(),
-              );
-
-              habit = await DatabaseHelper.instance.createHabit(habit);
-              List<Week> weeks = await DatabaseHelper.instance.getAllWeeks();
-              for (int i = 0; i < weeks.length; i++) {
-                if (weeks[i].endDate.isAfter(habit.createdTime)) {
-                  WeeklyHabit weeklyHabit = new WeeklyHabit(habitFK: habit.id!, weekFK: weeks[i].id!, repetitionsDone: 0);
-                  DatabaseHelper.instance.createWeeklyHabit(weeklyHabit);
-                }
-              }
-              await widget.refreshParent();
-              Navigator.of(context).pop();
-            }
+        DialogButtons(
+          cancelText: "Cancel",
+          submitText: "Save",
+          refreshParent: widget.refreshParent,
+          submitFunction: () async {
+            await addHabit();
           },
-        )
+        ),
       ],
     );
   }

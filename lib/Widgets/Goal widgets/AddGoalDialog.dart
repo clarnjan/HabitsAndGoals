@@ -2,6 +2,8 @@ import 'package:diplomska1/Classes/DatabaseHelper.dart';
 import 'package:diplomska1/Classes/Goal.dart';
 import 'package:flutter/material.dart';
 
+import '../DialogButtons.dart';
+
 class AddGoalDialog extends StatefulWidget {
   final Goal? goal;
   final Function refreshParent;
@@ -16,6 +18,20 @@ class _AddGoalDialogState extends State<AddGoalDialog> {
   String title = '';
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final TextEditingController textEditingController = TextEditingController();
+
+  addGoal() async {
+    if (formKey.currentState!.validate()) {
+      final goal = Goal(
+        title: title,
+        createdTime: DateTime.now(),
+        isFinished: false,
+      );
+
+      DatabaseHelper.instance.createGoal(goal);
+      await widget.refreshParent();
+      Navigator.of(context).pop();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,22 +57,12 @@ class _AddGoalDialogState extends State<AddGoalDialog> {
         ),
       ),
       actions: [
-        TextButton(
-          child: Text("Add"),
-          onPressed: () async {
-            if (formKey.currentState!.validate()){
-              final goal = Goal(
-                title: title,
-                createdTime: DateTime.now(),
-                isFinished: false,
-              );
-
-              DatabaseHelper.instance.createGoal(goal);
-              await widget.refreshParent();
-              Navigator.of(context).pop();
-            }
-          },
-        )
+        DialogButtons(
+          cancelText: "Cancel",
+          submitText: "Save",
+          refreshParent: widget.refreshParent,
+          submitFunction: addGoal,
+        ),
       ],
     );
   }

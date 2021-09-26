@@ -2,8 +2,9 @@ import 'package:diplomska1/Classes/DatabaseHelper.dart';
 import 'package:diplomska1/Classes/Enums.dart';
 import 'package:diplomska1/Classes/Goal.dart';
 import 'package:flutter/material.dart';
+
+import '../FloatingButton.dart';
 import '../MainMenu.dart';
-import '../AddButton.dart';
 import 'GoalCard.dart';
 
 class Goals extends StatefulWidget {
@@ -14,8 +15,7 @@ class Goals extends StatefulWidget {
 class _GoalsState extends State<Goals> {
   late List<Goal> goals;
   bool isLoading = true;
-  GlobalKey<RefreshIndicatorState> refreshState =
-      GlobalKey<RefreshIndicatorState>();
+  GlobalKey<RefreshIndicatorState> refreshState = GlobalKey<RefreshIndicatorState>();
 
   @override
   void initState() {
@@ -66,22 +66,18 @@ class _GoalsState extends State<Goals> {
                             itemBuilder: (context, index) {
                               final week = goals[index];
                               return Container(
-                                margin: index == goals.length - 1
-                                    ? EdgeInsets.only(bottom: 50)
-                                    : EdgeInsets.only(bottom: 0),
-                                child: GoalCard(
-                                    goal: week, refreshParent: refresh),
+                                margin: index == goals.length - 1 ? EdgeInsets.only(bottom: 50) : EdgeInsets.only(bottom: 0),
+                                child: GoalCard(goal: week, refreshParent: refresh),
                               );
                             }),
                       ),
                     ),
             ]),
           ),
-          AddButton(
+          FloatingButton(
             refreshParent: refresh,
-            text: "Add Goal",
             position: Position.bottomRight,
-            type: AddButtonType.addGoal,
+            type: FloatingButtonType.addGoal,
           ),
         ],
       ),

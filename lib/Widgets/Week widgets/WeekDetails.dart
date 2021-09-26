@@ -6,7 +6,7 @@ import 'package:diplomska1/Widgets/Habit%20widgets/HabitCard.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../AddButton.dart';
+import '../FloatingButton.dart';
 import '../MainMenu.dart';
 import 'WeeksPopup.dart';
 
@@ -71,7 +71,9 @@ class _WeekDetailsState extends State<WeekDetails> {
               ? Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text('Loading'),
+                    Expanded(
+                      child: Text('Loading'),
+                    ),
                     SizedBox(
                       width: 70,
                     ),
@@ -80,19 +82,21 @@ class _WeekDetailsState extends State<WeekDetails> {
               : Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text(week.title.split(" ")[0]),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(DateService.formatDate(week.startDate)),
-                            Text(' - '),
-                            Text(DateService.formatDate(week.endDate)),
-                          ],
-                        ),
-                      ],
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(week.title.split(" ")[0]),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(DateService.formatDate(week.startDate)),
+                              Text(' - '),
+                              Text(DateService.formatDate(week.endDate)),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                     IconButton(
                       icon: Icon(Icons.arrow_drop_down_outlined),
@@ -133,6 +137,7 @@ class _WeekDetailsState extends State<WeekDetails> {
                                   child: HabitCard(
                                     habitId: weeklyHabit.habitFK,
                                     refreshParent: refresh,
+                                    isSelectable: false,
                                   ),
                                 );
                               }),
@@ -149,17 +154,17 @@ class _WeekDetailsState extends State<WeekDetails> {
                   selectedWeek: week,
                 ),
               ),
-            AddButton(
+            if (!isLoading)
+              FloatingButton(
+                refreshParent: refresh,
+                position: Position.bottomLeft,
+                type: FloatingButtonType.selectHabits,
+                week: week,
+              ),
+            FloatingButton(
               refreshParent: refresh,
-              text: "Add Habit",
-              position: Position.bottomLeft,
-              type: AddButtonType.addHabit,
-            ),
-            AddButton(
-              refreshParent: refresh,
-              text: "Add Task",
               position: Position.bottomRight,
-              type: AddButtonType.addTask,
+              type: FloatingButtonType.addTask,
             ),
           ],
         ),

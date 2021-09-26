@@ -3,8 +3,8 @@ import 'package:diplomska1/Classes/Enums.dart';
 import 'package:diplomska1/Classes/Task.dart';
 import 'package:flutter/material.dart';
 
+import '../FloatingButton.dart';
 import '../MainMenu.dart';
-import '../AddButton.dart';
 import 'TaskCard.dart';
 
 class Tasks extends StatefulWidget {
@@ -53,32 +53,37 @@ class _TasksState extends State<Tasks> {
             child: Flex(direction: Axis.vertical, children: [
               isLoading
                   ? Expanded(
-                child: Center(
-                  child: CircularProgressIndicator(),
-                ),
-              )
+                      child: Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                    )
                   : Expanded(
-                child: RefreshIndicator(
-                  key: refreshState,
-                  onRefresh: () async {
-                    await refresh();
-                  },
-                  child: ListView.builder(
-                      itemCount: tasks.length,
-                      itemBuilder: (context, index) {
-                        final task = tasks[index];
-                        return Container(
-                          margin: index == tasks.length - 1
-                              ? EdgeInsets.only(bottom: 50)
-                              : EdgeInsets.only(bottom: 0),
-                          child: TaskCard(task: task,refreshParent: refresh,),
-                        );
-                      }),
-                ),
-              ),
+                      child: RefreshIndicator(
+                        key: refreshState,
+                        onRefresh: () async {
+                          await refresh();
+                        },
+                        child: ListView.builder(
+                            itemCount: tasks.length,
+                            itemBuilder: (context, index) {
+                              final task = tasks[index];
+                              return Container(
+                                margin: index == tasks.length - 1 ? EdgeInsets.only(bottom: 50) : EdgeInsets.only(bottom: 0),
+                                child: TaskCard(
+                                  task: task,
+                                  refreshParent: refresh,
+                                ),
+                              );
+                            }),
+                      ),
+                    ),
             ]),
           ),
-          AddButton(refreshParent: refresh, text: "Add Task",position: Position.bottomRight, type: AddButtonType.addTask,),
+          FloatingButton(
+            refreshParent: refresh,
+            position: Position.bottomRight,
+            type: FloatingButtonType.addTask,
+          ),
         ],
       ),
     );

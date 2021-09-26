@@ -6,8 +6,10 @@ import 'package:flutter/material.dart';
 class HabitCard extends StatefulWidget {
   final int habitId;
   final Function refreshParent;
+  final bool isSelectable;
+  final Function? selectFunction;
 
-  HabitCard({required this.habitId, required this.refreshParent});
+  HabitCard({required this.habitId, required this.refreshParent, required this.isSelectable, this.selectFunction});
 
   @override
   _HabitCardState createState() => _HabitCardState();
@@ -17,6 +19,7 @@ class _HabitCardState extends State<HabitCard> {
   late Habit habit;
   bool canDelete = false;
   bool isLoading = true;
+  bool isSelected = false;
 
   @override
   void initState() {
@@ -39,8 +42,13 @@ class _HabitCardState extends State<HabitCard> {
     return GestureDetector(
       onTap: () {
         if (!isLoading) {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => HabitDetails(habit)));
+          if (widget.isSelectable) {
+            setState(() {
+              isSelected = !isSelected;
+            });
+          } else {
+            Navigator.push(context, MaterialPageRoute(builder: (context) => HabitDetails(habit)));
+          }
         }
       },
       onLongPress: () {
@@ -57,7 +65,7 @@ class _HabitCardState extends State<HabitCard> {
         ),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
-          color: Colors.grey[600],
+          color: isSelected ? Colors.green[700] : Colors.grey[600],
         ),
         constraints: BoxConstraints(minHeight: 70),
         child: isLoading

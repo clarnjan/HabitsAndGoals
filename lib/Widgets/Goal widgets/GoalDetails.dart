@@ -3,7 +3,7 @@ import 'package:diplomska1/Classes/Goal.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../AddButton.dart';
+import '../FloatingButton.dart';
 import '../MainMenu.dart';
 
 class GoalDetails extends StatefulWidget {
@@ -18,8 +18,7 @@ class GoalDetails extends StatefulWidget {
 class _GoalDetailsState extends State<GoalDetails> {
   late Goal goal;
   bool isLoading = true;
-  GlobalKey<RefreshIndicatorState> refreshState =
-  GlobalKey<RefreshIndicatorState>();
+  GlobalKey<RefreshIndicatorState> refreshState = GlobalKey<RefreshIndicatorState>();
 
   @override
   void initState() {
@@ -44,9 +43,7 @@ class _GoalDetailsState extends State<GoalDetails> {
         child: MainMenu(),
       ),
       appBar: AppBar(
-        title: isLoading
-            ? Text('loading')
-            : Text(goal.title),
+        title: isLoading ? Text('loading') : Text(goal.title),
       ),
       body: Stack(
         children: [
@@ -58,17 +55,10 @@ class _GoalDetailsState extends State<GoalDetails> {
               children: [],
             ),
           ),
-          AddButton(
+          FloatingButton(
             refreshParent: refresh,
-            text: "Add Habit",
-            position: Position.bottomLeft,
-            type: AddButtonType.addHabit,
-          ),
-          AddButton(
-            refreshParent: refresh,
-            text: "Add Task",
             position: Position.bottomRight,
-            type: AddButtonType.addTask,
+            type: FloatingButtonType.addTask,
           ),
         ],
       ),

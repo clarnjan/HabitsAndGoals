@@ -4,6 +4,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:numberpicker/numberpicker.dart';
 
+import '../DialogButtons.dart';
+
 class AddTaskDialog extends StatefulWidget {
   final Task? task;
   final Function refreshParent;
@@ -20,6 +22,22 @@ class _AddTaskDialogState extends State<AddTaskDialog> {
   int output = 1;
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final TextEditingController textEditingController = TextEditingController();
+
+  addTask() async {
+    if (formKey.currentState!.validate()) {
+      final task = Task(
+        title: title,
+        input: input,
+        output: output,
+        isRepeating: false,
+        createdTime: DateTime.now(),
+      );
+
+      DatabaseHelper.instance.createTask(task);
+      await widget.refreshParent();
+      Navigator.of(context).pop();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -92,24 +110,14 @@ class _AddTaskDialogState extends State<AddTaskDialog> {
         ),
       ),
       actions: [
-        TextButton(
-          child: Text("Add"),
-          onPressed: () async {
-            if (formKey.currentState!.validate()){
-              final task = Task(
-                title: title,
-                input: input,
-                output: output,
-                isRepeating: false,
-                createdTime: DateTime.now(),
-              );
-
-              DatabaseHelper.instance.createTask(task);
-              await widget.refreshParent();
-              Navigator.of(context).pop();
-            }
+        DialogButtons(
+          cancelText: "Cancel",
+          submitText: "Save",
+          refreshParent: widget.refreshParent,
+          submitFunction: () async {
+            await addTask();
           },
-        )
+        ),
       ],
     );
   }

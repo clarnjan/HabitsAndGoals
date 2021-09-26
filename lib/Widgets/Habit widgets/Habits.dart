@@ -3,8 +3,9 @@ import 'package:diplomska1/Classes/Enums.dart';
 import 'package:diplomska1/Classes/Habit.dart';
 import 'package:diplomska1/Widgets/Habit%20widgets/HabitCard.dart';
 import 'package:flutter/material.dart';
+
+import '../FloatingButton.dart';
 import '../MainMenu.dart';
-import '../AddButton.dart';
 
 class Habits extends StatefulWidget {
   @override
@@ -65,21 +66,22 @@ class _HabitsState extends State<Habits> {
                             itemBuilder: (context, index) {
                               final habit = habits[index];
                               return Container(
-                                margin: index == habits.length - 1
-                                    ? EdgeInsets.only(bottom: 50)
-                                    : EdgeInsets.only(bottom: 0),
-                                child: HabitCard(habitId: habit.id!, refreshParent: refresh,),
+                                margin: index == habits.length - 1 ? EdgeInsets.only(bottom: 50) : EdgeInsets.only(bottom: 0),
+                                child: HabitCard(
+                                  habitId: habit.id!,
+                                  refreshParent: refresh,
+                                  isSelectable: false,
+                                ),
                               );
                             }),
                       ),
                     ),
             ]),
           ),
-          AddButton(
+          FloatingButton(
             refreshParent: refresh,
-            text: "Add Habit",
             position: Position.bottomRight,
-            type: AddButtonType.addHabit,
+            type: FloatingButtonType.addHabit,
           ),
         ],
       ),
