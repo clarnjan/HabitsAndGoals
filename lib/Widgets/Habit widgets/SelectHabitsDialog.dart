@@ -59,7 +59,11 @@ class _SelectHabitsDialogState extends State<SelectHabitsDialog> {
         if (widget.week.id == null) {
           throw Exception("Week id is null");
         } else {
-          WeeklyHabit weeklyHabit = new WeeklyHabit(habitFK: habit.id!, weekFK: widget.week.id!, repetitionsDone: 0);
+          List<bool> days = [];
+          for (int i = 0; i < habit.repetitions; i++) {
+            days.add(false);
+          }
+          WeeklyHabit weeklyHabit = new WeeklyHabit(habitFK: habit.id!, weekFK: widget.week.id!, repetitionsDone: 0, days: days);
           DatabaseHelper.instance.createWeeklyHabit(weeklyHabit);
         }
       }

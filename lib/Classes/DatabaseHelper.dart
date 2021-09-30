@@ -81,6 +81,13 @@ class DatabaseHelper {
           ${WeeklyHabitFields.habitFK} INTEGER NOT NULL,
           ${WeeklyHabitFields.weekFK} INTEGER NOT NULL,
           ${WeeklyHabitFields.repetitionsDone} INTEGER NOT NULL,
+          ${WeeklyHabitFields.dayOne} BOOLEAN NULL DEFAULT NULL,
+          ${WeeklyHabitFields.dayTwo} BOOLEAN NULL DEFAULT NULL,
+          ${WeeklyHabitFields.dayThree} BOOLEAN NULL DEFAULT NULL,
+          ${WeeklyHabitFields.dayFour} BOOLEAN NULL DEFAULT NULL,
+          ${WeeklyHabitFields.dayFive} BOOLEAN NULL DEFAULT NULL,
+          ${WeeklyHabitFields.daySix} BOOLEAN NULL DEFAULT NULL,
+          ${WeeklyHabitFields.daySeven} BOOLEAN NULL DEFAULT NULL,
           FOREIGN KEY(${WeeklyHabitFields.habitFK}) REFERENCES $habitsTable(${HabitFields.id}),
           FOREIGN KEY(${WeeklyHabitFields.weekFK}) REFERENCES $weeksTable(${WeekFields.id})
         );''');
@@ -88,7 +95,8 @@ class DatabaseHelper {
     DateTime today = DateTime.now();
     DateTime startDate = DateUtils.dateOnly(today.subtract(Duration(days: today.weekday - 1)));
     DateTime endDate = DateService.getEndDate(startDate);
-    Week week = new Week(title: "Week ${DateService.formatDate(startDate)} - ${DateService.formatDate(endDate)}", startDate: startDate, endDate: endDate);
+    Week week = new Week(
+        title: "Week ${DateService.formatDate(startDate)} - ${DateService.formatDate(endDate)}", startDate: startDate, endDate: endDate);
     await db.insert(weeksTable, week.toJson());
     return result;
   }
@@ -148,7 +156,10 @@ class DatabaseHelper {
       }
       if (currentWeek == null) {
         DateTime endDate = DateService.getEndDate(startDate);
-        currentWeek = new Week(title: "Week ${DateService.formatDate(startDate)} - ${DateService.formatDate(endDate)}", startDate: startDate, endDate: endDate);
+        currentWeek = new Week(
+            title: "Week ${DateService.formatDate(startDate)} - ${DateService.formatDate(endDate)}",
+            startDate: startDate,
+            endDate: endDate);
         currentWeek.id = await db.insert(weeksTable, currentWeek.toJson());
       }
       currentWeek.habits = await getWeeklyHabitsForWeek(currentWeek.id!);
@@ -165,7 +176,8 @@ class DatabaseHelper {
 
   Future<List<WeeklyHabit>> getWeeklyHabitsForWeek(int weekId) async {
     final db = await instance.database;
-    final result = await db.query(weeklyHabitsTable, columns: WeeklyHabitFields.values, where: '${WeeklyHabitFields.weekFK} = ?', whereArgs: [weekId]);
+    final result =
+        await db.query(weeklyHabitsTable, columns: WeeklyHabitFields.values, where: '${WeeklyHabitFields.weekFK} = ?', whereArgs: [weekId]);
     return result.map((json) => WeeklyHabit.fromJson(json)).toList();
   }
 
@@ -186,6 +198,19 @@ class DatabaseHelper {
       return Task.fromJson(result.first);
     } else {
       throw Exception('ID: $id not found');
+    }
+  }
+
+  Future<WeeklyHabit> getWeklyHabit(int weekId, int habitId) async {
+    final db = await instance.database;
+    final result = await db.query(weeklyHabitsTable,
+        columns: WeeklyHabitFields.values,
+        where: '${WeeklyHabitFields.weekFK} = ? AND ${WeeklyHabitFields.habitFK} = ?',
+        whereArgs: [weekId, habitId]);
+    if (result.isNotEmpty) {
+      return WeeklyHabit.fromJson(result.first);
+    } else {
+      throw Exception('Weekly habit not found');
     }
   }
 
@@ -243,5 +268,10 @@ class DatabaseHelper {
   Future<int> deleteGoal(int id) async {
     final db = await instance.database;
     return await db.delete(goalsTable, where: '${GoalFields.id} = ?', whereArgs: [id]);
+  }
+
+  Future<int> updateWeeklyHabit(WeeklyHabit weeklyHabit) async {
+    final db = await instance.database;
+    return db.update(weeklyHabitsTable, weeklyHabit.toJson(), where: '${WeeklyHabitFields.id} = ?', whereArgs: [weeklyHabit.id]);
   }
 }

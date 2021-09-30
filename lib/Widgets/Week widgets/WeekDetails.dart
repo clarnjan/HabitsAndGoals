@@ -2,7 +2,7 @@ import 'package:diplomska1/Classes/DatabaseHelper.dart';
 import 'package:diplomska1/Classes/DateService.dart';
 import 'package:diplomska1/Classes/Enums.dart';
 import 'package:diplomska1/Classes/Week.dart';
-import 'package:diplomska1/Widgets/Habit%20widgets/HabitCard.dart';
+import 'package:diplomska1/Widgets/WeeklyHabitCard.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -23,7 +23,8 @@ class _WeekDetailsState extends State<WeekDetails> {
   late Week week;
   bool isLoading = true;
   bool shouldShow = false;
-  GlobalKey<RefreshIndicatorState> refreshState = GlobalKey<RefreshIndicatorState>();
+  GlobalKey<RefreshIndicatorState> refreshState =
+      GlobalKey<RefreshIndicatorState>();
 
   @override
   void initState() {
@@ -38,7 +39,8 @@ class _WeekDetailsState extends State<WeekDetails> {
     if (widget.initialWeek == null) {
       week = await DatabaseHelper.instance.getCurrentWeek();
     } else if (widget.initialWeek!.id == null) {
-      week = await DatabaseHelper.instance.getWeekByStartDate(widget.initialWeek!.startDate);
+      week = await DatabaseHelper.instance
+          .getWeekByStartDate(widget.initialWeek!.startDate);
     }
     setState(() {
       isLoading = false;
@@ -133,11 +135,12 @@ class _WeekDetailsState extends State<WeekDetails> {
                               itemBuilder: (context, index) {
                                 final weeklyHabit = week.habits[index];
                                 return Container(
-                                  margin: index == week.habits.length - 1 ? EdgeInsets.only(bottom: 50) : EdgeInsets.only(bottom: 0),
-                                  child: HabitCard(
+                                  margin: index == week.habits.length - 1
+                                      ? EdgeInsets.only(bottom: 50)
+                                      : EdgeInsets.only(bottom: 0),
+                                  child: WeeklyHabitCard(
+                                    weekId: week.id!,
                                     habitId: weeklyHabit.habitFK,
-                                    refreshParent: refresh,
-                                    tapFunction: () {},
                                   ),
                                 );
                               }),
