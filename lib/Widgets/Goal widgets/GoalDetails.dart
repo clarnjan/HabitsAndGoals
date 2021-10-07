@@ -1,9 +1,7 @@
-import 'package:diplomska1/Classes/Enums.dart';
 import 'package:diplomska1/Classes/Goal.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../FloatingButton.dart';
 import '../MainMenu.dart';
 
 class GoalDetails extends StatefulWidget {
@@ -54,11 +52,6 @@ class _GoalDetailsState extends State<GoalDetails> {
             child: Column(
               children: [],
             ),
-          ),
-          FloatingButton(
-            refreshParent: refresh,
-            position: Position.bottomRight,
-            type: FloatingButtonType.addTask,
           ),
         ],
       ),

@@ -1,9 +1,11 @@
-enum Position { bottomLeft, bottomRight, bottomCenter }
+enum Position { BottomLeft, BottomRight, BottomCenter }
 
 enum FloatingButtonType {
-  addTask,
-  addHabit,
-  addGoal,
-  selectTasks,
-  selectHabits,
+  AddTask,
+  AddHabit,
+  AddGoal,
+  SelectTasks,
+  SelectHabits,
 }
+
+enum CardListType { Habits, Tasks, Goals }

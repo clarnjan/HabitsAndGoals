@@ -1,12 +1,14 @@
 import 'package:diplomska1/Classes/DatabaseHelper.dart';
 import 'package:diplomska1/Classes/DateService.dart';
-import 'package:diplomska1/Classes/Enums.dart';
 import 'package:diplomska1/Classes/Week.dart';
+import 'package:diplomska1/Widgets/Habit%20widgets/SelectHabitsDialog.dart';
+import 'package:diplomska1/Widgets/LabelWidget.dart';
 import 'package:diplomska1/Widgets/WeeklyHabitCard.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/painting.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
-import '../FloatingButton.dart';
 import '../MainMenu.dart';
 import 'WeeksPopup.dart';
 
@@ -23,8 +25,7 @@ class _WeekDetailsState extends State<WeekDetails> {
   late Week week;
   bool isLoading = true;
   bool shouldShow = false;
-  GlobalKey<RefreshIndicatorState> refreshState =
-      GlobalKey<RefreshIndicatorState>();
+  GlobalKey<RefreshIndicatorState> refreshState = GlobalKey<RefreshIndicatorState>();
 
   @override
   void initState() {
@@ -39,8 +40,7 @@ class _WeekDetailsState extends State<WeekDetails> {
     if (widget.initialWeek == null) {
       week = await DatabaseHelper.instance.getCurrentWeek();
     } else if (widget.initialWeek!.id == null) {
-      week = await DatabaseHelper.instance
-          .getWeekByStartDate(widget.initialWeek!.startDate);
+      week = await DatabaseHelper.instance.getWeekByStartDate(widget.initialWeek!.startDate);
     }
     setState(() {
       isLoading = false;
@@ -114,7 +114,7 @@ class _WeekDetailsState extends State<WeekDetails> {
         body: Stack(
           children: [
             Container(
-              color: Colors.grey[800],
+              color: Colors.grey.shade800,
               width: double.infinity,
               padding: EdgeInsets.all(10),
               child: Flex(direction: Axis.vertical, children: [
@@ -135,9 +135,7 @@ class _WeekDetailsState extends State<WeekDetails> {
                               itemBuilder: (context, index) {
                                 final weeklyHabit = week.habits[index];
                                 return Container(
-                                  margin: index == week.habits.length - 1
-                                      ? EdgeInsets.only(bottom: 50)
-                                      : EdgeInsets.only(bottom: 0),
+                                  margin: index == week.habits.length - 1 ? EdgeInsets.only(bottom: 50) : EdgeInsets.only(bottom: 0),
                                   child: WeeklyHabitCard(
                                     weekId: week.id!,
                                     habitId: weeklyHabit.habitFK,
@@ -158,17 +156,64 @@ class _WeekDetailsState extends State<WeekDetails> {
                 ),
               ),
             if (!isLoading)
-              FloatingButton(
-                refreshParent: refresh,
-                position: Position.bottomLeft,
-                type: FloatingButtonType.selectHabits,
-                week: week,
+              Positioned(
+                right: 20,
+                bottom: 20,
+                child: SpeedDial(
+                  animatedIcon: AnimatedIcons.add_event,
+                  animatedIconTheme: IconThemeData(size: 22.0),
+                  // this is ignored if animatedIcon is non null
+                  // child: Icon(Icons.add),
+                  visible: true,
+                  curve: Curves.bounceIn,
+                  overlayColor: Colors.black,
+                  overlayOpacity: 0.5,
+                  onOpen: () => print('OPENING DIAL'),
+                  onClose: () => print('DIAL CLOSED'),
+                  backgroundColor: Colors.green.shade700,
+                  foregroundColor: Colors.white,
+                  elevation: 8.0,
+                  shape: CircleBorder(),
+                  children: [
+                    SpeedDialChild(
+                      child: Icon(Icons.checklist_rtl),
+                      backgroundColor: Colors.blue.shade700,
+                      labelWidget: LabelWidget(
+                        text: "Habit",
+                        color: Colors.blue.shade700,
+                      ),
+                      onTap: () async {
+                        await showDialog(
+                            context: context,
+                            builder: (context) {
+                              return SelectHabitsDialog(
+                                week: week,
+                                refreshParent: refresh,
+                              );
+                            });
+                      },
+                    ),
+                    SpeedDialChild(
+                      child: Icon(Icons.task),
+                      backgroundColor: Colors.orange.shade700,
+                      labelWidget: LabelWidget(
+                        text: "Task",
+                        color: Colors.orange.shade700,
+                      ),
+                      onTap: () async {
+                        await showDialog(
+                            context: context,
+                            builder: (context) {
+                              return SelectHabitsDialog(
+                                week: week,
+                                refreshParent: refresh,
+                              );
+                            });
+                      },
+                    ),
+                  ],
+                ),
               ),
-            FloatingButton(
-              refreshParent: refresh,
-              position: Position.bottomRight,
-              type: FloatingButtonType.addTask,
-            ),
           ],
         ),
       ),

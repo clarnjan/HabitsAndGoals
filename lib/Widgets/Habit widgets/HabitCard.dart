@@ -60,7 +60,7 @@ class _HabitCardState extends State<HabitCard> {
         ),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
-          color: isSelected ? Colors.green[700] : Colors.grey[600],
+          color: isSelected ? Colors.green.shade700 : Colors.grey.shade600,
         ),
         constraints: BoxConstraints(minHeight: 70),
         child: isLoading
