@@ -170,17 +170,22 @@ class _WeekDetailsState extends State<WeekDetails> {
                   overlayOpacity: 0.5,
                   onOpen: () => print('OPENING DIAL'),
                   onClose: () => print('DIAL CLOSED'),
-                  backgroundColor: Colors.green.shade700,
-                  foregroundColor: Colors.white,
-                  elevation: 8.0,
+                  backgroundColor: Colors.green,
+                  foregroundColor: Colors.grey.shade800,
+                  elevation: 1.0,
+                  buttonSize: 67,
+                  childrenButtonSize: 60,
+                  spaceBetweenChildren: 10,
                   shape: CircleBorder(),
                   children: [
                     SpeedDialChild(
                       child: Icon(Icons.checklist_rtl),
-                      backgroundColor: Colors.blue.shade700,
+                      backgroundColor: Colors.blue.shade600,
+                      foregroundColor: Colors.grey.shade800,
                       labelWidget: LabelWidget(
                         text: "Habit",
-                        color: Colors.blue.shade700,
+                        backgroundColor: Colors.blue.shade600,
+                        color: Colors.grey.shade800,
                       ),
                       onTap: () async {
                         await showDialog(
@@ -195,10 +200,12 @@ class _WeekDetailsState extends State<WeekDetails> {
                     ),
                     SpeedDialChild(
                       child: Icon(Icons.task),
-                      backgroundColor: Colors.orange.shade700,
+                      backgroundColor: Colors.amber.shade800,
+                      foregroundColor: Colors.grey.shade800,
                       labelWidget: LabelWidget(
                         text: "Task",
-                        color: Colors.orange.shade700,
+                        backgroundColor: Colors.amber.shade800,
+                        color: Colors.grey.shade800,
                       ),
                       onTap: () async {
                         await showDialog(

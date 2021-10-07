@@ -147,12 +147,19 @@ class _CardListState extends State<CardList> {
             Positioned(
               right: 20,
               bottom: 20,
-              child: FloatingActionButton(
-                onPressed: () async {
-                  await floatingButtonClick(context);
-                },
-                backgroundColor: Colors.green.shade700,
-                child: Icon(Icons.add),
+              child: Container(
+                width: 67,
+                height: 67,
+                child: FittedBox(
+                  child: FloatingActionButton(
+                    onPressed: () async {
+                      await floatingButtonClick(context);
+                    },
+                    backgroundColor: Colors.green,
+                    foregroundColor: Colors.grey.shade800,
+                    child: Icon(Icons.add),
+                  ),
+                ),
               ),
             ),
         ],

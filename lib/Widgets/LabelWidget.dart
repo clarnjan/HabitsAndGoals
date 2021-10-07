@@ -3,14 +3,15 @@ import 'package:flutter/material.dart';
 
 class LabelWidget extends StatelessWidget {
   final String text;
+  final Color backgroundColor;
   final Color color;
-  const LabelWidget({Key? key, required this.text, required this.color}) : super(key: key);
+  const LabelWidget({Key? key, required this.text, required this.backgroundColor, required this.color}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: color,
+        color: backgroundColor,
         borderRadius: BorderRadius.circular(10),
       ),
       width: 50,
@@ -18,9 +19,7 @@ class LabelWidget extends StatelessWidget {
       child: Center(
         child: Text(
           text,
-          style: TextStyle(
-            fontSize: 16,
-          ),
+          style: TextStyle(fontSize: 16, color: color),
         ),
       ),
     );

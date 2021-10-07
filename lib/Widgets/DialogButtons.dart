@@ -18,7 +18,7 @@ class DialogButtons extends StatelessWidget {
         TextButton(
           child: Text(
             cancelText,
-            style: TextStyle(fontSize: 20, color: Colors.green.shade700),
+            style: TextStyle(fontSize: 20, color: Colors.green),
           ),
           onPressed: () async {
             Navigator.of(context).pop();
@@ -30,7 +30,7 @@ class DialogButtons extends StatelessWidget {
         TextButton(
             child: Text(
               submitText,
-              style: TextStyle(fontSize: 20, color: Colors.green.shade700),
+              style: TextStyle(fontSize: 20, color: Colors.green),
             ),
             onPressed: () {
               submitFunction();

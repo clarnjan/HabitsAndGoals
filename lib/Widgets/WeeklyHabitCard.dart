@@ -87,21 +87,39 @@ class _WeeklyHabitCardState extends State<WeeklyHabitCard> {
                       height: 7,
                     ),
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         for (int i = 0; i < weeklyHabit.days.length; i++)
-                          Container(
-                            width: 25,
-                            height: 25,
-                            padding: EdgeInsets.all(0),
-                            child: Checkbox(
-                                value: weeklyHabit.days[i],
-                                onChanged: (value) {
-                                  setState(() {
-                                    weeklyHabit.days[i] = value!;
-                                    DatabaseHelper.instance.updateWeeklyHabit(weeklyHabit);
-                                  });
-                                }),
+                          InkWell(
+                            onTap: () {
+                              setState(() {
+                                weeklyHabit.days[i] = !weeklyHabit.days[i];
+                                DatabaseHelper.instance.updateWeeklyHabit(weeklyHabit);
+                              });
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.all(2.0),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: weeklyHabit.days[i] ? Colors.green.shade700 : Colors.transparent,
+                                  border: Border.all(
+                                    color: weeklyHabit.days[i] ? Colors.green.shade700 : Colors.white,
+                                    width: 2,
+                                  ),
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: weeklyHabit.days[i]
+                                    ? Icon(
+                                        Icons.check,
+                                        size: 22.0,
+                                        color: Colors.white,
+                                      )
+                                    : Icon(
+                                        null,
+                                        size: 22.0,
+                                      ),
+                              ),
+                            ),
                           ),
                       ],
                     ),
