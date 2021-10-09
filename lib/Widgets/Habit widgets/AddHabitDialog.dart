@@ -142,6 +142,7 @@ class _AddHabitDialogState extends State<AddHabitDialog> {
         DialogButtons(
           cancelText: "Cancel",
           submitText: "Save",
+          showAddButton: false,
           refreshParent: widget.refreshParent,
           submitFunction: () async {
             await addHabit();

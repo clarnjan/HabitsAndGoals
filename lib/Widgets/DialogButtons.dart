@@ -6,8 +6,16 @@ class DialogButtons extends StatelessWidget {
   final String submitText;
   final Function refreshParent;
   final Function submitFunction;
+  final Function? addFunction;
+  final bool showAddButton;
   const DialogButtons(
-      {Key? key, required this.cancelText, required this.submitText, required this.refreshParent, required this.submitFunction})
+      {Key? key,
+      required this.cancelText,
+      required this.submitText,
+      required this.refreshParent,
+      required this.submitFunction,
+      required this.showAddButton,
+      this.addFunction})
       : super(key: key);
 
   @override
@@ -15,6 +23,25 @@ class DialogButtons extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
+        if (showAddButton)
+          Expanded(
+            child: Container(
+              alignment: Alignment.centerLeft,
+              child: TextButton(
+                child: Text(
+                  "New",
+                  style: TextStyle(
+                    fontSize: 20,
+                  ),
+                ),
+                onPressed: () async {
+                  if (addFunction != null) {
+                    await addFunction!(context);
+                  }
+                },
+              ),
+            ),
+          ),
         TextButton(
           child: Text(
             cancelText,

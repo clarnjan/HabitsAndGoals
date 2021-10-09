@@ -113,6 +113,7 @@ class _AddTaskDialogState extends State<AddTaskDialog> {
         DialogButtons(
           cancelText: "Cancel",
           submitText: "Save",
+          showAddButton: false,
           refreshParent: widget.refreshParent,
           submitFunction: () async {
             await addTask();

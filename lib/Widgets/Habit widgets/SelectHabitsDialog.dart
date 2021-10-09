@@ -6,6 +6,7 @@ import 'package:diplomska1/Widgets/DialogButtons.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import 'AddHabitDialog.dart';
 import 'HabitCard.dart';
 
 class SelectHabitsDialog extends StatefulWidget {
@@ -63,7 +64,8 @@ class _SelectHabitsDialogState extends State<SelectHabitsDialog> {
           for (int i = 0; i < habit.repetitions; i++) {
             days.add(false);
           }
-          WeeklyHabit weeklyHabit = new WeeklyHabit(habitFK: habit.id!, weekFK: widget.week.id!, repetitionsDone: 0, days: days);
+          WeeklyHabit weeklyHabit =
+              new WeeklyHabit(habitFK: habit.id!, weekFK: widget.week.id!, repetitionsDone: 0, days: days);
           DatabaseHelper.instance.createWeeklyHabit(weeklyHabit);
         }
       }
@@ -72,10 +74,18 @@ class _SelectHabitsDialogState extends State<SelectHabitsDialog> {
     Navigator.pop(context);
   }
 
+  Future<void> add(BuildContext context) async {
+    Navigator.pop(context);
+    return await showDialog(
+        context: context,
+        builder: (context) {
+          return AddHabitDialog(refreshParent: () {});
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      elevation: 0,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
       contentPadding: EdgeInsets.all(10),
       backgroundColor: Colors.grey[800],
@@ -119,6 +129,8 @@ class _SelectHabitsDialogState extends State<SelectHabitsDialog> {
         DialogButtons(
           cancelText: "Cancel",
           submitText: "Save",
+          showAddButton: true,
+          addFunction: add,
           refreshParent: widget.refreshParent,
           submitFunction: save,
         ),
