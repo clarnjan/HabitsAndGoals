@@ -1,27 +1,28 @@
-import 'package:diplomska1/Classes/DatabaseHelper.dart';
-import 'package:diplomska1/Classes/Task.dart';
 import 'package:flutter/material.dart';
 
-class TaskCard extends StatefulWidget {
-  final Task task;
-  final Function refreshParent;
+class ClickableCard extends StatefulWidget {
+  final String title;
+  final Function tapFunction;
+  final bool isSelectable;
 
-  TaskCard({required this.task, required this.refreshParent});
+  ClickableCard({required this.tapFunction, required this.title, required this.isSelectable});
 
   @override
-  _TaskCardState createState() => _TaskCardState();
+  _ClickableCardState createState() => _ClickableCardState();
 }
 
-class _TaskCardState extends State<TaskCard> {
-  bool canDelete = false;
+class _ClickableCardState extends State<ClickableCard> {
+  bool isSelected = false;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onLongPress: () {
-        print('long press');
+      onTap: () {
         setState(() {
-          canDelete = !canDelete;
+          if (widget.isSelectable) {
+            isSelected = !isSelected;
+          }
+          widget.tapFunction();
         });
       },
       child: Container(
@@ -32,7 +33,7 @@ class _TaskCardState extends State<TaskCard> {
         ),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
-          color: Colors.grey[600],
+          color: widget.isSelectable && isSelected ? Colors.green : Colors.grey.shade600,
         ),
         constraints: BoxConstraints(minHeight: 70),
         child: Row(
@@ -40,7 +41,7 @@ class _TaskCardState extends State<TaskCard> {
           children: [
             Expanded(
               child: Text(
-                widget.task.title,
+                widget.title,
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 20,
@@ -48,14 +49,6 @@ class _TaskCardState extends State<TaskCard> {
                 ),
               ),
             ),
-            if (canDelete)
-              IconButton(
-                onPressed: () async {
-                  DatabaseHelper.instance.deleteTask(widget.task.id!);
-                  await widget.refreshParent();
-                },
-                icon: Icon(Icons.delete),
-              ),
           ],
         ),
       ),

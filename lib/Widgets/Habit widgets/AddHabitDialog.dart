@@ -5,8 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:numberpicker/numberpicker.dart';
 
-import '../DialogButtons.dart';
-
 class AddHabitDialog extends StatefulWidget {
   final Habit? habit;
   final Function refreshParent;
@@ -51,6 +49,7 @@ class _AddHabitDialogState extends State<AddHabitDialog> {
         mainAxisSize: MainAxisSize.min,
         children: [
           TextFormField(
+            autofocus: true,
             controller: textEditingController,
             validator: (value) {
               setState(() {
@@ -60,6 +59,15 @@ class _AddHabitDialogState extends State<AddHabitDialog> {
             },
             decoration: InputDecoration(
               hintText: "Title",
+              hintStyle: TextStyle(
+                color: Colors.grey[300],
+              ),
+              labelStyle: TextStyle(
+                color: Colors.white,
+              ),
+            ),
+            style: TextStyle(
+              color: Colors.white,
             ),
           ),
           SizedBox(
@@ -68,7 +76,13 @@ class _AddHabitDialogState extends State<AddHabitDialog> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text("Repetitions: "),
+              Text(
+                "Repetitions: ",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                ),
+              ),
               NumberPicker(
                 value: repetitions,
                 minValue: 1,
@@ -82,7 +96,7 @@ class _AddHabitDialogState extends State<AddHabitDialog> {
                   color: CupertinoColors.activeGreen,
                   fontWeight: FontWeight.bold,
                 ),
-                textStyle: TextStyle(fontSize: 14),
+                textStyle: TextStyle(fontSize: 14, color: Colors.white),
               ),
             ],
           ),
@@ -90,7 +104,13 @@ class _AddHabitDialogState extends State<AddHabitDialog> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text("Input: "),
+              Text(
+                "Input: ",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                ),
+              ),
               Container(
                 margin: EdgeInsets.only(top: 5),
                 child: NumberPicker(
@@ -106,9 +126,7 @@ class _AddHabitDialogState extends State<AddHabitDialog> {
                     color: CupertinoColors.activeGreen,
                     fontWeight: FontWeight.bold,
                   ),
-                  textStyle: TextStyle(
-                    fontSize: 14,
-                  ),
+                  textStyle: TextStyle(fontSize: 14, color: Colors.white),
                 ),
               ),
             ],
@@ -116,7 +134,13 @@ class _AddHabitDialogState extends State<AddHabitDialog> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text("Output: "),
+              Text(
+                "Output: ",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                ),
+              ),
               NumberPicker(
                 value: outputSingle,
                 minValue: 0,
@@ -130,7 +154,7 @@ class _AddHabitDialogState extends State<AddHabitDialog> {
                   color: CupertinoColors.activeGreen,
                   fontWeight: FontWeight.bold,
                 ),
-                textStyle: TextStyle(fontSize: 14),
+                textStyle: TextStyle(fontSize: 14, color: Colors.white),
               ),
             ],
           ),

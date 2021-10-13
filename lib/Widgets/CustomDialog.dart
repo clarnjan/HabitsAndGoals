@@ -12,8 +12,9 @@ import 'Habit widgets/SelectHabitsDialog.dart';
 class CustomDialog extends StatefulWidget {
   final int? weekId;
   final Function refreshParent;
+  final bool canSelect;
 
-  const CustomDialog({Key? key, this.weekId, required this.refreshParent}) : super(key: key);
+  const CustomDialog({Key? key, this.weekId, required this.refreshParent, required this.canSelect}) : super(key: key);
 
   @override
   _CustomDialogState createState() => _CustomDialogState();
@@ -24,7 +25,7 @@ class _CustomDialogState extends State<CustomDialog> {
   late List<Habit> habits;
   List<Habit> selectedHabits = [];
   bool isLoading = true;
-  bool isSelecting = true;
+  bool isSelecting = false;
 
   @override
   void initState() {
@@ -36,7 +37,8 @@ class _CustomDialogState extends State<CustomDialog> {
     setState(() {
       isLoading = true;
     });
-    if (widget.weekId != null) {
+    if (widget.canSelect && widget.weekId != null) {
+      isSelecting = true;
       week = await DatabaseHelper.instance.getWeek(widget.weekId!);
       this.habits = await DatabaseHelper.instance.getAllHabits();
       for (WeeklyHabit wh in week.habits) {
@@ -66,8 +68,7 @@ class _CustomDialogState extends State<CustomDialog> {
         for (int i = 0; i < habit.repetitions; i++) {
           days.add(false);
         }
-        WeeklyHabit weeklyHabit =
-            new WeeklyHabit(habitFK: habit.id!, weekFK: widget.weekId!, repetitionsDone: 0, days: days);
+        WeeklyHabit weeklyHabit = new WeeklyHabit(habitFK: habit.id!, weekFK: widget.weekId!, repetitionsDone: 0, days: days);
         DatabaseHelper.instance.createWeeklyHabit(weeklyHabit);
       }
     }
@@ -94,18 +95,16 @@ class _CustomDialogState extends State<CustomDialog> {
                 maxHeight: MediaQuery.of(context).size.height / 1.6,
               ),
               width: MediaQuery.of(context).size.width / 1.4,
-              child: widget.weekId != null
-                  ? isSelecting
-                      ? Container(
-                          child: SelectHabitsDialog(
-                            habits: habits,
-                            selectHabit: selectHabit,
-                          ),
-                        )
-                      : AddHabitDialog(
-                          refreshParent: widget.refreshParent,
-                        )
-                  : Text("Error occurred"),
+              child: widget.canSelect && widget.weekId != null && isSelecting
+                  ? Container(
+                      child: SelectHabitsDialog(
+                        habits: habits,
+                        selectHabit: selectHabit,
+                      ),
+                    )
+                  : AddHabitDialog(
+                      refreshParent: widget.refreshParent,
+                    ),
             )
           : Container(),
       actions: [
@@ -113,7 +112,7 @@ class _CustomDialogState extends State<CustomDialog> {
           cancelButtonText: "Cancel",
           submitButtonText: "Save",
           newButtonText: isSelecting ? "New" : "Select",
-          showAddButton: true,
+          showAddButton: widget.canSelect,
           addFunction: toggleButton,
           refreshParent: widget.refreshParent,
           submitFunction: save,

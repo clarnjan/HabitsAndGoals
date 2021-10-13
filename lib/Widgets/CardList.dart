@@ -3,14 +3,12 @@ import 'package:diplomska1/Classes/Enums.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import 'ClickableCard.dart';
+import 'CustomDialog.dart';
 import 'Goal widgets/AddGoalDialog.dart';
-import 'Goal widgets/GoalCard.dart';
-import 'Habit widgets/AddHabitDialog.dart';
-import 'Habit widgets/HabitCard.dart';
 import 'Habit widgets/HabitDetails.dart';
 import 'MainMenu.dart';
 import 'Task widgets/AddTaskDialog.dart';
-import 'Task widgets/TaskCard.dart';
 
 class CardList extends StatefulWidget {
   final CardListType cardListType;
@@ -67,22 +65,13 @@ class _CardListState extends State<CardList> {
   }
 
   Widget getCard(item) {
-    switch (widget.cardListType) {
-      case CardListType.Habits:
-        return HabitCard(
-          habitId: item.id!,
-          tapFunction: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => HabitDetails(item)));
-          },
-        );
-      case CardListType.Tasks:
-        return TaskCard(
-          task: item,
-          refreshParent: refresh,
-        );
-      case CardListType.Goals:
-        return GoalCard(goal: item, refreshParent: refresh);
-    }
+    return ClickableCard(
+      title: item.title,
+      isSelectable: false,
+      tapFunction: () {
+        Navigator.push(context, MaterialPageRoute(builder: (context) => HabitDetails(item)));
+      },
+    );
   }
 
   Future<void> floatingButtonClick(BuildContext context) async {
@@ -91,7 +80,10 @@ class _CardListState extends State<CardList> {
       builder: (context) {
         switch (widget.cardListType) {
           case CardListType.Habits:
-            return AddHabitDialog(refreshParent: refresh);
+            return CustomDialog(
+              canSelect: false,
+              refreshParent: refresh,
+            );
           case CardListType.Tasks:
             return AddTaskDialog(refreshParent: refresh);
           case CardListType.Goals:
@@ -134,9 +126,7 @@ class _CardListState extends State<CardList> {
                             itemBuilder: (context, index) {
                               final item = items[index];
                               return Container(
-                                margin: index == items.length - 1
-                                    ? EdgeInsets.only(bottom: 50)
-                                    : EdgeInsets.only(bottom: 0),
+                                margin: index == items.length - 1 ? EdgeInsets.only(bottom: 50) : EdgeInsets.only(bottom: 0),
                                 child: getCard(item),
                               );
                             }),

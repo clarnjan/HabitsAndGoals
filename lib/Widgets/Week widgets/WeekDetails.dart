@@ -1,7 +1,6 @@
 import 'package:diplomska1/Classes/DatabaseHelper.dart';
 import 'package:diplomska1/Classes/DateService.dart';
 import 'package:diplomska1/Classes/Week.dart';
-import 'package:diplomska1/Widgets/Habit%20widgets/SelectHabitsDialog.dart';
 import 'package:diplomska1/Widgets/LabelWidget.dart';
 import 'package:diplomska1/Widgets/WeeklyHabitCard.dart';
 import 'package:flutter/cupertino.dart';
@@ -136,9 +135,7 @@ class _WeekDetailsState extends State<WeekDetails> {
                               itemBuilder: (context, index) {
                                 final weeklyHabit = week.habits[index];
                                 return Container(
-                                  margin: index == week.habits.length - 1
-                                      ? EdgeInsets.only(bottom: 50)
-                                      : EdgeInsets.only(bottom: 0),
+                                  margin: index == week.habits.length - 1 ? EdgeInsets.only(bottom: 50) : EdgeInsets.only(bottom: 0),
                                   child: WeeklyHabitCard(
                                     weekId: week.id!,
                                     habitId: weeklyHabit.habitFK,
@@ -196,6 +193,7 @@ class _WeekDetailsState extends State<WeekDetails> {
                             builder: (context) {
                               return CustomDialog(
                                 weekId: week.id!,
+                                canSelect: true,
                                 refreshParent: refresh,
                               );
                             });
@@ -216,6 +214,7 @@ class _WeekDetailsState extends State<WeekDetails> {
                             builder: (context) {
                               return CustomDialog(
                                 weekId: week.id!,
+                                canSelect: true,
                                 refreshParent: refresh,
                               );
                             });

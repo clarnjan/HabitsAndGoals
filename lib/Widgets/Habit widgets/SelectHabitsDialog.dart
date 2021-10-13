@@ -1,11 +1,8 @@
-import 'package:diplomska1/Classes/DatabaseHelper.dart';
 import 'package:diplomska1/Classes/Habit.dart';
-import 'package:diplomska1/Classes/Week.dart';
-import 'package:diplomska1/Classes/WeeklyHabit.dart';
-import 'package:diplomska1/Widgets/DialogButtons.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'HabitCard.dart';
+
+import '../ClickableCard.dart';
 
 class SelectHabitsDialog extends StatefulWidget {
   final List<Habit> habits;
@@ -27,8 +24,9 @@ class _SelectHabitsDialogState extends State<SelectHabitsDialog> {
             itemBuilder: (context, index) {
               final habit = widget.habits[index];
               return Container(
-                child: HabitCard(
-                  habitId: habit.id!,
+                child: ClickableCard(
+                  isSelectable: true,
+                  title: habit.title,
                   tapFunction: () {
                     widget.selectHabit(habit);
                   },
@@ -36,10 +34,11 @@ class _SelectHabitsDialogState extends State<SelectHabitsDialog> {
               );
             })
         : Container(
+            height: 200,
             padding: EdgeInsets.all(20),
             child: Center(
               child: Text(
-                "All habits already added in this week.\nGo to habits to add more",
+                "All habits already added in this week.\nClick New to add more",
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 20,
