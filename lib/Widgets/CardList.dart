@@ -71,7 +71,6 @@ class _CardListState extends State<CardList> {
       case CardListType.Habits:
         return HabitCard(
           habitId: item.id!,
-          refreshParent: refresh,
           tapFunction: () {
             Navigator.push(context, MaterialPageRoute(builder: (context) => HabitDetails(item)));
           },
@@ -135,7 +134,9 @@ class _CardListState extends State<CardList> {
                             itemBuilder: (context, index) {
                               final item = items[index];
                               return Container(
-                                margin: index == items.length - 1 ? EdgeInsets.only(bottom: 50) : EdgeInsets.only(bottom: 0),
+                                margin: index == items.length - 1
+                                    ? EdgeInsets.only(bottom: 50)
+                                    : EdgeInsets.only(bottom: 0),
                                 child: getCard(item),
                               );
                             }),

@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
+import '../CustomDialog.dart';
 import '../MainMenu.dart';
 import 'WeeksPopup.dart';
 
@@ -135,7 +136,9 @@ class _WeekDetailsState extends State<WeekDetails> {
                               itemBuilder: (context, index) {
                                 final weeklyHabit = week.habits[index];
                                 return Container(
-                                  margin: index == week.habits.length - 1 ? EdgeInsets.only(bottom: 50) : EdgeInsets.only(bottom: 0),
+                                  margin: index == week.habits.length - 1
+                                      ? EdgeInsets.only(bottom: 50)
+                                      : EdgeInsets.only(bottom: 0),
                                   child: WeeklyHabitCard(
                                     weekId: week.id!,
                                     habitId: weeklyHabit.habitFK,
@@ -191,8 +194,8 @@ class _WeekDetailsState extends State<WeekDetails> {
                         await showDialog(
                             context: context,
                             builder: (context) {
-                              return SelectHabitsDialog(
-                                week: week,
+                              return CustomDialog(
+                                weekId: week.id!,
                                 refreshParent: refresh,
                               );
                             });
@@ -211,8 +214,8 @@ class _WeekDetailsState extends State<WeekDetails> {
                         await showDialog(
                             context: context,
                             builder: (context) {
-                              return SelectHabitsDialog(
-                                week: week,
+                              return CustomDialog(
+                                weekId: week.id!,
                                 refreshParent: refresh,
                               );
                             });

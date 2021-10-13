@@ -2,20 +2,22 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class DialogButtons extends StatelessWidget {
-  final String cancelText;
-  final String submitText;
+  final String cancelButtonText;
+  final String submitButtonText;
+  final String? newButtonText;
   final Function refreshParent;
   final Function submitFunction;
   final Function? addFunction;
   final bool showAddButton;
   const DialogButtons(
       {Key? key,
-      required this.cancelText,
-      required this.submitText,
+      required this.cancelButtonText,
+      required this.submitButtonText,
       required this.refreshParent,
       required this.submitFunction,
       required this.showAddButton,
-      this.addFunction})
+      this.addFunction,
+      this.newButtonText})
       : super(key: key);
 
   @override
@@ -23,13 +25,13 @@ class DialogButtons extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        if (showAddButton)
+        if (showAddButton && newButtonText != null)
           Expanded(
             child: Container(
               alignment: Alignment.centerLeft,
               child: TextButton(
                 child: Text(
-                  "New",
+                  newButtonText!,
                   style: TextStyle(
                     fontSize: 20,
                   ),
@@ -44,7 +46,7 @@ class DialogButtons extends StatelessWidget {
           ),
         TextButton(
           child: Text(
-            cancelText,
+            cancelButtonText,
             style: TextStyle(fontSize: 20, color: Colors.green),
           ),
           onPressed: () async {
@@ -56,7 +58,7 @@ class DialogButtons extends StatelessWidget {
         ),
         TextButton(
             child: Text(
-              submitText,
+              submitButtonText,
               style: TextStyle(fontSize: 20, color: Colors.green),
             ),
             onPressed: () {

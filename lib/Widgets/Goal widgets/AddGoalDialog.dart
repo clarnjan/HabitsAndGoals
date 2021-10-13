@@ -58,8 +58,8 @@ class _AddGoalDialogState extends State<AddGoalDialog> {
       ),
       actions: [
         DialogButtons(
-          cancelText: "Cancel",
-          submitText: "Save",
+          cancelButtonText: "Cancel",
+          submitButtonText: "Save",
           showAddButton: false,
           refreshParent: widget.refreshParent,
           submitFunction: addGoal,

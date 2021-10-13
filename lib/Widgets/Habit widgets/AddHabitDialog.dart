@@ -45,84 +45,59 @@ class _AddHabitDialogState extends State<AddHabitDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      content: Form(
-        key: formKey,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextFormField(
-              controller: textEditingController,
-              validator: (value) {
-                setState(() {
-                  title = value!;
-                });
-                return value!.isNotEmpty ? null : "Title is mandatory";
-              },
-              decoration: InputDecoration(
-                hintText: "Title",
+    return Form(
+      key: formKey,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          TextFormField(
+            controller: textEditingController,
+            validator: (value) {
+              setState(() {
+                title = value!;
+              });
+              return value!.isNotEmpty ? null : "Title is mandatory";
+            },
+            decoration: InputDecoration(
+              hintText: "Title",
+            ),
+          ),
+          SizedBox(
+            height: 20,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text("Repetitions: "),
+              NumberPicker(
+                value: repetitions,
+                minValue: 1,
+                maxValue: 7,
+                onChanged: (value) => setState(() => repetitions = value),
+                itemWidth: 40,
+                itemHeight: 30,
+                axis: Axis.horizontal,
+                selectedTextStyle: TextStyle(
+                  fontSize: 18,
+                  color: CupertinoColors.activeGreen,
+                  fontWeight: FontWeight.bold,
+                ),
+                textStyle: TextStyle(fontSize: 14),
               ),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text("Repetitions: "),
-                NumberPicker(
-                  value: repetitions,
-                  minValue: 1,
-                  maxValue: 7,
-                  onChanged: (value) => setState(() => repetitions = value),
-                  itemWidth: 40,
-                  itemHeight: 30,
-                  axis: Axis.horizontal,
-                  selectedTextStyle: TextStyle(
-                    fontSize: 18,
-                    color: CupertinoColors.activeGreen,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  textStyle: TextStyle(fontSize: 14),
-                ),
-              ],
-            ),
-            Divider(),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text("Input: "),
-                Container(
-                  margin: EdgeInsets.only(top: 5),
-                  child: NumberPicker(
-                    value: inputSingle,
-                    minValue: 0,
-                    maxValue: 100,
-                    onChanged: (value) => setState(() => inputSingle = value),
-                    itemWidth: 40,
-                    itemHeight: 30,
-                    axis: Axis.horizontal,
-                    selectedTextStyle: TextStyle(
-                      fontSize: 18,
-                      color: CupertinoColors.activeGreen,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    textStyle: TextStyle(
-                      fontSize: 14,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text("Output: "),
-                NumberPicker(
-                  value: outputSingle,
+            ],
+          ),
+          Divider(),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text("Input: "),
+              Container(
+                margin: EdgeInsets.only(top: 5),
+                child: NumberPicker(
+                  value: inputSingle,
                   minValue: 0,
                   maxValue: 100,
-                  onChanged: (value) => setState(() => outputSingle = value),
+                  onChanged: (value) => setState(() => inputSingle = value),
                   itemWidth: 40,
                   itemHeight: 30,
                   axis: Axis.horizontal,
@@ -131,24 +106,36 @@ class _AddHabitDialogState extends State<AddHabitDialog> {
                     color: CupertinoColors.activeGreen,
                     fontWeight: FontWeight.bold,
                   ),
-                  textStyle: TextStyle(fontSize: 14),
+                  textStyle: TextStyle(
+                    fontSize: 14,
+                  ),
                 ),
-              ],
-            ),
-          ],
-        ),
+              ),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text("Output: "),
+              NumberPicker(
+                value: outputSingle,
+                minValue: 0,
+                maxValue: 100,
+                onChanged: (value) => setState(() => outputSingle = value),
+                itemWidth: 40,
+                itemHeight: 30,
+                axis: Axis.horizontal,
+                selectedTextStyle: TextStyle(
+                  fontSize: 18,
+                  color: CupertinoColors.activeGreen,
+                  fontWeight: FontWeight.bold,
+                ),
+                textStyle: TextStyle(fontSize: 14),
+              ),
+            ],
+          ),
+        ],
       ),
-      actions: [
-        DialogButtons(
-          cancelText: "Cancel",
-          submitText: "Save",
-          showAddButton: false,
-          refreshParent: widget.refreshParent,
-          submitFunction: () async {
-            await addHabit();
-          },
-        ),
-      ],
     );
   }
 }

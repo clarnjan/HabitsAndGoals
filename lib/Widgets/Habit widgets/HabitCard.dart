@@ -4,10 +4,9 @@ import 'package:flutter/material.dart';
 
 class HabitCard extends StatefulWidget {
   final int habitId;
-  final Function refreshParent;
   final Function tapFunction;
 
-  HabitCard({required this.habitId, required this.refreshParent, required this.tapFunction});
+  HabitCard({required this.habitId, required this.tapFunction});
 
   @override
   _HabitCardState createState() => _HabitCardState();
@@ -80,14 +79,6 @@ class _HabitCardState extends State<HabitCard> {
                       ),
                     ),
                   ),
-                  if (canDelete)
-                    IconButton(
-                      onPressed: () async {
-                        DatabaseHelper.instance.deleteHabit(widget.habitId);
-                        await widget.refreshParent();
-                      },
-                      icon: Icon(Icons.delete),
-                    ),
                 ],
               ),
       ),
