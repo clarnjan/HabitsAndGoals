@@ -9,6 +9,10 @@ import 'DialogButtons.dart';
 import 'Habit widgets/AddHabitDialog.dart';
 import 'Habit widgets/SelectHabitsDialog.dart';
 
+class AddHabitController {
+  late void Function() onSave;
+}
+
 class CustomDialog extends StatefulWidget {
   final int? weekId;
   final Function refreshParent;
@@ -26,6 +30,7 @@ class _CustomDialogState extends State<CustomDialog> {
   List<Habit> selectedHabits = [];
   bool isLoading = true;
   bool isSelecting = false;
+  final AddHabitController _controller = AddHabitController();
 
   @override
   void initState() {
@@ -59,21 +64,25 @@ class _CustomDialogState extends State<CustomDialog> {
   }
 
   save() async {
-    for (Habit habit in selectedHabits) {
-      if (!week.habits.any((element) => element.habitFK == habit.id)) {
-        if (habit.id == null) {
-          throw Exception("Habit id is null");
+    if (widget.canSelect && isSelecting) {
+      for (Habit habit in selectedHabits) {
+        if (!week.habits.any((element) => element.habitFK == habit.id)) {
+          if (habit.id == null) {
+            throw Exception("Habit id is null");
+          }
+          List<bool> days = [];
+          for (int i = 0; i < habit.repetitions; i++) {
+            days.add(false);
+          }
+          WeeklyHabit weeklyHabit = new WeeklyHabit(habitFK: habit.id!, weekFK: widget.weekId!, repetitionsDone: 0, days: days);
+          DatabaseHelper.instance.createWeeklyHabit(weeklyHabit);
         }
-        List<bool> days = [];
-        for (int i = 0; i < habit.repetitions; i++) {
-          days.add(false);
-        }
-        WeeklyHabit weeklyHabit = new WeeklyHabit(habitFK: habit.id!, weekFK: widget.weekId!, repetitionsDone: 0, days: days);
-        DatabaseHelper.instance.createWeeklyHabit(weeklyHabit);
       }
+      await widget.refreshParent();
+      Navigator.pop(context);
+    } else {
+      _controller.onSave();
     }
-    await widget.refreshParent();
-    Navigator.pop(context);
   }
 
   toggleButton(BuildContext context) async {
@@ -103,6 +112,8 @@ class _CustomDialogState extends State<CustomDialog> {
                       ),
                     )
                   : AddHabitDialog(
+                      weekId: widget.weekId,
+                      controller: _controller,
                       refreshParent: widget.refreshParent,
                     ),
             )

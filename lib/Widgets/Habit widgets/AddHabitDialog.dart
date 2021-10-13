@@ -1,18 +1,21 @@
 import 'package:diplomska1/Classes/DatabaseHelper.dart';
 import 'package:diplomska1/Classes/Habit.dart';
+import 'package:diplomska1/Classes/WeeklyHabit.dart';
+import 'package:diplomska1/Widgets/CustomDialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:numberpicker/numberpicker.dart';
 
 class AddHabitDialog extends StatefulWidget {
-  final Habit? habit;
+  final int? weekId;
   final Function refreshParent;
+  final AddHabitController controller;
 
-  const AddHabitDialog({Key? key, this.habit, required this.refreshParent}) : super(key: key);
+  const AddHabitDialog({Key? key, required this.controller, this.weekId, required this.refreshParent}) : super(key: key);
 
   @override
-  _AddHabitDialogState createState() => _AddHabitDialogState();
+  _AddHabitDialogState createState() => _AddHabitDialogState(controller);
 }
 
 class _AddHabitDialogState extends State<AddHabitDialog> {
@@ -20,11 +23,14 @@ class _AddHabitDialogState extends State<AddHabitDialog> {
   int inputSingle = 1;
   int outputSingle = 1;
   int repetitions = 1;
+  _AddHabitDialogState(AddHabitController _controller) {
+    _controller.onSave = onSave;
+  }
 
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final TextEditingController textEditingController = TextEditingController();
 
-  addHabit() async {
+  onSave() async {
     if (formKey.currentState!.validate()) {
       Habit habit = Habit(
         title: title!,
@@ -36,8 +42,16 @@ class _AddHabitDialogState extends State<AddHabitDialog> {
       );
 
       habit = await DatabaseHelper.instance.createHabit(habit);
+      if (widget.weekId != null && habit.id != null) {
+        List<bool> days = [];
+        for (int i = 0; i < habit.repetitions; i++) {
+          days.add(false);
+        }
+        WeeklyHabit weeklyHabit = new WeeklyHabit(habitFK: habit.id!, weekFK: widget.weekId!, repetitionsDone: 0, days: days);
+        DatabaseHelper.instance.createWeeklyHabit(weeklyHabit);
+      }
       await widget.refreshParent();
-      Navigator.of(context).pop();
+      Navigator.pop(context);
     }
   }
 
