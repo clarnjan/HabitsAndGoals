@@ -34,7 +34,7 @@ class DatabaseHelper {
     batch.execute('''
         CREATE TABLE $weeksTable (
           ${WeekFields.id} INTEGER PRIMARY KEY AUTOINCREMENT,
-          ${GoalFields.title} TEXT NOT NULL,
+          ${WeekFields.title} TEXT NOT NULL,
           ${WeekFields.startDate} TEXT UNIQUE NOT NULL,
           ${WeekFields.endDate} TEXT UNIQUE NOT NULL
         );''');
@@ -42,6 +42,7 @@ class DatabaseHelper {
         CREATE TABLE $goalsTable (
           ${GoalFields.id} INTEGER PRIMARY KEY AUTOINCREMENT,
           ${GoalFields.title} TEXT NOT NULL,
+          ${GoalFields.description} TEXT NULL,
           ${GoalFields.isFinished} BOOLEAN NOT NULL,
           ${GoalFields.createdTime} TEXT NOT NULL
         );''');
@@ -49,6 +50,7 @@ class DatabaseHelper {
         CREATE TABLE $habitsTable (
           ${HabitFields.id} INTEGER PRIMARY KEY AUTOINCREMENT,
           ${HabitFields.title} TEXT NOT NULL,
+          ${HabitFields.description} TEXT NULL,
           ${HabitFields.inputSingle} INTEGER NOT NULL,
           ${HabitFields.outputSingle} INTEGER NOT NULL,
           ${HabitFields.repetitions} INTEGER NOT NULL,
@@ -59,6 +61,7 @@ class DatabaseHelper {
         CREATE TABLE $tasksTable (
           ${TaskFields.id} INTEGER PRIMARY KEY AUTOINCREMENT,
           ${TaskFields.title} TEXT NOT NULL,
+          ${TaskFields.description} TEXT NULL,
           ${TaskFields.goalFK} INTEGER,
           ${TaskFields.input} INTEGER NOT NULL,
           ${TaskFields.output} INTEGER NOT NULL,

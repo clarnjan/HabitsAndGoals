@@ -1,10 +1,11 @@
 final String tasksTable = 'tasks';
 
 class TaskFields {
-  static final List<String> values = [ id, goalFK, title, input, output, isRepeating, createdTime];
+  static final List<String> values = [id, goalFK, title, description, input, output, isRepeating, createdTime];
   static final String id = '_id';
   static final String goalFK = 'goalFK';
   static final String title = 'title';
+  static final String description = 'description';
   static final String input = 'input';
   static final String output = 'output';
   static final String isRepeating = 'isRepeating';
@@ -15,6 +16,7 @@ class Task {
   int? id;
   int? goalFK;
   String title;
+  String? description;
   int input;
   int output;
   bool isRepeating;
@@ -24,17 +26,18 @@ class Task {
     this.id,
     this.goalFK,
     required this.title,
+    this.description,
     required this.input,
     required this.output,
     required this.isRepeating,
     required this.createdTime,
   });
 
-  Map<String, Object?> toJson() =>
-      {
+  Map<String, Object?> toJson() => {
         TaskFields.id: id,
         TaskFields.goalFK: goalFK,
         TaskFields.title: title,
+        TaskFields.description: description,
         TaskFields.input: input,
         TaskFields.output: output,
         TaskFields.isRepeating: isRepeating ? 1 : 0,
@@ -45,6 +48,7 @@ class Task {
     int? id,
     int? goalFK,
     String? title,
+    String? description,
     int? input,
     int? output,
     bool? isRepeating,
@@ -54,6 +58,7 @@ class Task {
         id: id ?? this.id,
         goalFK: goalFK ?? this.goalFK,
         title: title ?? this.title,
+        description: description ?? this.description,
         input: input ?? this.input,
         output: output ?? this.output,
         isRepeating: isRepeating ?? this.isRepeating,
@@ -61,12 +66,13 @@ class Task {
       );
 
   static Task fromJson(Map<String, Object?> json) => Task(
-    id: json[TaskFields.id] as int,
-    goalFK: json[TaskFields.goalFK] as int?,
-    title: json[TaskFields.title] as String,
-    input: json[TaskFields.input] as int,
-    output: json[TaskFields.output] as int,
-    isRepeating: json[TaskFields.isRepeating] == 1,
-    createdTime: DateTime.parse(json[TaskFields.createdTime] as String),
-  );
+        id: json[TaskFields.id] as int,
+        goalFK: json[TaskFields.goalFK] as int?,
+        title: json[TaskFields.title] as String,
+        description: json[TaskFields.description] as String?,
+        input: json[TaskFields.input] as int,
+        output: json[TaskFields.output] as int,
+        isRepeating: json[TaskFields.isRepeating] == 1,
+        createdTime: DateTime.parse(json[TaskFields.createdTime] as String),
+      );
 }

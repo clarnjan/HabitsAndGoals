@@ -1,17 +1,10 @@
 final String habitsTable = 'habits';
 
 class HabitFields {
-  static final List<String> values = [
-    id,
-    title,
-    inputSingle,
-    outputSingle,
-    repetitions,
-    isPaused,
-    createdTime
-  ];
+  static final List<String> values = [id, title, description, inputSingle, outputSingle, repetitions, isPaused, createdTime];
   static final String id = '_id';
   static final String title = 'title';
+  static final String description = 'description';
   static final String inputSingle = 'inputSingle';
   static final String outputSingle = 'outputSingle';
   static final String repetitions = 'repetitions';
@@ -22,6 +15,7 @@ class HabitFields {
 class Habit {
   int? id;
   String title;
+  String? description;
   int inputSingle;
   int outputSingle;
   int repetitions;
@@ -31,6 +25,7 @@ class Habit {
   Habit({
     this.id,
     required this.title,
+    this.description,
     required this.inputSingle,
     required this.outputSingle,
     required this.repetitions,
@@ -41,6 +36,7 @@ class Habit {
   Map<String, Object?> toJson() => {
         HabitFields.id: id,
         HabitFields.title: title,
+        HabitFields.description: description,
         HabitFields.inputSingle: inputSingle,
         HabitFields.outputSingle: outputSingle,
         HabitFields.repetitions: repetitions,
@@ -51,6 +47,7 @@ class Habit {
   Habit copy(
           {int? id,
           String? title,
+          String? description,
           int? inputSingle,
           int? outputSingle,
           int? repetitions,
@@ -59,6 +56,7 @@ class Habit {
       Habit(
         id: id ?? this.id,
         title: title ?? this.title,
+        description: description ?? this.description,
         inputSingle: inputSingle ?? this.inputSingle,
         outputSingle: outputSingle ?? this.outputSingle,
         repetitions: repetitions ?? this.repetitions,
@@ -69,6 +67,7 @@ class Habit {
   static Habit fromJson(Map<String, Object?> json) => Habit(
         id: json[HabitFields.id] as int,
         title: json[HabitFields.title] as String,
+        description: json[HabitFields.description] as String?,
         inputSingle: json[HabitFields.inputSingle] as int,
         outputSingle: json[HabitFields.outputSingle] as int,
         repetitions: json[HabitFields.repetitions] as int,
