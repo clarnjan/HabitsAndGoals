@@ -20,6 +20,7 @@ class AddHabitDialog extends StatefulWidget {
 
 class _AddHabitDialogState extends State<AddHabitDialog> {
   String? title;
+  String? description;
   int inputSingle = 1;
   int outputSingle = 1;
   int repetitions = 1;
@@ -34,6 +35,7 @@ class _AddHabitDialogState extends State<AddHabitDialog> {
     if (formKey.currentState!.validate()) {
       Habit habit = Habit(
         title: title!,
+        description: description,
         inputSingle: inputSingle,
         outputSingle: outputSingle,
         repetitions: repetitions,
@@ -73,6 +75,28 @@ class _AddHabitDialogState extends State<AddHabitDialog> {
             },
             decoration: InputDecoration(
               hintText: "Title",
+              hintStyle: TextStyle(
+                color: Colors.grey[300],
+              ),
+              labelStyle: TextStyle(
+                color: Colors.white,
+              ),
+            ),
+            style: TextStyle(
+              color: Colors.white,
+            ),
+          ),
+          SizedBox(
+            height: 20,
+          ),
+          TextField(
+            onChanged: (value) {
+              setState(() {
+                description = value;
+              });
+            },
+            decoration: InputDecoration(
+              hintText: "Description",
               hintStyle: TextStyle(
                 color: Colors.grey[300],
               ),

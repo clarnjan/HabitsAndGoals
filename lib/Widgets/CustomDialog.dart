@@ -95,7 +95,7 @@ class _CustomDialogState extends State<CustomDialog> {
   Widget build(BuildContext context) {
     return AlertDialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
-      contentPadding: EdgeInsets.all(10),
+      contentPadding: EdgeInsets.fromLTRB(10, 10, 10, 0),
       backgroundColor: Colors.grey[800],
       content: !isLoading
           ? Container(
@@ -117,16 +117,20 @@ class _CustomDialogState extends State<CustomDialog> {
                       refreshParent: widget.refreshParent,
                     ),
             )
-          : Container(),
+          : Center(
+              child: CircularProgressIndicator(),
+            ),
       actions: [
-        DialogButtons(
-          cancelButtonText: "Cancel",
-          submitButtonText: "Save",
-          newButtonText: isSelecting ? "New" : "Select",
-          showAddButton: widget.canSelect,
-          addFunction: toggleButton,
-          refreshParent: widget.refreshParent,
-          submitFunction: save,
+        Container(
+          child: DialogButtons(
+            cancelButtonText: "Cancel",
+            submitButtonText: "Save",
+            newButtonText: isSelecting ? "New" : "Select",
+            showAddButton: widget.canSelect,
+            addFunction: toggleButton,
+            refreshParent: widget.refreshParent,
+            submitFunction: save,
+          ),
         ),
       ],
     );
