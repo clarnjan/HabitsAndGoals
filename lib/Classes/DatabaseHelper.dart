@@ -248,6 +248,12 @@ class DatabaseHelper {
     return weeklyHabit.copy(id: id);
   }
 
+  Future<WeeklyTask> createWeeklyTask(WeeklyTask weeklyTask) async {
+    final db = await instance.database;
+    final id = await db.insert(weeklyTasksTable, weeklyTask.toJson());
+    return weeklyTask.copy(id: id);
+  }
+
   Future<int> updateTask(Task task) async {
     final db = await instance.database;
     return db.update(tasksTable, task.toJson(), where: '${TaskFields.id} = ?', whereArgs: [task.id]);

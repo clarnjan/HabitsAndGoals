@@ -25,9 +25,9 @@ class MyApp extends StatelessWidget {
         initialRoute: '/week',
         routes: {
           '/week': (context) => WeekDetails(),
-          '/habits': (context) => CardList(cardListType: CardListType.Habits),
-          '/tasks': (context) => CardList(cardListType: CardListType.Tasks),
-          '/goals': (context) => CardList(cardListType: CardListType.Goals),
+          '/habits': (context) => CardList(noteType: NoteType.Habit),
+          '/tasks': (context) => CardList(noteType: NoteType.Task),
+          '/goals': (context) => CardList(noteType: NoteType.Goal),
         });
   }
 }

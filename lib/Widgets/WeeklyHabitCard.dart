@@ -25,11 +25,9 @@ class _WeeklyHabitCardState extends State<WeeklyHabitCard> {
   }
 
   refresh() async {
-    setState(() {
-      isLoading = true;
-    });
     habit = await DatabaseHelper.instance.getHabit(widget.habitId);
     weeklyHabit = await DatabaseHelper.instance.getWeklyHabit(widget.weekId, widget.habitId);
+    if (!mounted) return;
     setState(() {
       isLoading = false;
     });

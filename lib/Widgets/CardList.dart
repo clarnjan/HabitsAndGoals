@@ -4,16 +4,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'ClickableCard.dart';
-import 'CustomDialog.dart';
-import 'Goal widgets/AddGoalDialog.dart';
+import 'Dialogs/CustomDialog.dart';
 import 'Habit widgets/HabitDetails.dart';
 import 'MainMenu.dart';
-import 'Task widgets/AddTaskDialog.dart';
 
 class CardList extends StatefulWidget {
-  final CardListType cardListType;
+  final NoteType noteType;
 
-  const CardList({Key? key, required this.cardListType}) : super(key: key);
+  const CardList({Key? key, required this.noteType}) : super(key: key);
 
   @override
   _CardListState createState() => _CardListState();
@@ -36,22 +34,22 @@ class _CardListState extends State<CardList> {
     setState(() {
       isLoading = true;
     });
-    switch (widget.cardListType) {
-      case CardListType.Habits:
+    switch (widget.noteType) {
+      case NoteType.Habit:
         {
           this.items = await DatabaseHelper.instance.getAllHabits();
           appBarTitle = "Habits";
           floatingButtonType = FloatingButtonType.AddHabit;
           break;
         }
-      case CardListType.Tasks:
+      case NoteType.Task:
         {
           this.items = await DatabaseHelper.instance.getAllTasks();
           appBarTitle = "Tasks";
           floatingButtonType = FloatingButtonType.AddTask;
           break;
         }
-      case CardListType.Goals:
+      case NoteType.Goal:
         {
           this.items = await DatabaseHelper.instance.getAllGoals();
           appBarTitle = "Goals";
@@ -78,17 +76,11 @@ class _CardListState extends State<CardList> {
     return await showDialog(
       context: context,
       builder: (context) {
-        switch (widget.cardListType) {
-          case CardListType.Habits:
-            return CustomDialog(
-              canSelect: false,
-              refreshParent: refresh,
-            );
-          case CardListType.Tasks:
-            return AddTaskDialog(refreshParent: refresh);
-          case CardListType.Goals:
-            return AddGoalDialog(refreshParent: refresh);
-        }
+        return CustomDialog(
+          canSelect: false,
+          refreshParent: refresh,
+          noteType: widget.noteType,
+        );
       },
     );
   }

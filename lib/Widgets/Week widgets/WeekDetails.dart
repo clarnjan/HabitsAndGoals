@@ -1,5 +1,6 @@
 import 'package:diplomska1/Classes/DatabaseHelper.dart';
 import 'package:diplomska1/Classes/DateService.dart';
+import 'package:diplomska1/Classes/Enums.dart';
 import 'package:diplomska1/Classes/Week.dart';
 import 'package:diplomska1/Widgets/LabelWidget.dart';
 import 'package:diplomska1/Widgets/WeeklyHabitCard.dart';
@@ -8,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
-import '../CustomDialog.dart';
+import '../Dialogs/CustomDialog.dart';
 import '../MainMenu.dart';
 import 'WeeksPopup.dart';
 
@@ -25,6 +26,8 @@ class _WeekDetailsState extends State<WeekDetails> {
   late Week week;
   bool isLoading = true;
   bool shouldShow = false;
+  final Key centerKey = ValueKey('second-sliver-list');
+  final ScrollController scrollController = ScrollController();
   GlobalKey<RefreshIndicatorState> refreshState = GlobalKey<RefreshIndicatorState>();
 
   @override
@@ -48,12 +51,21 @@ class _WeekDetailsState extends State<WeekDetails> {
   }
 
   refresh() async {
+    setState(() {
+      isLoading = true;
+    });
     if (week.id != null) {
       week = await DatabaseHelper.instance.getWeek(week.id!);
     }
     setState(() {
       isLoading = false;
     });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    scrollController.dispose();
   }
 
   @override
@@ -130,18 +142,38 @@ class _WeekDetailsState extends State<WeekDetails> {
                           onRefresh: () async {
                             await refresh();
                           },
-                          child: ListView.builder(
-                              itemCount: week.habits.length,
-                              itemBuilder: (context, index) {
-                                final weeklyHabit = week.habits[index];
-                                return Container(
-                                  margin: index == week.habits.length - 1 ? EdgeInsets.only(bottom: 50) : EdgeInsets.only(bottom: 0),
-                                  child: WeeklyHabitCard(
-                                    weekId: week.id!,
-                                    habitId: weeklyHabit.habitFK,
-                                  ),
-                                );
-                              }),
+                          child: CustomScrollView(
+                            controller: scrollController,
+                            shrinkWrap: true,
+                            slivers: <Widget>[
+                              SliverList(
+                                delegate: SliverChildBuilderDelegate(
+                                  (BuildContext context, int index) {
+                                    return Container(
+                                      child: WeeklyHabitCard(
+                                        weekId: week.id!,
+                                        habitId: week.habits[index].habitFK,
+                                      ),
+                                    );
+                                  },
+                                  childCount: week.habits.length,
+                                ),
+                              ),
+                              SliverList(
+                                delegate: SliverChildBuilderDelegate(
+                                  (BuildContext context, int index) {
+                                    return Container(
+                                      child: WeeklyHabitCard(
+                                        weekId: week.id!,
+                                        habitId: week.habits[index].habitFK,
+                                      ),
+                                    );
+                                  },
+                                  childCount: week.habits.length,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
               ]),
@@ -168,8 +200,6 @@ class _WeekDetailsState extends State<WeekDetails> {
                   curve: Curves.bounceIn,
                   overlayColor: Colors.black,
                   overlayOpacity: 0.5,
-                  onOpen: () => print('OPENING DIAL'),
-                  onClose: () => print('DIAL CLOSED'),
                   backgroundColor: Colors.green,
                   foregroundColor: Colors.grey.shade800,
                   elevation: 1.0,
@@ -195,6 +225,7 @@ class _WeekDetailsState extends State<WeekDetails> {
                                 weekId: week.id!,
                                 canSelect: true,
                                 refreshParent: refresh,
+                                noteType: NoteType.Habit,
                               );
                             });
                       },
@@ -216,6 +247,7 @@ class _WeekDetailsState extends State<WeekDetails> {
                                 weekId: week.id!,
                                 canSelect: true,
                                 refreshParent: refresh,
+                                noteType: NoteType.Task,
                               );
                             });
                       },

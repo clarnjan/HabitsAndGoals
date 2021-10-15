@@ -8,4 +8,4 @@ enum FloatingButtonType {
   SelectHabits,
 }
 
-enum CardListType { Habits, Tasks, Goals }
+enum NoteType { Habit, Task, Goal }
