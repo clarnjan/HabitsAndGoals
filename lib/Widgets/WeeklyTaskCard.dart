@@ -1,21 +1,21 @@
 import 'package:diplomska1/Classes/DatabaseHelper.dart';
-import 'package:diplomska1/Classes/Habit.dart';
-import 'package:diplomska1/Classes/WeeklyHabit.dart';
+import 'package:diplomska1/Classes/Task.dart';
+import 'package:diplomska1/Classes/WeeklyTask.dart';
 import 'package:flutter/material.dart';
 
-class WeeklyHabitCard extends StatefulWidget {
-  final int habitId;
+class WeeklyTaskCard extends StatefulWidget {
+  final int taskId;
   final int weekId;
 
-  WeeklyHabitCard({required this.habitId, required this.weekId});
+  WeeklyTaskCard({required this.taskId, required this.weekId});
 
   @override
-  _WeeklyHabitCardState createState() => _WeeklyHabitCardState();
+  _WeeklyTaskCardState createState() => _WeeklyTaskCardState();
 }
 
-class _WeeklyHabitCardState extends State<WeeklyHabitCard> {
-  late Habit habit;
-  late WeeklyHabit weeklyHabit;
+class _WeeklyTaskCardState extends State<WeeklyTaskCard> {
+  late Task task;
+  late WeeklyTask weeklyTask;
   bool isLoading = true;
 
   @override
@@ -25,8 +25,8 @@ class _WeeklyHabitCardState extends State<WeeklyHabitCard> {
   }
 
   refresh() async {
-    habit = await DatabaseHelper.instance.getHabit(widget.habitId);
-    weeklyHabit = await DatabaseHelper.instance.getWeeklyHabit(widget.weekId, widget.habitId);
+    task = await DatabaseHelper.instance.getTask(widget.taskId);
+    weeklyTask = await DatabaseHelper.instance.getWeeklyTask(widget.weekId, widget.taskId);
     if (!mounted) return;
     setState(() {
       isLoading = false;
@@ -61,7 +61,7 @@ class _WeeklyHabitCardState extends State<WeeklyHabitCard> {
                       children: [
                         Expanded(
                           child: Text(
-                            habit.title,
+                            task.title,
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 20,
@@ -70,7 +70,7 @@ class _WeeklyHabitCardState extends State<WeeklyHabitCard> {
                           ),
                         ),
                         Text(
-                          "${habit.inputSingle.toString()} - ${habit.outputSingle.toString()}",
+                          "${task.input.toString()} - ${task.output.toString()}",
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 20,
@@ -86,38 +86,37 @@ class _WeeklyHabitCardState extends State<WeeklyHabitCard> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      for (int i = 0; i < weeklyHabit.days.length; i++)
-                        InkWell(
-                          onTap: () {
-                            setState(() {
-                              weeklyHabit.days[i] = !weeklyHabit.days[i];
-                              DatabaseHelper.instance.updateWeeklyHabit(weeklyHabit);
-                            });
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.all(2.0),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: weeklyHabit.days[i] ? Colors.green.shade700 : Colors.transparent,
-                                border: Border.all(
-                                  color: weeklyHabit.days[i] ? Colors.green.shade700 : Colors.white,
-                                  width: 2,
-                                ),
-                                borderRadius: BorderRadius.circular(8),
+                      InkWell(
+                        onTap: () {
+                          setState(() {
+                            weeklyTask.isFinished = !weeklyTask.isFinished;
+                            DatabaseHelper.instance.updateWeeklyTask(weeklyTask);
+                          });
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.all(2.0),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: weeklyTask.isFinished ? Colors.green.shade700 : Colors.transparent,
+                              border: Border.all(
+                                color: weeklyTask.isFinished ? Colors.green.shade700 : Colors.white,
+                                width: 2,
                               ),
-                              child: weeklyHabit.days[i]
-                                  ? Icon(
-                                      Icons.check,
-                                      size: 22.0,
-                                      color: Colors.white,
-                                    )
-                                  : Icon(
-                                      null,
-                                      size: 22.0,
-                                    ),
+                              borderRadius: BorderRadius.circular(8),
                             ),
+                            child: weeklyTask.isFinished
+                                ? Icon(
+                                    Icons.check,
+                                    size: 22.0,
+                                    color: Colors.white,
+                                  )
+                                : Icon(
+                                    null,
+                                    size: 22.0,
+                                  ),
                           ),
                         ),
+                      ),
                     ],
                   ),
                 ],

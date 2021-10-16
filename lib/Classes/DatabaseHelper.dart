@@ -139,6 +139,7 @@ class DatabaseHelper {
     if (result.isNotEmpty) {
       Week week = Week.fromJson(result.first);
       week.habits = await getWeeklyHabitsForWeek(id);
+      week.tasks = await getWeeklyTasksForWeek(id);
       return week;
     } else {
       throw Exception('ID: $id not found');
@@ -166,6 +167,7 @@ class DatabaseHelper {
         currentWeek.id = await db.insert(weeksTable, currentWeek.toJson());
       }
       currentWeek.habits = await getWeeklyHabitsForWeek(currentWeek.id!);
+      currentWeek.tasks = await getWeeklyTasksForWeek(currentWeek.id!);
       return currentWeek;
     }
     throw Exception("Error occurred");
@@ -182,6 +184,13 @@ class DatabaseHelper {
     final result =
         await db.query(weeklyHabitsTable, columns: WeeklyHabitFields.values, where: '${WeeklyHabitFields.weekFK} = ?', whereArgs: [weekId]);
     return result.map((json) => WeeklyHabit.fromJson(json)).toList();
+  }
+
+  Future<List<WeeklyTask>> getWeeklyTasksForWeek(int weekId) async {
+    final db = await instance.database;
+    final result =
+        await db.query(weeklyTasksTable, columns: WeeklyTaskFields.values, where: '${WeeklyTaskFields.weekFK} = ?', whereArgs: [weekId]);
+    return result.map((json) => WeeklyTask.fromJson(json)).toList();
   }
 
   Future<Habit> getHabit(int id) async {
@@ -204,7 +213,7 @@ class DatabaseHelper {
     }
   }
 
-  Future<WeeklyHabit> getWeklyHabit(int weekId, int habitId) async {
+  Future<WeeklyHabit> getWeeklyHabit(int weekId, int habitId) async {
     final db = await instance.database;
     final result = await db.query(weeklyHabitsTable,
         columns: WeeklyHabitFields.values,
@@ -214,6 +223,19 @@ class DatabaseHelper {
       return WeeklyHabit.fromJson(result.first);
     } else {
       throw Exception('Weekly habit not found');
+    }
+  }
+
+  Future<WeeklyTask> getWeeklyTask(int weekId, int taskId) async {
+    final db = await instance.database;
+    final result = await db.query(weeklyTasksTable,
+        columns: WeeklyTaskFields.values,
+        where: '${WeeklyTaskFields.weekFK} = ? AND ${WeeklyTaskFields.taskFK} = ?',
+        whereArgs: [weekId, taskId]);
+    if (result.isNotEmpty) {
+      return WeeklyTask.fromJson(result.first);
+    } else {
+      throw Exception('Weekly task not found');
     }
   }
 
@@ -282,5 +304,10 @@ class DatabaseHelper {
   Future<int> updateWeeklyHabit(WeeklyHabit weeklyHabit) async {
     final db = await instance.database;
     return db.update(weeklyHabitsTable, weeklyHabit.toJson(), where: '${WeeklyHabitFields.id} = ?', whereArgs: [weeklyHabit.id]);
+  }
+
+  Future<int> updateWeeklyTask(WeeklyTask weeklyTask) async {
+    final db = await instance.database;
+    return db.update(weeklyTasksTable, weeklyTask.toJson(), where: '${WeeklyTaskFields.id} = ?', whereArgs: [weeklyTask.id]);
   }
 }

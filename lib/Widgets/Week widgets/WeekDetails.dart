@@ -4,6 +4,7 @@ import 'package:diplomska1/Classes/Enums.dart';
 import 'package:diplomska1/Classes/Week.dart';
 import 'package:diplomska1/Widgets/LabelWidget.dart';
 import 'package:diplomska1/Widgets/WeeklyHabitCard.dart';
+import 'package:diplomska1/Widgets/WeeklyTaskCard.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
@@ -142,38 +143,41 @@ class _WeekDetailsState extends State<WeekDetails> {
                           onRefresh: () async {
                             await refresh();
                           },
-                          child: CustomScrollView(
-                            controller: scrollController,
-                            shrinkWrap: true,
-                            slivers: <Widget>[
-                              SliverList(
-                                delegate: SliverChildBuilderDelegate(
-                                  (BuildContext context, int index) {
-                                    return Container(
-                                      child: WeeklyHabitCard(
-                                        weekId: week.id!,
-                                        habitId: week.habits[index].habitFK,
+                          child: week.habits.length > 0 || week.tasks.length > 0
+                              ? CustomScrollView(
+                                  controller: scrollController,
+                                  physics: ScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+                                  shrinkWrap: true,
+                                  slivers: <Widget>[
+                                    SliverList(
+                                      delegate: SliverChildBuilderDelegate(
+                                        (BuildContext context, int index) {
+                                          return Container(
+                                            child: WeeklyHabitCard(
+                                              weekId: week.id!,
+                                              habitId: week.habits[index].habitFK,
+                                            ),
+                                          );
+                                        },
+                                        childCount: week.habits.length,
                                       ),
-                                    );
-                                  },
-                                  childCount: week.habits.length,
-                                ),
-                              ),
-                              SliverList(
-                                delegate: SliverChildBuilderDelegate(
-                                  (BuildContext context, int index) {
-                                    return Container(
-                                      child: WeeklyHabitCard(
-                                        weekId: week.id!,
-                                        habitId: week.habits[index].habitFK,
+                                    ),
+                                    SliverList(
+                                      delegate: SliverChildBuilderDelegate(
+                                        (BuildContext context, int index) {
+                                          return Container(
+                                            child: WeeklyTaskCard(
+                                              weekId: week.id!,
+                                              taskId: week.tasks[index].taskFK,
+                                            ),
+                                          );
+                                        },
+                                        childCount: week.tasks.length,
                                       ),
-                                    );
-                                  },
-                                  childCount: week.habits.length,
-                                ),
-                              ),
-                            ],
-                          ),
+                                    ),
+                                  ],
+                                )
+                              : ListView(),
                         ),
                       ),
               ]),
