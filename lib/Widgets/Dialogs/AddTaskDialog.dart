@@ -124,7 +124,7 @@ class _AddTaskDialogState extends State<AddTaskDialog> {
                   itemHeight: 30,
                   axis: Axis.horizontal,
                   selectedTextStyle: TextStyle(
-                    fontSize: 18,
+                    fontSize: 15,
                     color: CupertinoColors.activeGreen,
                     fontWeight: FontWeight.bold,
                   ),
@@ -141,7 +141,7 @@ class _AddTaskDialogState extends State<AddTaskDialog> {
                 "Output: ",
                 style: TextStyle(
                   color: Colors.white,
-                  fontSize: 16,
+                  fontSize: 15,
                 ),
               ),
               NumberPicker(
@@ -153,7 +153,7 @@ class _AddTaskDialogState extends State<AddTaskDialog> {
                 itemHeight: 30,
                 axis: Axis.horizontal,
                 selectedTextStyle: TextStyle(
-                  fontSize: 18,
+                  fontSize: 15,
                   color: CupertinoColors.activeGreen,
                   fontWeight: FontWeight.bold,
                 ),

@@ -11,7 +11,7 @@ class MainMenu extends StatelessWidget {
       child: ListView(
         children: [
           SizedBox(
-            height: 20,
+            height: 15,
           ),
           ListTile(
             onTap: () {
@@ -21,13 +21,13 @@ class MainMenu extends StatelessWidget {
               "Weeks",
               style: TextStyle(
                 color: Colors.white,
-                fontSize: 24,
+                fontSize: 20,
               ),
             ),
             trailing: Icon(
               Icons.calendar_view_week,
               color: Colors.white,
-              size: 24,
+              size: 22,
             ),
           ),
           Divider(
@@ -43,13 +43,13 @@ class MainMenu extends StatelessWidget {
               "Habits",
               style: TextStyle(
                 color: Colors.white,
-                fontSize: 24,
+                fontSize: 20,
               ),
             ),
             trailing: Icon(
               Icons.checklist_rtl,
               color: Colors.white,
-              size: 24,
+              size: 22,
             ),
           ),
           Divider(
@@ -65,13 +65,13 @@ class MainMenu extends StatelessWidget {
               "Tasks",
               style: TextStyle(
                 color: Colors.white,
-                fontSize: 24,
+                fontSize: 20,
               ),
             ),
             trailing: Icon(
               Icons.task,
               color: Colors.white,
-              size: 24,
+              size: 22,
             ),
           ),
           Divider(
@@ -87,13 +87,13 @@ class MainMenu extends StatelessWidget {
               "Goals",
               style: TextStyle(
                 color: Colors.white,
-                fontSize: 24,
+                fontSize: 20,
               ),
             ),
             trailing: Icon(
               Icons.adjust,
               color: Colors.white,
-              size: 24,
+              size: 22,
             ),
           ),
           Divider(

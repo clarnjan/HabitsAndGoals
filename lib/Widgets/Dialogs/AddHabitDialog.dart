@@ -117,7 +117,7 @@ class _AddHabitDialogState extends State<AddHabitDialog> {
                 "Repetitions: ",
                 style: TextStyle(
                   color: Colors.white,
-                  fontSize: 16,
+                  fontSize: 15,
                 ),
               ),
               NumberPicker(
@@ -145,7 +145,7 @@ class _AddHabitDialogState extends State<AddHabitDialog> {
                 "Input: ",
                 style: TextStyle(
                   color: Colors.white,
-                  fontSize: 16,
+                  fontSize: 15,
                 ),
               ),
               Container(
@@ -175,7 +175,7 @@ class _AddHabitDialogState extends State<AddHabitDialog> {
                 "Output: ",
                 style: TextStyle(
                   color: Colors.white,
-                  fontSize: 16,
+                  fontSize: 15,
                 ),
               ),
               NumberPicker(

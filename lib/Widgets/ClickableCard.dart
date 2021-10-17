@@ -44,7 +44,7 @@ class _ClickableCardState extends State<ClickableCard> {
                 widget.title,
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
-                  fontSize: 20,
+                  fontSize: 15,
                   color: Colors.white,
                 ),
               ),

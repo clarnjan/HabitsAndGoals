@@ -41,7 +41,7 @@ class _SelectHabitsDialogState extends State<SelectHabitsDialog> {
                 "All habits already added in this week.\nClick New to add more",
                 style: TextStyle(
                   color: Colors.white,
-                  fontSize: 20,
+                  fontSize: 15,
                 ),
                 textAlign: TextAlign.center,
               ),
