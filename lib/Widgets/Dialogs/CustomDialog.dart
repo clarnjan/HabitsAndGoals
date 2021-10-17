@@ -34,34 +34,31 @@ class CustomDialog extends StatefulWidget {
 
 class _CustomDialogState extends State<CustomDialog> {
   late Week week;
-  late List<Habit> habits;
+  List<Habit> habits = [];
   List<Habit> selectedHabits = [];
-  late List<Task> tasks;
+  List<Task> tasks = [];
   List<Task> selectedTasks = [];
-  bool isLoading = true;
+  bool isLoading = false;
   bool isSelecting = false;
   final AddItemController _controller = AddItemController();
 
   @override
   void initState() {
     super.initState();
-    init();
   }
 
-  init() async {
+  fetchData() async {
     setState(() {
       isLoading = true;
     });
     if (widget.canSelect && widget.weekId != null) {
       if (widget.noteType == NoteType.Habit) {
-        isSelecting = true;
         week = await DatabaseHelper.instance.getWeek(widget.weekId!);
         this.habits = await DatabaseHelper.instance.getAllHabits();
         for (WeeklyHabit wh in week.habits) {
           this.habits.removeWhere((element) => element.id == wh.habitFK);
         }
       } else if (widget.noteType == NoteType.Task) {
-        isSelecting = true;
         week = await DatabaseHelper.instance.getWeek(widget.weekId!);
         this.tasks = await DatabaseHelper.instance.getAllTasks();
         for (WeeklyTask wt in week.tasks) {
@@ -128,6 +125,7 @@ class _CustomDialogState extends State<CustomDialog> {
     setState(() {
       isSelecting = !isSelecting;
     });
+    if (isSelecting && habits.isEmpty && tasks.isEmpty) fetchData();
   }
 
   Widget getSelectDialog() {
@@ -189,8 +187,11 @@ class _CustomDialogState extends State<CustomDialog> {
               width: MediaQuery.of(context).size.width / 1.4,
               child: widget.canSelect && widget.weekId != null && isSelecting ? getSelectDialog() : getAddDialog(),
             )
-          : Center(
-              child: CircularProgressIndicator(),
+          : Container(
+              height: 200,
+              child: Center(
+                child: CircularProgressIndicator(),
+              ),
             ),
       actions: [
         Container(

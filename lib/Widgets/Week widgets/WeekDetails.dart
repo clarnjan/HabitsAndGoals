@@ -149,10 +149,39 @@ class _WeekDetailsState extends State<WeekDetails> {
                                   physics: ScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
                                   shrinkWrap: true,
                                   slivers: <Widget>[
+                                    if (week.habits.length > 0)
+                                      SliverList(
+                                          delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
+                                        return Container(
+                                          padding: EdgeInsets.all(10),
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text(
+                                                "Habits:",
+                                                style: TextStyle(
+                                                  fontSize: 18,
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                              Text(
+                                                "X - Y",
+                                                style: TextStyle(
+                                                  fontSize: 18,
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        );
+                                      }, childCount: 1)),
                                     SliverList(
                                       delegate: SliverChildBuilderDelegate(
                                         (BuildContext context, int index) {
                                           return Container(
+                                            margin: EdgeInsets.only(
+                                              bottom: week.tasks.isNotEmpty || index < week.habits.length - 1 ? 0 : 70,
+                                            ),
                                             child: WeeklyHabitCard(
                                               weekId: week.id!,
                                               habitId: week.habits[index].habitFK,
@@ -162,10 +191,39 @@ class _WeekDetailsState extends State<WeekDetails> {
                                         childCount: week.habits.length,
                                       ),
                                     ),
+                                    if (week.tasks.length > 0)
+                                      SliverList(
+                                          delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
+                                        return Container(
+                                          padding: EdgeInsets.all(10),
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text(
+                                                "Tasks:",
+                                                style: TextStyle(
+                                                  fontSize: 18,
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                              Text(
+                                                "X - Y",
+                                                style: TextStyle(
+                                                  fontSize: 18,
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        );
+                                      }, childCount: 1)),
                                     SliverList(
                                       delegate: SliverChildBuilderDelegate(
                                         (BuildContext context, int index) {
                                           return Container(
+                                            margin: EdgeInsets.only(
+                                              bottom: index < week.tasks.length - 1 ? 0 : 70,
+                                            ),
                                             child: WeeklyTaskCard(
                                               weekId: week.id!,
                                               taskId: week.tasks[index].taskFK,
