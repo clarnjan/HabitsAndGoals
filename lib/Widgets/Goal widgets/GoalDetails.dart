@@ -1,3 +1,4 @@
+import 'package:diplomska1/Classes/DatabaseHelper.dart';
 import 'package:diplomska1/Classes/Goal.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -28,7 +29,7 @@ class _GoalDetailsState extends State<GoalDetails> {
     setState(() {
       isLoading = true;
     });
-    //this.goal = await DatabaseHelper.instance.getWeek(widget.goalId);
+    this.goal = await DatabaseHelper.instance.getGoal(widget.goalId);
     setState(() {
       isLoading = false;
     });

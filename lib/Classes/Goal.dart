@@ -1,3 +1,5 @@
+import 'package:diplomska1/Classes/Task.dart';
+
 final String goalsTable = 'goals';
 
 class GoalFields {
@@ -15,6 +17,7 @@ class Goal {
   String? description;
   bool isFinished;
   DateTime createdTime;
+  late List<Task> tasks;
 
   Goal({
     this.id,
@@ -22,6 +25,7 @@ class Goal {
     this.description,
     required this.isFinished,
     required this.createdTime,
+    this.tasks = const [],
   });
 
   Map<String, Object?> toJson() => {

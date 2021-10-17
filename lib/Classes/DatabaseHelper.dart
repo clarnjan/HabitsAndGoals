@@ -193,6 +193,12 @@ class DatabaseHelper {
     return result.map((json) => WeeklyTask.fromJson(json)).toList();
   }
 
+  Future<List<Task>> getTasksForGoal(int goalId) async {
+    final db = await instance.database;
+    final result = await db.query(tasksTable, columns: TaskFields.values, where: '${TaskFields.goalFK} = ?', whereArgs: [goalId]);
+    return result.map((json) => Task.fromJson(json)).toList();
+  }
+
   Future<Habit> getHabit(int id) async {
     final db = await instance.database;
     final result = await db.query(habitsTable, columns: HabitFields.values, where: '${HabitFields.id} = ?', whereArgs: [id]);
@@ -208,6 +214,18 @@ class DatabaseHelper {
     final result = await db.query(tasksTable, columns: TaskFields.values, where: '${TaskFields.id} = ?', whereArgs: [id]);
     if (result.isNotEmpty) {
       return Task.fromJson(result.first);
+    } else {
+      throw Exception('ID: $id not found');
+    }
+  }
+
+  Future<Goal> getGoal(int id) async {
+    final db = await instance.database;
+    final result = await db.query(goalsTable, columns: GoalFields.values, where: '${GoalFields.id} = ?', whereArgs: [id]);
+    if (result.isNotEmpty) {
+      Goal goal = Goal.fromJson(result.first);
+      goal.tasks = await getTasksForGoal(id);
+      return goal;
     } else {
       throw Exception('ID: $id not found');
     }

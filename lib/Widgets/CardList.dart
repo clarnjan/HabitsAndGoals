@@ -5,8 +5,10 @@ import 'package:flutter/material.dart';
 
 import 'ClickableCard.dart';
 import 'Dialogs/CustomDialog.dart';
+import 'Goal widgets/GoalDetails.dart';
 import 'Habit widgets/HabitDetails.dart';
 import 'MainMenu.dart';
+import 'Task widgets/TaskDetails.dart';
 
 class CardList extends StatefulWidget {
   final NoteType noteType;
@@ -63,13 +65,32 @@ class _CardListState extends State<CardList> {
   }
 
   Widget getCard(item) {
-    return ClickableCard(
-      title: item.title,
-      isSelectable: false,
-      tapFunction: () {
-        Navigator.push(context, MaterialPageRoute(builder: (context) => HabitDetails(item)));
-      },
-    );
+    switch (widget.noteType) {
+      case NoteType.Habit:
+        return ClickableCard(
+          title: item.title,
+          isSelectable: false,
+          tapFunction: () {
+            Navigator.push(context, MaterialPageRoute(builder: (context) => HabitDetails(item.id)));
+          },
+        );
+      case NoteType.Task:
+        return ClickableCard(
+          title: item.title,
+          isSelectable: false,
+          tapFunction: () {
+            Navigator.push(context, MaterialPageRoute(builder: (context) => TaskDetails(item.id)));
+          },
+        );
+      case NoteType.Goal:
+        return ClickableCard(
+          title: item.title,
+          isSelectable: false,
+          tapFunction: () {
+            Navigator.push(context, MaterialPageRoute(builder: (context) => GoalDetails(item.id)));
+          },
+        );
+    }
   }
 
   Future<void> floatingButtonClick(BuildContext context) async {

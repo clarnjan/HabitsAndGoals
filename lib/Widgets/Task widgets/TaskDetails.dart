@@ -1,21 +1,21 @@
 import 'package:diplomska1/Classes/DatabaseHelper.dart';
-import 'package:diplomska1/Classes/Habit.dart';
+import 'package:diplomska1/Classes/Task.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../MainMenu.dart';
 
-class HabitDetails extends StatefulWidget {
-  final int habitId;
+class TaskDetails extends StatefulWidget {
+  final int taskId;
 
-  const HabitDetails(this.habitId, {Key? key}) : super(key: key);
+  const TaskDetails(this.taskId, {Key? key}) : super(key: key);
 
   @override
-  _HabitDetailsState createState() => _HabitDetailsState();
+  _TaskDetailsState createState() => _TaskDetailsState();
 }
 
-class _HabitDetailsState extends State<HabitDetails> {
-  late Habit habit;
+class _TaskDetailsState extends State<TaskDetails> {
+  late Task task;
   bool isLoading = true;
   GlobalKey<RefreshIndicatorState> refreshState = GlobalKey<RefreshIndicatorState>();
 
@@ -29,7 +29,7 @@ class _HabitDetailsState extends State<HabitDetails> {
     setState(() {
       isLoading = true;
     });
-    this.habit = await DatabaseHelper.instance.getHabit(widget.habitId);
+    this.task = await DatabaseHelper.instance.getTask(widget.taskId);
     setState(() {
       isLoading = false;
     });
@@ -42,7 +42,7 @@ class _HabitDetailsState extends State<HabitDetails> {
         child: MainMenu(),
       ),
       appBar: AppBar(
-        title: isLoading ? Text('loading') : Text(habit.title),
+        title: isLoading ? Text('loading') : Text(task.title),
       ),
       body: Stack(
         children: [
