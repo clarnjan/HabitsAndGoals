@@ -5,6 +5,7 @@ import 'package:diplomska1/Classes/Task.dart';
 import 'package:diplomska1/Classes/Week.dart';
 import 'package:diplomska1/Classes/WeeklyHabit.dart';
 import 'package:diplomska1/Classes/WeeklyTask.dart';
+import 'package:diplomska1/Widgets/Dialogs/AddGoalDialog.dart';
 import 'package:diplomska1/Widgets/Dialogs/AddTaskDialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -130,35 +131,47 @@ class _CustomDialogState extends State<CustomDialog> {
   }
 
   Widget getSelectDialog() {
-    if (widget.noteType == NoteType.Habit)
-      return Container(
-        child: SelectHabitsDialog(
-          habits: habits,
-          selectHabit: selectHabit,
-        ),
-      );
-    //if (widget.noteType == NoteType.Task)
-    return Container(
-      child: SelectTasksDialog(
-        tasks: tasks,
-        selectTask: selectTask,
-      ),
-    );
+    switch (widget.noteType) {
+      case NoteType.Habit:
+        return Container(
+          child: SelectHabitsDialog(
+            habits: habits,
+            selectHabit: selectHabit,
+          ),
+        );
+      case NoteType.Task:
+        return Container(
+          child: SelectTasksDialog(
+            tasks: tasks,
+            selectTask: selectTask,
+          ),
+        );
+      case NoteType.Goal:
+        return Text("Nothing to select");
+    }
   }
 
   Widget getAddDialog() {
-    if (widget.noteType == NoteType.Habit)
-      return AddHabitDialog(
-        weekId: widget.weekId,
-        controller: _controller,
-        refreshParent: widget.refreshParent,
-      );
-    //if (widget.noteType == NoteType.Task)
-    return AddTaskDialog(
-      weekId: widget.weekId,
-      controller: _controller,
-      refreshParent: widget.refreshParent,
-    );
+    switch (widget.noteType) {
+      case NoteType.Habit:
+        return AddHabitDialog(
+          weekId: widget.weekId,
+          controller: _controller,
+          refreshParent: widget.refreshParent,
+        );
+      case NoteType.Task:
+        return AddTaskDialog(
+          weekId: widget.weekId,
+          controller: _controller,
+          refreshParent: widget.refreshParent,
+        );
+      case NoteType.Goal:
+        return AddGoalDialog(
+          weekId: widget.weekId,
+          controller: _controller,
+          refreshParent: widget.refreshParent,
+        );
+    }
   }
 
   @override
