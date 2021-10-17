@@ -153,7 +153,7 @@ class _AddHabitDialogState extends State<AddHabitDialog> {
                 child: NumberPicker(
                   value: inputSingle,
                   minValue: 0,
-                  maxValue: 100,
+                  maxValue: 99,
                   onChanged: (value) => setState(() => inputSingle = value),
                   itemWidth: 40,
                   itemHeight: 30,
@@ -181,7 +181,7 @@ class _AddHabitDialogState extends State<AddHabitDialog> {
               NumberPicker(
                 value: outputSingle,
                 minValue: 0,
-                maxValue: 100,
+                maxValue: 99,
                 onChanged: (value) => setState(() => outputSingle = value),
                 itemWidth: 40,
                 itemHeight: 30,

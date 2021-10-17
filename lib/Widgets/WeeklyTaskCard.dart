@@ -44,80 +44,69 @@ class _WeeklyTaskCardState extends State<WeeklyTaskCard> {
         borderRadius: BorderRadius.circular(10),
         color: Colors.grey[600],
       ),
-      constraints: BoxConstraints(minHeight: 70),
       child: isLoading
           ? Center(
               child: CircularProgressIndicator(),
             )
           : Container(
               width: MediaQuery.of(context).size.width - 120,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              child: Wrap(
+                alignment: WrapAlignment.spaceBetween,
+                crossAxisAlignment: WrapCrossAlignment.center,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.only(left: 3),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Expanded(
-                          child: Text(
-                            task.title,
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                        Text(
-                          "${task.input.toString()} - ${task.output.toString()}",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ],
+                  Container(
+                    width: MediaQuery.of(context).size.width - 105,
+                    child: Text(
+                      task.title,
+                      style: TextStyle(
+                        fontSize: 15,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
-                  SizedBox(
-                    height: 7,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      InkWell(
-                        onTap: () {
-                          setState(() {
-                            weeklyTask.isFinished = !weeklyTask.isFinished;
-                            DatabaseHelper.instance.updateWeeklyTask(weeklyTask);
-                          });
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.all(2.0),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: weeklyTask.isFinished ? Colors.green.shade700 : Colors.transparent,
-                              border: Border.all(
-                                color: weeklyTask.isFinished ? Colors.green.shade700 : Colors.white,
-                                width: 2,
-                              ),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: weeklyTask.isFinished
-                                ? Icon(
-                                    Icons.check,
-                                    size: 22.0,
-                                    color: Colors.white,
-                                  )
-                                : Icon(
-                                    null,
-                                    size: 22.0,
-                                  ),
+                  InkWell(
+                    onTap: () {
+                      setState(() {
+                        weeklyTask.isFinished = !weeklyTask.isFinished;
+                        DatabaseHelper.instance.updateWeeklyTask(weeklyTask);
+                      });
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(2.0),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: weeklyTask.isFinished ? Colors.green.shade700 : Colors.transparent,
+                          border: Border.all(
+                            color: weeklyTask.isFinished ? Colors.green.shade700 : Colors.white,
+                            width: 1,
                           ),
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        child: weeklyTask.isFinished
+                            ? Icon(
+                                Icons.check,
+                                size: 18.0,
+                                color: Colors.white,
+                              )
+                            : Icon(
+                                null,
+                                size: 18.0,
+                              ),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    width: 50,
+                    child: Align(
+                      alignment: Alignment.centerRight,
+                      child: Text(
+                        "${task.input.toString()} - ${task.output.toString()}",
+                        style: TextStyle(
+                          fontSize: 15,
+                          color: Colors.white,
                         ),
                       ),
-                    ],
+                    ),
                   ),
                 ],
               ),

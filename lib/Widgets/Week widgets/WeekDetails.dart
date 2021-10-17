@@ -129,7 +129,7 @@ class _WeekDetailsState extends State<WeekDetails> {
             Container(
               color: Colors.grey.shade800,
               width: double.infinity,
-              padding: EdgeInsets.all(10),
+              padding: EdgeInsets.all(5),
               child: Flex(direction: Axis.vertical, children: [
                 isLoading
                     ? Expanded(

@@ -118,7 +118,7 @@ class _AddTaskDialogState extends State<AddTaskDialog> {
                 child: NumberPicker(
                   value: input,
                   minValue: 0,
-                  maxValue: 100,
+                  maxValue: 99,
                   onChanged: (value) => setState(() => input = value),
                   itemWidth: 40,
                   itemHeight: 30,
@@ -147,7 +147,7 @@ class _AddTaskDialogState extends State<AddTaskDialog> {
               NumberPicker(
                 value: output,
                 minValue: 0,
-                maxValue: 100,
+                maxValue: 99,
                 onChanged: (value) => setState(() => output = value),
                 itemWidth: 40,
                 itemHeight: 30,
