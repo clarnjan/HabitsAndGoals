@@ -185,7 +185,12 @@ class _CustomDialogState extends State<CustomDialog> {
                 maxHeight: MediaQuery.of(context).size.height / 1.6,
               ),
               width: MediaQuery.of(context).size.width / 1.4,
-              child: widget.canSelect && widget.weekId != null && isSelecting ? getSelectDialog() : getAddDialog(),
+              child: Scrollbar(
+                isAlwaysShown: true,
+                child: SingleChildScrollView(
+                  child: widget.canSelect && widget.weekId != null && isSelecting ? getSelectDialog() : getAddDialog(),
+                ),
+              ),
             )
           : Container(
               height: 200,

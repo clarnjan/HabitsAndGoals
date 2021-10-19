@@ -35,7 +35,7 @@ class _ClickableCardState extends State<ClickableCard> {
           borderRadius: BorderRadius.circular(10),
           color: widget.isSelectable && isSelected ? Colors.green : Colors.grey.shade600,
         ),
-        constraints: BoxConstraints(minHeight: 70),
+        constraints: BoxConstraints(minHeight: 45),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
@@ -43,7 +43,6 @@ class _ClickableCardState extends State<ClickableCard> {
               child: Text(
                 widget.title,
                 style: TextStyle(
-                  fontWeight: FontWeight.bold,
                   fontSize: 15,
                   color: Colors.white,
                 ),
