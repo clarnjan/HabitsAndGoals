@@ -87,7 +87,13 @@ class _CardListState extends State<CardList> {
           title: item.title,
           isSelectable: false,
           tapFunction: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => GoalDetails(item.id)));
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => GoalDetails(
+                          goalId: item.id,
+                          refreshParent: refresh,
+                        )));
           },
         );
     }

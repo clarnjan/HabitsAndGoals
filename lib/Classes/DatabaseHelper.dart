@@ -299,6 +299,11 @@ class DatabaseHelper {
     return db.update(tasksTable, task.toJson(), where: '${TaskFields.id} = ?', whereArgs: [task.id]);
   }
 
+  Future<int> updateGoal(Goal goal) async {
+    final db = await instance.database;
+    return db.update(goalsTable, goal.toJson(), where: '${GoalFields.id} = ?', whereArgs: [goal.id]);
+  }
+
   Future<int> deleteWeek(int id) async {
     final db = await instance.database;
     return await db.delete(weeksTable, where: '${WeekFields.id} = ?', whereArgs: [id]);

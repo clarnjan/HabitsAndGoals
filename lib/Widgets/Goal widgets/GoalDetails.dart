@@ -7,12 +7,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 
 import '../ClickableCard.dart';
-import '../MainMenu.dart';
 
 class GoalDetails extends StatefulWidget {
   final int goalId;
+  final Function refreshParent;
 
-  const GoalDetails(this.goalId, {Key? key}) : super(key: key);
+  const GoalDetails({Key? key, required this.goalId, required this.refreshParent}) : super(key: key);
 
   @override
   _GoalDetailsState createState() => _GoalDetailsState();
@@ -21,7 +21,11 @@ class GoalDetails extends StatefulWidget {
 class _GoalDetailsState extends State<GoalDetails> {
   late Goal goal;
   bool isLoading = true;
+  bool isEditing = false;
+  String? title;
+  String? description;
   final Key centerKey = ValueKey('second-sliver-list');
+  GlobalKey<FormState> formKey = GlobalKey<FormState>();
   GlobalKey<RefreshIndicatorState> refreshState = GlobalKey<RefreshIndicatorState>();
 
   @override
@@ -35,6 +39,8 @@ class _GoalDetailsState extends State<GoalDetails> {
       isLoading = true;
     });
     this.goal = await DatabaseHelper.instance.getGoal(widget.goalId);
+    this.title = goal.title;
+    this.description = goal.description;
     setState(() {
       isLoading = false;
     });
@@ -57,12 +63,43 @@ class _GoalDetailsState extends State<GoalDetails> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: Drawer(
-        child: MainMenu(),
-      ),
       appBar: AppBar(
-        title: isLoading ? Text('loading') : Text(goal.title),
-      ),
+          title: isLoading
+              ? Text('loading')
+              : Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    !isEditing
+                        ? Container(
+                            width: MediaQuery.of(context).size.width - 160,
+                            child: Text(
+                              goal.title,
+                              style: TextStyle(overflow: TextOverflow.ellipsis),
+                            ),
+                          )
+                        : Text("Editing..."),
+                    IconButton(
+                      icon: Icon(!isEditing ? Icons.edit : Icons.save_outlined),
+                      onPressed: () {
+                        if (isEditing) {
+                          if (formKey.currentState!.validate()) {
+                            goal.title = title!;
+                            goal.description = description;
+                            DatabaseHelper.instance.updateGoal(goal);
+                            setState(() {
+                              isEditing = !isEditing;
+                            });
+                            widget.refreshParent();
+                          }
+                        } else {
+                          setState(() {
+                            isEditing = !isEditing;
+                          });
+                        }
+                      },
+                    ),
+                  ],
+                )),
       body: Stack(
         children: [
           Container(
@@ -70,31 +107,117 @@ class _GoalDetailsState extends State<GoalDetails> {
             width: double.infinity,
             padding: EdgeInsets.all(10),
             child: Flex(direction: Axis.vertical, children: [
+              if (!isLoading)
+                Container(
+                  padding: EdgeInsets.symmetric(vertical: 10, horizontal: 0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (isEditing)
+                        Wrap(
+                          children: [
+                            Form(
+                              key: formKey,
+                              child: TextFormField(
+                                decoration: InputDecoration(
+                                  label: Text(
+                                    "Title:",
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                ),
+                                autofocus: true,
+                                initialValue: title,
+                                keyboardType: TextInputType.visiblePassword,
+                                style: TextStyle(color: Colors.white),
+                                validator: (value) {
+                                  setState(() {
+                                    title = value;
+                                  });
+                                  return value!.isNotEmpty ? null : "Title is mandatory";
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                      Wrap(
+                        children: [
+                          if (!isEditing)
+                            Container(
+                              padding: EdgeInsets.only(bottom: 10),
+                              child: Text(
+                                'Description: ',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 15,
+                                ),
+                              ),
+                            ),
+                          !isEditing
+                              ? Text(
+                                  goal.description ?? 'No description added',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 15,
+                                    fontStyle: FontStyle.italic,
+                                  ),
+                                )
+                              : TextFormField(
+                                  initialValue: description,
+                                  decoration: InputDecoration(
+                                      label: Text(
+                                    "Description:",
+                                    style: TextStyle(color: Colors.white),
+                                  )),
+                                  keyboardType: TextInputType.visiblePassword,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      description = value;
+                                    });
+                                  },
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                        ],
+                      ),
+                      Divider(
+                        height: 10,
+                      ),
+                      Text(
+                        "Tasks:",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 15,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               isLoading
                   ? Expanded(
                       child: Center(
                         child: CircularProgressIndicator(),
                       ),
                     )
-                  : Expanded(
-                      child: RefreshIndicator(
-                        key: refreshState,
-                        onRefresh: () async {
-                          await refresh();
-                        },
-                        child: ListView.builder(
-                            itemCount: goal.tasks.length,
-                            itemBuilder: (context, index) {
-                              final item = goal.tasks[index];
-                              return Container(
-                                margin: index == goal.tasks.length - 1 ? EdgeInsets.only(bottom: 50) : EdgeInsets.only(bottom: 0),
-                                child: ClickableCard(
-                                  isSelectable: false,
-                                  tapFunction: () {},
-                                  title: item.title,
-                                ),
-                              );
-                            }),
+                  : Container(
+                      child: Expanded(
+                        child: RefreshIndicator(
+                          key: refreshState,
+                          onRefresh: () async {
+                            await refresh();
+                          },
+                          child: ListView.builder(
+                              itemCount: goal.tasks.length,
+                              itemBuilder: (context, index) {
+                                final item = goal.tasks[index];
+                                return Container(
+                                  margin: index == goal.tasks.length - 1 ? EdgeInsets.only(bottom: 50) : EdgeInsets.only(bottom: 0),
+                                  child: ClickableCard(
+                                    isSelectable: false,
+                                    tapFunction: () {},
+                                    title: item.title,
+                                  ),
+                                );
+                              }),
+                        ),
                       ),
                     ),
             ]),
