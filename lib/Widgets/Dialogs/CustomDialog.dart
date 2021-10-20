@@ -1,5 +1,6 @@
 import 'package:diplomska1/Classes/DatabaseHelper.dart';
 import 'package:diplomska1/Classes/Enums.dart';
+import 'package:diplomska1/Classes/Goal.dart';
 import 'package:diplomska1/Classes/Habit.dart';
 import 'package:diplomska1/Classes/Task.dart';
 import 'package:diplomska1/Classes/Week.dart';
@@ -21,11 +22,12 @@ class AddItemController {
 
 class CustomDialog extends StatefulWidget {
   final int? weekId;
+  final int? goalId;
   final Function refreshParent;
   final bool canSelect;
   final NoteType noteType;
 
-  const CustomDialog({Key? key, this.weekId, required this.refreshParent, required this.canSelect, required this.noteType})
+  const CustomDialog({Key? key, this.weekId, required this.refreshParent, required this.canSelect, required this.noteType, this.goalId})
       : super(key: key);
 
   @override
@@ -34,6 +36,7 @@ class CustomDialog extends StatefulWidget {
 
 class _CustomDialogState extends State<CustomDialog> {
   late Week week;
+  late Goal goal;
   List<Habit> habits = [];
   List<Habit> selectedHabits = [];
   List<Task> tasks = [];
@@ -51,19 +54,25 @@ class _CustomDialogState extends State<CustomDialog> {
     setState(() {
       isLoading = true;
     });
-    if (widget.canSelect && widget.weekId != null) {
-      if (widget.noteType == NoteType.Habit) {
-        week = await DatabaseHelper.instance.getWeek(widget.weekId!);
-        this.habits = await DatabaseHelper.instance.getAllHabits();
-        for (WeeklyHabit wh in week.habits) {
-          this.habits.removeWhere((element) => element.id == wh.habitFK);
+    if (widget.canSelect) {
+      if (widget.weekId != null) {
+        if (widget.noteType == NoteType.Habit) {
+          week = await DatabaseHelper.instance.getWeek(widget.weekId!);
+          habits = await DatabaseHelper.instance.getAllHabits();
+          for (WeeklyHabit wh in week.habits) {
+            this.habits.removeWhere((element) => element.id == wh.habitFK);
+          }
+        } else if (widget.noteType == NoteType.Task) {
+          week = await DatabaseHelper.instance.getWeek(widget.weekId!);
+          tasks = await DatabaseHelper.instance.getAllTasks();
+          for (WeeklyTask wt in week.tasks) {
+            this.tasks.removeWhere((element) => element.id == wt.taskFK);
+          }
         }
-      } else if (widget.noteType == NoteType.Task) {
-        week = await DatabaseHelper.instance.getWeek(widget.weekId!);
-        this.tasks = await DatabaseHelper.instance.getAllTasks();
-        for (WeeklyTask wt in week.tasks) {
-          this.tasks.removeWhere((element) => element.id == wt.taskFK);
-        }
+      } else if (widget.goalId != null) {
+        goal = await DatabaseHelper.instance.getGoal(widget.goalId!);
+        tasks = await DatabaseHelper.instance.getAllTasks();
+        tasks.removeWhere((element) => element.goalFK != null);
       }
     }
     setState(() {
@@ -89,7 +98,7 @@ class _CustomDialogState extends State<CustomDialog> {
 
   save() async {
     if (widget.canSelect && isSelecting) {
-      if (widget.noteType == NoteType.Habit) {
+      if (widget.weekId != null && widget.noteType == NoteType.Habit) {
         for (Habit habit in selectedHabits) {
           if (!week.habits.any((element) => element.habitFK == habit.id)) {
             if (habit.id == null) {
@@ -103,14 +112,21 @@ class _CustomDialogState extends State<CustomDialog> {
             DatabaseHelper.instance.createWeeklyHabit(weeklyHabit);
           }
         }
-      } else if (widget.noteType == NoteType.Task) {
+      } else if (widget.weekId != null && widget.noteType == NoteType.Task) {
         for (Task task in selectedTasks) {
           if (!week.tasks.any((element) => element.taskFK == task.id)) {
             if (task.id == null) {
-              throw Exception("Habit id is null");
+              throw Exception("Task id is null");
             }
             WeeklyTask weeklyTask = new WeeklyTask(taskFK: task.id!, weekFK: widget.weekId!, isFinished: false);
             weeklyTask = await DatabaseHelper.instance.createWeeklyTask(weeklyTask);
+          }
+        }
+      } else if (widget.goalId != null) {
+        for (Task task in selectedTasks) {
+          if (!goal.tasks.contains(task)) {
+            task.goalFK = goal.id;
+            await DatabaseHelper.instance.updateTask(task);
           }
         }
       }
@@ -160,6 +176,7 @@ class _CustomDialogState extends State<CustomDialog> {
       case NoteType.Task:
         return AddTaskDialog(
           weekId: widget.weekId,
+          goalId: widget.goalId,
           controller: _controller,
           refreshParent: widget.refreshParent,
         );
@@ -188,7 +205,9 @@ class _CustomDialogState extends State<CustomDialog> {
               child: Scrollbar(
                 isAlwaysShown: true,
                 child: SingleChildScrollView(
-                  child: widget.canSelect && widget.weekId != null && isSelecting ? getSelectDialog() : getAddDialog(),
+                  child: widget.canSelect && (widget.weekId != null || widget.goalId != null) && isSelecting
+                      ? getSelectDialog()
+                      : getAddDialog(),
                 ),
               ),
             )

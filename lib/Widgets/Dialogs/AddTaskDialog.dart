@@ -9,10 +9,11 @@ import 'CustomDialog.dart';
 
 class AddTaskDialog extends StatefulWidget {
   final int? weekId;
+  final int? goalId;
   final Function refreshParent;
   final AddItemController controller;
 
-  const AddTaskDialog({Key? key, this.weekId, required this.refreshParent, required this.controller}) : super(key: key);
+  const AddTaskDialog({Key? key, this.weekId, required this.refreshParent, required this.controller, this.goalId}) : super(key: key);
 
   @override
   _AddTaskDialogState createState() => _AddTaskDialogState(controller);
@@ -36,6 +37,7 @@ class _AddTaskDialogState extends State<AddTaskDialog> {
         description: description,
         input: input,
         output: output,
+        goalFK: widget.goalId,
         isRepeating: false,
         createdTime: DateTime.now(),
       );
