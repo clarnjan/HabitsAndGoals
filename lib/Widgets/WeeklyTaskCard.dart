@@ -100,7 +100,7 @@ class _WeeklyTaskCardState extends State<WeeklyTaskCard> {
                     child: Align(
                       alignment: Alignment.centerRight,
                       child: Text(
-                        "${task.input.toString()} - ${task.output.toString()}",
+                        "${task.effort.toString()} - ${task.benefit.toString()}",
                         style: TextStyle(
                           fontSize: 15,
                           color: Colors.white,

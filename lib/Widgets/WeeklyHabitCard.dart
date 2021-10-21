@@ -110,7 +110,7 @@ class _WeeklyHabitCardState extends State<WeeklyHabitCard> {
                     child: Align(
                       alignment: Alignment.centerRight,
                       child: Text(
-                        "${habit.inputSingle.toString()} - ${habit.outputSingle.toString()}",
+                        "${habit.effortSingle.toString()} - ${habit.benefitSingle.toString()}",
                         style: TextStyle(
                           fontSize: 15,
                           color: Colors.white,

@@ -3,6 +3,7 @@ import 'package:diplomska1/Classes/Task.dart';
 import 'package:diplomska1/Classes/WeeklyTask.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_switch/flutter_switch.dart';
 import 'package:numberpicker/numberpicker.dart';
 
 import 'CustomDialog.dart';
@@ -22,8 +23,9 @@ class AddTaskDialog extends StatefulWidget {
 class _AddTaskDialogState extends State<AddTaskDialog> {
   String? title;
   String? description;
-  int input = 1;
-  int output = 1;
+  bool isRepeating = false;
+  int effort = 1;
+  int benefit = 1;
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final TextEditingController textEditingController = TextEditingController();
   _AddTaskDialogState(AddItemController _controller) {
@@ -35,10 +37,11 @@ class _AddTaskDialogState extends State<AddTaskDialog> {
       Task task = Task(
         title: title!,
         description: description,
-        input: input,
-        output: output,
+        effort: effort,
+        benefit: benefit,
         goalFK: widget.goalId,
-        isRepeating: false,
+        isRepeating: isRepeating,
+        isFinished: false,
         createdTime: DateTime.now(),
       );
 
@@ -104,19 +107,36 @@ class _AddTaskDialogState extends State<AddTaskDialog> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                "Input: ",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                ),
+              Row(
+                children: [
+                  Text(
+                    "Effort: ",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                    ),
+                  ),
+                  Tooltip(
+                    preferBelow: false,
+                    showDuration: Duration(seconds: 5),
+                    message: "The effort you need to put in to complete this task",
+                    textStyle: TextStyle(color: Colors.lightGreenAccent),
+                    padding: EdgeInsets.all(7),
+                    child: Icon(
+                      Icons.info_outline,
+                      color: Colors.lightGreenAccent,
+                      size: 19,
+                    ),
+                    triggerMode: TooltipTriggerMode.tap,
+                  ),
+                ],
               ),
               Container(
                 child: NumberPicker(
-                  value: input,
+                  value: effort,
                   minValue: 0,
                   maxValue: 99,
-                  onChanged: (value) => setState(() => input = value),
+                  onChanged: (value) => setState(() => effort = value),
                   itemWidth: 40,
                   itemHeight: 30,
                   axis: Axis.horizontal,
@@ -134,18 +154,35 @@ class _AddTaskDialogState extends State<AddTaskDialog> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                "Output: ",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 15,
-                ),
+              Row(
+                children: [
+                  Text(
+                    "Benefit: ",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                    ),
+                  ),
+                  Tooltip(
+                    preferBelow: false,
+                    showDuration: Duration(seconds: 5),
+                    message: "The benefit you get after completing this task",
+                    textStyle: TextStyle(color: Colors.lightGreenAccent),
+                    padding: EdgeInsets.all(7),
+                    child: Icon(
+                      Icons.info_outline,
+                      color: Colors.lightGreenAccent,
+                      size: 19,
+                    ),
+                    triggerMode: TooltipTriggerMode.tap,
+                  ),
+                ],
               ),
               NumberPicker(
-                value: output,
+                value: benefit,
                 minValue: 0,
                 maxValue: 99,
-                onChanged: (value) => setState(() => output = value),
+                onChanged: (value) => setState(() => benefit = value),
                 itemWidth: 40,
                 itemHeight: 30,
                 axis: Axis.horizontal,
@@ -155,6 +192,54 @@ class _AddTaskDialogState extends State<AddTaskDialog> {
                   fontWeight: FontWeight.bold,
                 ),
                 textStyle: TextStyle(fontSize: 14, color: Colors.white),
+              ),
+            ],
+          ),
+          Divider(),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    "Reoccurring: ",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                    ),
+                  ),
+                  Tooltip(
+                    preferBelow: false,
+                    showDuration: Duration(seconds: 5),
+                    message: "Will the task occur in more than one week?",
+                    textStyle: TextStyle(color: Colors.lightGreenAccent),
+                    padding: EdgeInsets.all(7),
+                    child: Icon(
+                      Icons.info_outline,
+                      color: Colors.lightGreenAccent,
+                      size: 19,
+                    ),
+                    triggerMode: TooltipTriggerMode.tap,
+                  ),
+                ],
+              ),
+              Padding(
+                padding: const EdgeInsets.only(right: 12.0),
+                child: FlutterSwitch(
+                  width: 50,
+                  height: 25,
+                  toggleSize: 20,
+                  padding: 2,
+                  activeColor: Colors.green,
+                  inactiveColor: Colors.grey.shade600,
+                  value: isRepeating,
+                  onToggle: (value) {
+                    setState(() {
+                      isRepeating = value;
+                    });
+                  },
+                ),
               ),
             ],
           ),

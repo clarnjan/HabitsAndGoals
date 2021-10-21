@@ -1,14 +1,15 @@
 final String tasksTable = 'tasks';
 
 class TaskFields {
-  static final List<String> values = [id, goalFK, title, description, input, output, isRepeating, createdTime];
+  static final List<String> values = [id, goalFK, title, description, effort, benefit, isRepeating, isFinished, createdTime];
   static final String id = '_id';
   static final String goalFK = 'goalFK';
   static final String title = 'title';
   static final String description = 'description';
-  static final String input = 'input';
-  static final String output = 'output';
+  static final String effort = 'effort';
+  static final String benefit = 'benefit';
   static final String isRepeating = 'isRepeating';
+  static final String isFinished = 'isFinished';
   static final String createdTime = 'createdTime';
 }
 
@@ -17,9 +18,10 @@ class Task {
   int? goalFK;
   String title;
   String? description;
-  int input;
-  int output;
+  int effort;
+  int benefit;
   bool isRepeating;
+  bool isFinished;
   DateTime createdTime;
 
   Task({
@@ -27,9 +29,10 @@ class Task {
     this.goalFK,
     required this.title,
     this.description,
-    required this.input,
-    required this.output,
+    required this.effort,
+    required this.benefit,
     required this.isRepeating,
+    required this.isFinished,
     required this.createdTime,
   });
 
@@ -38,9 +41,10 @@ class Task {
         TaskFields.goalFK: goalFK,
         TaskFields.title: title,
         TaskFields.description: description,
-        TaskFields.input: input,
-        TaskFields.output: output,
+        TaskFields.effort: effort,
+        TaskFields.benefit: benefit,
         TaskFields.isRepeating: isRepeating ? 1 : 0,
+        TaskFields.isFinished: isFinished ? 1 : 0,
         TaskFields.createdTime: createdTime.toIso8601String(),
       };
 
@@ -49,9 +53,10 @@ class Task {
     int? goalFK,
     String? title,
     String? description,
-    int? input,
-    int? output,
+    int? effort,
+    int? benefit,
     bool? isRepeating,
+    bool? isFinished,
     DateTime? createdTime,
   }) =>
       Task(
@@ -59,9 +64,10 @@ class Task {
         goalFK: goalFK ?? this.goalFK,
         title: title ?? this.title,
         description: description ?? this.description,
-        input: input ?? this.input,
-        output: output ?? this.output,
+        effort: effort ?? this.effort,
+        benefit: benefit ?? this.benefit,
         isRepeating: isRepeating ?? this.isRepeating,
+        isFinished: isFinished ?? this.isFinished,
         createdTime: createdTime ?? this.createdTime,
       );
 
@@ -70,9 +76,10 @@ class Task {
         goalFK: json[TaskFields.goalFK] as int?,
         title: json[TaskFields.title] as String,
         description: json[TaskFields.description] as String?,
-        input: json[TaskFields.input] as int,
-        output: json[TaskFields.output] as int,
+        effort: json[TaskFields.effort] as int,
+        benefit: json[TaskFields.benefit] as int,
         isRepeating: json[TaskFields.isRepeating] == 1,
+        isFinished: json[TaskFields.isFinished] == 1,
         createdTime: DateTime.parse(json[TaskFields.createdTime] as String),
       );
 }

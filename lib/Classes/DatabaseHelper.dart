@@ -51,8 +51,8 @@ class DatabaseHelper {
           ${HabitFields.id} INTEGER PRIMARY KEY AUTOINCREMENT,
           ${HabitFields.title} TEXT NOT NULL,
           ${HabitFields.description} TEXT NULL,
-          ${HabitFields.inputSingle} INTEGER NOT NULL,
-          ${HabitFields.outputSingle} INTEGER NOT NULL,
+          ${HabitFields.effortSingle} INTEGER NOT NULL,
+          ${HabitFields.benefitSingle} INTEGER NOT NULL,
           ${HabitFields.repetitions} INTEGER NOT NULL,
           ${HabitFields.isPaused} BOOLEAN NOT NULL,
           ${HabitFields.createdTime} TEXT NOT NULL
@@ -63,9 +63,10 @@ class DatabaseHelper {
           ${TaskFields.title} TEXT NOT NULL,
           ${TaskFields.description} TEXT NULL,
           ${TaskFields.goalFK} INTEGER,
-          ${TaskFields.input} INTEGER NOT NULL,
-          ${TaskFields.output} INTEGER NOT NULL,
+          ${TaskFields.effort} INTEGER NOT NULL,
+          ${TaskFields.benefit} INTEGER NOT NULL,
           ${TaskFields.isRepeating} BOOLEAN NOT NULL,
+          ${TaskFields.isFinished} BOOLEAN NOT NULL,
           ${TaskFields.createdTime} TEXT NOT NULL,
           FOREIGN KEY(${TaskFields.goalFK}) REFERENCES $goalsTable(${GoalFields.id})
         );''');

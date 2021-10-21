@@ -21,8 +21,8 @@ class AddHabitDialog extends StatefulWidget {
 class _AddHabitDialogState extends State<AddHabitDialog> {
   String? title;
   String? description;
-  int inputSingle = 1;
-  int outputSingle = 1;
+  int effortSingle = 1;
+  int benefitSingle = 1;
   int repetitions = 1;
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final TextEditingController textEditingController = TextEditingController();
@@ -35,8 +35,8 @@ class _AddHabitDialogState extends State<AddHabitDialog> {
       Habit habit = Habit(
         title: title!,
         description: description,
-        inputSingle: inputSingle,
-        outputSingle: outputSingle,
+        effortSingle: effortSingle,
+        benefitSingle: benefitSingle,
         repetitions: repetitions,
         isPaused: false,
         createdTime: DateTime.now(),
@@ -108,12 +108,29 @@ class _AddHabitDialogState extends State<AddHabitDialog> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                "Repetitions: ",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 15,
-                ),
+              Row(
+                children: [
+                  Text(
+                    "Repetitions: ",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                    ),
+                  ),
+                  Tooltip(
+                    preferBelow: false,
+                    showDuration: Duration(seconds: 5),
+                    message: "How many times will you be doing this habit in a week",
+                    textStyle: TextStyle(color: Colors.lightGreenAccent),
+                    padding: EdgeInsets.all(7),
+                    child: Icon(
+                      Icons.info_outline,
+                      color: Colors.lightGreenAccent,
+                      size: 19,
+                    ),
+                    triggerMode: TooltipTriggerMode.tap,
+                  ),
+                ],
               ),
               NumberPicker(
                 value: repetitions,
@@ -136,20 +153,37 @@ class _AddHabitDialogState extends State<AddHabitDialog> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                "Input: ",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 15,
-                ),
+              Row(
+                children: [
+                  Text(
+                    "Effort: ",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                    ),
+                  ),
+                  Tooltip(
+                    preferBelow: false,
+                    showDuration: Duration(seconds: 5),
+                    message: "The effort you need to put in to do a single repetition",
+                    textStyle: TextStyle(color: Colors.lightGreenAccent),
+                    padding: EdgeInsets.all(7),
+                    child: Icon(
+                      Icons.info_outline,
+                      color: Colors.lightGreenAccent,
+                      size: 19,
+                    ),
+                    triggerMode: TooltipTriggerMode.tap,
+                  ),
+                ],
               ),
               Container(
                 margin: EdgeInsets.only(top: 5),
                 child: NumberPicker(
-                  value: inputSingle,
+                  value: effortSingle,
                   minValue: 0,
                   maxValue: 99,
-                  onChanged: (value) => setState(() => inputSingle = value),
+                  onChanged: (value) => setState(() => effortSingle = value),
                   itemWidth: 40,
                   itemHeight: 30,
                   axis: Axis.horizontal,
@@ -166,18 +200,35 @@ class _AddHabitDialogState extends State<AddHabitDialog> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                "Output: ",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 15,
-                ),
+              Row(
+                children: [
+                  Text(
+                    "Benefit: ",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                    ),
+                  ),
+                  Tooltip(
+                    preferBelow: false,
+                    showDuration: Duration(seconds: 5),
+                    message: "The benefit you get after a single repetition",
+                    textStyle: TextStyle(color: Colors.lightGreenAccent),
+                    padding: EdgeInsets.all(7),
+                    child: Icon(
+                      Icons.info_outline,
+                      color: Colors.lightGreenAccent,
+                      size: 19,
+                    ),
+                    triggerMode: TooltipTriggerMode.tap,
+                  ),
+                ],
               ),
               NumberPicker(
-                value: outputSingle,
+                value: benefitSingle,
                 minValue: 0,
                 maxValue: 99,
-                onChanged: (value) => setState(() => outputSingle = value),
+                onChanged: (value) => setState(() => benefitSingle = value),
                 itemWidth: 40,
                 itemHeight: 30,
                 axis: Axis.horizontal,
