@@ -73,20 +73,16 @@ class _AddHabitDialogState extends State<AddHabitDialog> {
               return value!.isNotEmpty ? null : "Title is mandatory";
             },
             decoration: InputDecoration(
-              hintText: "Title",
-              hintStyle: TextStyle(
-                color: Colors.grey[300],
-              ),
-              labelStyle: TextStyle(
-                color: Colors.white,
+              label: Text(
+                "Title",
+                style: TextStyle(
+                  color: Colors.white,
+                ),
               ),
             ),
             style: TextStyle(
               color: Colors.white,
             ),
-          ),
-          SizedBox(
-            height: 20,
           ),
           TextField(
             onChanged: (value) {
@@ -95,12 +91,11 @@ class _AddHabitDialogState extends State<AddHabitDialog> {
               });
             },
             decoration: InputDecoration(
-              hintText: "Description",
-              hintStyle: TextStyle(
-                color: Colors.grey[300],
-              ),
-              labelStyle: TextStyle(
-                color: Colors.white,
+              label: Text(
+                "Description",
+                style: TextStyle(
+                  color: Colors.white,
+                ),
               ),
             ),
             style: TextStyle(

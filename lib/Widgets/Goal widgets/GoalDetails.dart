@@ -114,78 +114,74 @@ class _GoalDetailsState extends State<GoalDetails> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       if (isEditing)
-                        Wrap(
-                          children: [
-                            Form(
-                              key: formKey,
-                              child: TextFormField(
-                                decoration: InputDecoration(
-                                  label: Text(
-                                    "Title:",
-                                    style: TextStyle(color: Colors.white),
-                                  ),
-                                ),
-                                autofocus: true,
-                                initialValue: title,
-                                keyboardType: TextInputType.visiblePassword,
+                        Form(
+                          key: formKey,
+                          child: TextFormField(
+                            decoration: InputDecoration(
+                              label: Text(
+                                "Title:",
                                 style: TextStyle(color: Colors.white),
-                                validator: (value) {
-                                  setState(() {
-                                    title = value;
-                                  });
-                                  return value!.isNotEmpty ? null : "Title is mandatory";
-                                },
                               ),
                             ),
-                          ],
+                            autofocus: true,
+                            initialValue: title,
+                            keyboardType: TextInputType.visiblePassword,
+                            style: TextStyle(color: Colors.white),
+                            validator: (value) {
+                              setState(() {
+                                title = value;
+                              });
+                              return value!.isNotEmpty ? null : "Title is mandatory";
+                            },
+                          ),
                         ),
-                      Wrap(
-                        children: [
-                          if (!isEditing)
-                            Container(
-                              padding: EdgeInsets.only(bottom: 10),
-                              child: Text(
-                                'Description: ',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 15,
-                                ),
-                              ),
+                      if (!isEditing)
+                        Container(
+                          padding: EdgeInsets.only(bottom: 10),
+                          child: Text(
+                            'Description: ',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 18,
                             ),
-                          !isEditing
-                              ? Text(
-                                  goal.description ?? 'No description added',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 15,
-                                    fontStyle: FontStyle.italic,
-                                  ),
-                                )
-                              : TextFormField(
-                                  initialValue: description,
-                                  decoration: InputDecoration(
-                                      label: Text(
-                                    "Description:",
-                                    style: TextStyle(color: Colors.white),
-                                  )),
-                                  keyboardType: TextInputType.visiblePassword,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      description = value;
-                                    });
-                                  },
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                        ],
+                          ),
+                        ),
+                      !isEditing
+                          ? Text(
+                              goal.description ?? 'No description added',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 17,
+                                fontStyle: FontStyle.italic,
+                              ),
+                            )
+                          : TextFormField(
+                              initialValue: description,
+                              decoration: InputDecoration(
+                                  label: Text(
+                                "Description:",
+                                style: TextStyle(color: Colors.white),
+                              )),
+                              keyboardType: TextInputType.visiblePassword,
+                              onChanged: (value) {
+                                setState(() {
+                                  description = value;
+                                });
+                              },
+                              style: TextStyle(color: Colors.white),
+                            ),
+                      SizedBox(
+                        height: 20,
                       ),
                       Divider(
-                        height: 10,
+                        height: 20,
+                        thickness: 2,
                       ),
                       Text(
                         "Tasks:",
                         style: TextStyle(
                           color: Colors.white,
-                          fontSize: 15,
+                          fontSize: 18,
                         ),
                       ),
                     ],
