@@ -2,22 +2,18 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class DialogButtons extends StatelessWidget {
-  final String cancelButtonText;
-  final String submitButtonText;
-  final String? newButtonText;
-  final Function refreshParent;
-  final Function submitFunction;
-  final Function? addFunction;
-  final bool showAddButton;
+  final String mainButtonText;
+  final Function mainButtonFunction;
+  final bool showSecondButton;
+  final String? secondButtonText;
+  final Function? secondButtonFunction;
   const DialogButtons(
       {Key? key,
-      required this.cancelButtonText,
-      required this.submitButtonText,
-      required this.refreshParent,
-      required this.submitFunction,
-      required this.showAddButton,
-      this.addFunction,
-      this.newButtonText})
+      required this.mainButtonText,
+      required this.mainButtonFunction,
+      required this.showSecondButton,
+      this.secondButtonText,
+      this.secondButtonFunction})
       : super(key: key);
 
   @override
@@ -25,44 +21,32 @@ class DialogButtons extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        if (showAddButton && newButtonText != null)
+        if (showSecondButton && secondButtonText != null)
           Expanded(
             child: Container(
               alignment: Alignment.centerLeft,
               child: TextButton(
                 child: Text(
-                  newButtonText!,
+                  secondButtonText!,
                   style: TextStyle(
                     fontSize: 16,
                   ),
                 ),
                 onPressed: () async {
-                  if (addFunction != null) {
-                    await addFunction!(context);
+                  if (secondButtonFunction != null) {
+                    await secondButtonFunction!(context);
                   }
                 },
               ),
             ),
           ),
         TextButton(
-          child: Text(
-            cancelButtonText,
-            style: TextStyle(fontSize: 16, color: Colors.green),
-          ),
-          onPressed: () async {
-            Navigator.of(context).pop();
-          },
-        ),
-        SizedBox(
-          width: 10,
-        ),
-        TextButton(
             child: Text(
-              submitButtonText,
+              mainButtonText,
               style: TextStyle(fontSize: 16, color: Colors.green),
             ),
             onPressed: () {
-              submitFunction();
+              mainButtonFunction();
             })
       ],
     );

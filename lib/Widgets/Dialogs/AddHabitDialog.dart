@@ -64,7 +64,7 @@ class _AddHabitDialogState extends State<AddHabitDialog> {
         mainAxisSize: MainAxisSize.min,
         children: [
           TextFormField(
-            autofocus: true,
+            autofocus: MediaQuery.of(context).size.height > 600,
             controller: textEditingController,
             validator: (value) {
               setState(() {
@@ -73,11 +73,9 @@ class _AddHabitDialogState extends State<AddHabitDialog> {
               return value!.isNotEmpty ? null : "Title is mandatory";
             },
             decoration: InputDecoration(
-              label: Text(
-                "Title",
-                style: TextStyle(
-                  color: Colors.white,
-                ),
+              hintText: "Title",
+              hintStyle: TextStyle(
+                color: Colors.white,
               ),
             ),
             style: TextStyle(
@@ -91,11 +89,9 @@ class _AddHabitDialogState extends State<AddHabitDialog> {
               });
             },
             decoration: InputDecoration(
-              label: Text(
-                "Description",
-                style: TextStyle(
-                  color: Colors.white,
-                ),
+              hintText: "Description",
+              hintStyle: TextStyle(
+                color: Colors.white,
               ),
             ),
             style: TextStyle(
@@ -105,49 +101,57 @@ class _AddHabitDialogState extends State<AddHabitDialog> {
           SizedBox(
             height: 20,
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                children: [
-                  Text(
-                    "Repetitions: ",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                    ),
+          Container(
+            width: double.infinity,
+            child: Wrap(
+              alignment: WrapAlignment.spaceBetween,
+              children: [
+                Container(
+                  width: MediaQuery.of(context).size.width / 1.4 / 2.3,
+                  child: Wrap(
+                    children: [
+                      Text(
+                        "Repetitions: ",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                        ),
+                      ),
+                      Tooltip(
+                        preferBelow: false,
+                        showDuration: Duration(seconds: 5),
+                        message: "How many times will you be doing this habit in a week",
+                        textStyle: TextStyle(color: Colors.lightGreenAccent),
+                        padding: EdgeInsets.all(7),
+                        child: Icon(
+                          Icons.info_outline,
+                          color: Colors.lightGreenAccent,
+                          size: 19,
+                        ),
+                        triggerMode: TooltipTriggerMode.tap,
+                      ),
+                    ],
                   ),
-                  Tooltip(
-                    preferBelow: false,
-                    showDuration: Duration(seconds: 5),
-                    message: "How many times will you be doing this habit in a week",
-                    textStyle: TextStyle(color: Colors.lightGreenAccent),
-                    padding: EdgeInsets.all(7),
-                    child: Icon(
-                      Icons.info_outline,
-                      color: Colors.lightGreenAccent,
-                      size: 19,
-                    ),
-                    triggerMode: TooltipTriggerMode.tap,
-                  ),
-                ],
-              ),
-              NumberPicker(
-                value: repetitions,
-                minValue: 1,
-                maxValue: 7,
-                onChanged: (value) => setState(() => repetitions = value),
-                itemWidth: 40,
-                itemHeight: 30,
-                axis: Axis.horizontal,
-                selectedTextStyle: TextStyle(
-                  fontSize: 18,
-                  color: CupertinoColors.activeGreen,
-                  fontWeight: FontWeight.bold,
                 ),
-                textStyle: TextStyle(fontSize: 14, color: Colors.white),
-              ),
-            ],
+                Container(
+                  child: NumberPicker(
+                    value: repetitions,
+                    minValue: 1,
+                    maxValue: 7,
+                    onChanged: (value) => setState(() => repetitions = value),
+                    itemWidth: 40,
+                    itemHeight: 30,
+                    axis: Axis.horizontal,
+                    selectedTextStyle: TextStyle(
+                      fontSize: 18,
+                      color: CupertinoColors.activeGreen,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    textStyle: TextStyle(fontSize: 14, color: Colors.white),
+                  ),
+                ),
+              ],
+            ),
           ),
           Divider(),
           Row(

@@ -189,11 +189,38 @@ class _CustomDialogState extends State<CustomDialog> {
     }
   }
 
+  String getTitle() {
+    String result = isSelecting ? "Select " : "Add a new ";
+    switch (widget.noteType) {
+      case NoteType.Habit:
+        result += "habit";
+        break;
+      case NoteType.Task:
+        result += "task";
+        break;
+      case NoteType.Goal:
+        result += "goal";
+        break;
+    }
+    result += isSelecting ? "s" : "";
+    return result;
+  }
+
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
+      title: Container(
+        width: double.infinity,
+        child: Center(
+          child: Text(
+            getTitle(),
+            style: TextStyle(color: Colors.white),
+          ),
+        ),
+      ),
+      titlePadding: EdgeInsets.fromLTRB(10, 10, 10, 0),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
-      contentPadding: EdgeInsets.fromLTRB(10, 10, 10, 0),
+      contentPadding: EdgeInsets.fromLTRB(10, 0, 10, 0),
       backgroundColor: Colors.grey[800],
       content: !isLoading
           ? Container(
@@ -202,13 +229,10 @@ class _CustomDialogState extends State<CustomDialog> {
                 maxHeight: MediaQuery.of(context).size.height / 1.6,
               ),
               width: MediaQuery.of(context).size.width / 1.4,
-              child: Scrollbar(
-                isAlwaysShown: true,
-                child: SingleChildScrollView(
-                  child: widget.canSelect && (widget.weekId != null || widget.goalId != null) && isSelecting
-                      ? getSelectDialog()
-                      : getAddDialog(),
-                ),
+              child: SingleChildScrollView(
+                child: widget.canSelect && (widget.weekId != null || widget.goalId != null) && isSelecting
+                    ? getSelectDialog()
+                    : getAddDialog(),
               ),
             )
           : Container(
@@ -220,13 +244,11 @@ class _CustomDialogState extends State<CustomDialog> {
       actions: [
         Container(
           child: DialogButtons(
-            cancelButtonText: "Cancel",
-            submitButtonText: "Save",
-            newButtonText: isSelecting ? "New" : "Select",
-            showAddButton: widget.canSelect,
-            addFunction: toggleButton,
-            refreshParent: widget.refreshParent,
-            submitFunction: save,
+            mainButtonText: "Save",
+            secondButtonText: isSelecting ? "New" : "Select",
+            showSecondButton: widget.canSelect,
+            secondButtonFunction: toggleButton,
+            mainButtonFunction: save,
           ),
         ),
       ],

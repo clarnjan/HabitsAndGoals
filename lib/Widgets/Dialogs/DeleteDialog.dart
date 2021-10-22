@@ -45,11 +45,9 @@ class _DeleteDialogState extends State<DeleteDialog> {
       actions: [
         Container(
           child: DialogButtons(
-            cancelButtonText: "Cancel",
-            submitButtonText: "Delete",
-            showAddButton: false,
-            refreshParent: widget.refreshParent,
-            submitFunction: delete,
+            mainButtonText: "Delete",
+            mainButtonFunction: delete,
+            showSecondButton: false,
           ),
         ),
       ],

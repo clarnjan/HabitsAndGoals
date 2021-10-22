@@ -46,6 +46,9 @@ class _AddGoalDialogState extends State<AddGoalDialog> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
+          SizedBox(
+            height: 20,
+          ),
           TextFormField(
             autofocus: true,
             controller: textEditingController,
@@ -56,11 +59,9 @@ class _AddGoalDialogState extends State<AddGoalDialog> {
               return value!.isNotEmpty ? null : "Title is mandatory";
             },
             decoration: InputDecoration(
-              label: Text(
-                "Title",
-                style: TextStyle(
-                  color: Colors.white,
-                ),
+              hintText: "Title",
+              hintStyle: TextStyle(
+                color: Colors.white,
               ),
             ),
             style: TextStyle(
@@ -77,11 +78,9 @@ class _AddGoalDialogState extends State<AddGoalDialog> {
               });
             },
             decoration: InputDecoration(
-              label: Text(
-                "Description",
-                style: TextStyle(
-                  color: Colors.white,
-                ),
+              hintText: "Description",
+              hintStyle: TextStyle(
+                color: Colors.white,
               ),
             ),
             style: TextStyle(

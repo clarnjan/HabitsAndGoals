@@ -72,11 +72,9 @@ class _AddTaskDialogState extends State<AddTaskDialog> {
               return value!.isNotEmpty ? null : "Title is mandatory";
             },
             decoration: InputDecoration(
-              label: Text(
-                "Title",
-                style: TextStyle(
-                  color: Colors.white,
-                ),
+              hintText: "Title",
+              hintStyle: TextStyle(
+                color: Colors.white,
               ),
             ),
             style: TextStyle(
@@ -90,11 +88,9 @@ class _AddTaskDialogState extends State<AddTaskDialog> {
               });
             },
             decoration: InputDecoration(
-              label: Text(
-                "Description",
-                style: TextStyle(
-                  color: Colors.white,
-                ),
+              hintText: "Description",
+              hintStyle: TextStyle(
+                color: Colors.white,
               ),
             ),
             style: TextStyle(
@@ -102,7 +98,7 @@ class _AddTaskDialogState extends State<AddTaskDialog> {
             ),
           ),
           SizedBox(
-            height: 20,
+            height: 10,
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
