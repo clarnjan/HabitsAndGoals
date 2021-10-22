@@ -2,6 +2,7 @@ import 'package:diplomska1/Classes/DatabaseHelper.dart';
 import 'package:diplomska1/Classes/Enums.dart';
 import 'package:diplomska1/Classes/Goal.dart';
 import 'package:diplomska1/Widgets/Dialogs/CustomDialog.dart';
+import 'package:diplomska1/Widgets/Dialogs/DeleteDialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
@@ -46,6 +47,11 @@ class _GoalDetailsState extends State<GoalDetails> {
     });
   }
 
+  afterDelete() async {
+    await widget.refreshParent();
+    Navigator.pop(context);
+  }
+
   Future<void> floatingButtonClick(BuildContext context) async {
     return await showDialog(
       context: context,
@@ -55,6 +61,20 @@ class _GoalDetailsState extends State<GoalDetails> {
           refreshParent: refresh,
           noteType: NoteType.Task,
           goalId: widget.goalId,
+        );
+      },
+    );
+  }
+
+  Future<void> showDeleteDialog() async {
+    return await showDialog(
+      context: context,
+      builder: (context) {
+        return DeleteDialog(
+          goalId: widget.goalId,
+          title: goal.title,
+          refreshParent: refresh,
+          afterDelete: afterDelete,
         );
       },
     );
@@ -71,13 +91,28 @@ class _GoalDetailsState extends State<GoalDetails> {
                   children: [
                     !isEditing
                         ? Container(
-                            width: MediaQuery.of(context).size.width - 160,
+                            width: MediaQuery.of(context).size.width - 190,
                             child: Text(
                               goal.title,
                               style: TextStyle(overflow: TextOverflow.ellipsis),
                             ),
                           )
-                        : Text("Editing..."),
+                        : Container(
+                            width: MediaQuery.of(context).size.width - 190,
+                            child: Text("Editing..."),
+                          ),
+                    IconButton(
+                      icon: Icon(!isEditing ? Icons.delete : Icons.cancel),
+                      onPressed: () {
+                        if (isEditing) {
+                          setState(() {
+                            isEditing = !isEditing;
+                          });
+                        } else {
+                          showDeleteDialog();
+                        }
+                      },
+                    ),
                     IconButton(
                       icon: Icon(!isEditing ? Icons.edit : Icons.save_outlined),
                       onPressed: () {
