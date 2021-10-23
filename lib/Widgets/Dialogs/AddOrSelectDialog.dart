@@ -73,7 +73,7 @@ class _AddOrSelectDialogState extends State<AddOrSelectDialog> {
       } else if (widget.goalId != null) {
         goal = await DatabaseHelper.instance.getGoal(widget.goalId!);
         tasks = await DatabaseHelper.instance.getAllTasks();
-        tasks.removeWhere((element) => element.goalFK != null);
+        tasks.removeWhere((element) => element.goalFK != null || element.isRepeating);
       }
     }
     setState(() {

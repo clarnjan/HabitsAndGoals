@@ -9,6 +9,7 @@ import 'Dialogs/AddOrSelectDialog.dart';
 import 'EmptyState.dart';
 import 'Goal widgets/GoalDetails.dart';
 import 'MainMenu.dart';
+import 'Task widgets/TaskList.dart';
 
 class CardList extends StatefulWidget {
   final NoteType noteType;
@@ -45,12 +46,7 @@ class _CardListState extends State<CardList> {
           break;
         }
       case NoteType.Task:
-        {
-          this.items = await DatabaseHelper.instance.getAllTasks();
-          appBarTitle = "Tasks";
-          floatingButtonType = FloatingButtonType.AddTask;
-          break;
-        }
+        break;
       case NoteType.Goal:
         {
           this.items = await DatabaseHelper.instance.getAllGoals();
@@ -151,7 +147,7 @@ class _CardListState extends State<CardList> {
           Container(
             color: Colors.grey[800],
             width: double.infinity,
-            padding: EdgeInsets.all(10),
+            padding: EdgeInsets.all(5),
             child: Flex(direction: Axis.vertical, children: [
               isLoading
                   ? Expanded(
@@ -160,29 +156,31 @@ class _CardListState extends State<CardList> {
                       ),
                     )
                   : Expanded(
-                      child: RefreshIndicator(
-                        key: refreshState,
-                        onRefresh: () async {
-                          await refresh();
-                        },
-                        child: items.length > 0
-                            ? ListView.builder(
-                                itemCount: items.length,
-                                itemBuilder: (context, index) {
-                                  final item = items[index];
-                                  return Container(
-                                    margin: index == items.length - 1 ? EdgeInsets.only(bottom: 50) : EdgeInsets.only(bottom: 0),
-                                    child: getCard(item),
-                                  );
-                                })
-                            : ListView(
-                                children: [
-                                  EmptyState(
-                                    text: getEmptyStateText(),
-                                  ),
-                                ],
-                              ),
-                      ),
+                      child: widget.noteType == NoteType.Task
+                          ? TaskList()
+                          : RefreshIndicator(
+                              key: refreshState,
+                              onRefresh: () async {
+                                await refresh();
+                              },
+                              child: items.length > 0
+                                  ? ListView.builder(
+                                      itemCount: items.length,
+                                      itemBuilder: (context, index) {
+                                        final item = items[index];
+                                        return Container(
+                                          margin: index == items.length - 1 ? EdgeInsets.only(bottom: 50) : EdgeInsets.only(bottom: 0),
+                                          child: getCard(item),
+                                        );
+                                      })
+                                  : ListView(
+                                      children: [
+                                        EmptyState(
+                                          text: getEmptyStateText(),
+                                        ),
+                                      ],
+                                    ),
+                            ),
                     ),
             ]),
           ),

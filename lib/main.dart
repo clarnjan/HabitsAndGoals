@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'Widgets/CardList.dart';
+import 'Widgets/Task widgets/TaskList.dart';
 
 void main() {
   runApp(MyApp());
@@ -26,7 +27,7 @@ class MyApp extends StatelessWidget {
         routes: {
           '/week': (context) => WeekDetails(),
           '/habits': (context) => CardList(noteType: NoteType.Habit),
-          '/tasks': (context) => CardList(noteType: NoteType.Task),
+          '/tasks': (context) => TaskList(),
           '/goals': (context) => CardList(noteType: NoteType.Goal),
         });
   }

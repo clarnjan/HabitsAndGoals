@@ -38,7 +38,7 @@ class _SelectTasksDialogState extends State<SelectTasksDialog> {
             padding: EdgeInsets.all(20),
             child: Center(
               child: Text(
-                "No available tasks.\nClick New to add more",
+                "No available tasks.\nClick \"New\" to add more",
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 15,

@@ -4,7 +4,7 @@ import 'package:diplomska1/Classes/Goal.dart';
 import 'package:diplomska1/Widgets/Dialogs/AddOrSelectDialog.dart';
 import 'package:diplomska1/Widgets/Dialogs/EditDialog.dart';
 import 'package:diplomska1/Widgets/EmptyState.dart';
-import 'package:diplomska1/Widgets/TaskCard.dart';
+import 'package:diplomska1/Widgets/Task%20widgets/TaskCard.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
