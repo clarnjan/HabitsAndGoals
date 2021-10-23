@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 import 'ClickableCard.dart';
 import 'Dialogs/CustomDialog.dart';
+import 'EmptyState.dart';
 import 'Goal widgets/GoalDetails.dart';
 import 'Habit widgets/HabitDetails.dart';
 import 'MainMenu.dart';
@@ -112,6 +113,17 @@ class _CardListState extends State<CardList> {
     );
   }
 
+  String getEmptyStateText() {
+    switch (widget.noteType) {
+      case NoteType.Habit:
+        return "No habits added.\nClick the button below to add some";
+      case NoteType.Task:
+        return "No tasks added.\nClick the button below to add some";
+      case NoteType.Goal:
+        return "No goals added.\nClick the button below to add some";
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -140,15 +152,23 @@ class _CardListState extends State<CardList> {
                         onRefresh: () async {
                           await refresh();
                         },
-                        child: ListView.builder(
-                            itemCount: items.length,
-                            itemBuilder: (context, index) {
-                              final item = items[index];
-                              return Container(
-                                margin: index == items.length - 1 ? EdgeInsets.only(bottom: 50) : EdgeInsets.only(bottom: 0),
-                                child: getCard(item),
-                              );
-                            }),
+                        child: items.length > 0
+                            ? ListView.builder(
+                                itemCount: items.length,
+                                itemBuilder: (context, index) {
+                                  final item = items[index];
+                                  return Container(
+                                    margin: index == items.length - 1 ? EdgeInsets.only(bottom: 50) : EdgeInsets.only(bottom: 0),
+                                    child: getCard(item),
+                                  );
+                                })
+                            : ListView(
+                                children: [
+                                  EmptyState(
+                                    text: getEmptyStateText(),
+                                  ),
+                                ],
+                              ),
                       ),
                     ),
             ]),

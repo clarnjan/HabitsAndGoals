@@ -38,7 +38,7 @@ class _SelectHabitsDialogState extends State<SelectHabitsDialog> {
             padding: EdgeInsets.all(20),
             child: Center(
               child: Text(
-                "All habits already added in this week.\nClick New to add more",
+                "No available habits.\nClick New to add more",
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 15,

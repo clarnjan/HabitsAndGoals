@@ -3,6 +3,7 @@ import 'package:diplomska1/Classes/Enums.dart';
 import 'package:diplomska1/Classes/Goal.dart';
 import 'package:diplomska1/Widgets/Dialogs/CustomDialog.dart';
 import 'package:diplomska1/Widgets/Dialogs/DeleteDialog.dart';
+import 'package:diplomska1/Widgets/EmptyState.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
@@ -235,19 +236,23 @@ class _GoalDetailsState extends State<GoalDetails> {
                           onRefresh: () async {
                             await refresh();
                           },
-                          child: ListView.builder(
-                              itemCount: goal.tasks.length,
-                              itemBuilder: (context, index) {
-                                final item = goal.tasks[index];
-                                return Container(
-                                  margin: index == goal.tasks.length - 1 ? EdgeInsets.only(bottom: 50) : EdgeInsets.only(bottom: 0),
-                                  child: ClickableCard(
-                                    isSelectable: false,
-                                    tapFunction: () {},
-                                    title: item.title,
-                                  ),
-                                );
-                              }),
+                          child: goal.tasks.length > 0
+                              ? ListView.builder(
+                                  itemCount: goal.tasks.length,
+                                  itemBuilder: (context, index) {
+                                    final item = goal.tasks[index];
+                                    return Container(
+                                      margin: index == goal.tasks.length - 1 ? EdgeInsets.only(bottom: 50) : EdgeInsets.only(bottom: 0),
+                                      child: ClickableCard(
+                                        isSelectable: false,
+                                        tapFunction: () {},
+                                        title: item.title,
+                                      ),
+                                    );
+                                  })
+                              : ListView(children: [
+                                  EmptyState(text: "No tasks associated with this goal.\nClick the button below to add some"),
+                                ]),
                         ),
                       ),
                     ),

@@ -202,7 +202,7 @@ class _CustomDialogState extends State<CustomDialog> {
         result += "goal";
         break;
     }
-    result += isSelecting ? "s" : "";
+    result += isSelecting ? "s to add" : "";
     return result;
   }
 

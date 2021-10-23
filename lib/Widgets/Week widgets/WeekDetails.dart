@@ -11,6 +11,7 @@ import 'package:flutter/painting.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
 import '../Dialogs/CustomDialog.dart';
+import '../EmptyState.dart';
 import '../MainMenu.dart';
 import 'WeeksPopup.dart';
 
@@ -235,7 +236,11 @@ class _WeekDetailsState extends State<WeekDetails> {
                                     ),
                                   ],
                                 )
-                              : ListView(),
+                              : ListView(
+                                  children: [
+                                    EmptyState(text: "No habits or tasks added for this week.\nClick the button below to add some"),
+                                  ],
+                                ),
                         ),
                       ),
               ]),
