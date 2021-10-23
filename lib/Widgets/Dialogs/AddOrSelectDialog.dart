@@ -6,13 +6,13 @@ import 'package:diplomska1/Classes/Task.dart';
 import 'package:diplomska1/Classes/Week.dart';
 import 'package:diplomska1/Classes/WeeklyHabit.dart';
 import 'package:diplomska1/Classes/WeeklyTask.dart';
-import 'package:diplomska1/Widgets/Dialogs/AddGoalDialog.dart';
-import 'package:diplomska1/Widgets/Dialogs/AddTaskDialog.dart';
+import 'package:diplomska1/Widgets/Dialogs/AddOrEditGoalDialog.dart';
+import 'package:diplomska1/Widgets/Dialogs/AddOrEditTaskDialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../DialogButtons.dart';
-import 'AddHabitDialog.dart';
+import 'AddOrEditHabitDialog.dart';
 import 'SelectHabitsDialog.dart';
 import 'SelectTasksDialog.dart';
 
@@ -169,20 +169,20 @@ class _AddOrSelectDialogState extends State<AddOrSelectDialog> {
   Widget getAddDialog() {
     switch (widget.noteType) {
       case NoteType.Habit:
-        return AddHabitDialog(
+        return AddOrEditHabitDialog(
           weekId: widget.weekId,
           controller: _controller,
           refreshParent: widget.refreshParent,
         );
       case NoteType.Task:
-        return AddTaskDialog(
+        return AddOrEditTaskDialog(
           weekId: widget.weekId,
           goalId: widget.goalId,
           controller: _controller,
           refreshParent: widget.refreshParent,
         );
       case NoteType.Goal:
-        return AddGoalDialog(
+        return AddOrEditGoalDialog(
           weekId: widget.weekId,
           controller: _controller,
           refreshParent: widget.refreshParent,
@@ -232,7 +232,10 @@ class _AddOrSelectDialogState extends State<AddOrSelectDialog> {
               width: MediaQuery.of(context).size.width / 1.4,
               child: SingleChildScrollView(
                 child: widget.canSelect && (widget.weekId != null || widget.goalId != null) && isSelecting
-                    ? getSelectDialog()
+                    ? Padding(
+                        padding: const EdgeInsets.only(top: 10),
+                        child: getSelectDialog(),
+                      )
                     : getAddDialog(),
               ),
             )

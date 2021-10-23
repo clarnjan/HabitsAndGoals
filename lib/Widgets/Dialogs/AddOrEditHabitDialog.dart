@@ -1,32 +1,30 @@
 import 'package:diplomska1/Classes/DatabaseHelper.dart';
-import 'package:diplomska1/Classes/Task.dart';
-import 'package:diplomska1/Classes/WeeklyTask.dart';
+import 'package:diplomska1/Classes/Habit.dart';
+import 'package:diplomska1/Classes/WeeklyHabit.dart';
+import 'package:diplomska1/Widgets/Dialogs/AddOrSelectDialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_switch/flutter_switch.dart';
+import 'package:flutter/painting.dart';
 import 'package:numberpicker/numberpicker.dart';
 
-import 'AddOrSelectDialog.dart';
-
-class AddTaskDialog extends StatefulWidget {
+class AddOrEditHabitDialog extends StatefulWidget {
   final int? weekId;
-  final int? goalId;
-  final int? taskId;
+  final int? habitId;
   final Function refreshParent;
   final AddEditItemController controller;
 
-  const AddTaskDialog({Key? key, this.weekId, required this.refreshParent, required this.controller, this.goalId, this.taskId})
+  const AddOrEditHabitDialog({Key? key, this.weekId, required this.refreshParent, required this.controller, this.habitId})
       : super(key: key);
 
   @override
-  _AddTaskDialogState createState() => _AddTaskDialogState(controller);
+  _AddOrEditHabitDialogState createState() => _AddOrEditHabitDialogState(controller);
 }
 
-class _AddTaskDialogState extends State<AddTaskDialog> {
-  late Task task;
+class _AddOrEditHabitDialogState extends State<AddOrEditHabitDialog> {
+  late Habit habit;
   bool isLoading = true;
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
-  _AddTaskDialogState(AddEditItemController _controller) {
+  _AddOrEditHabitDialogState(AddEditItemController _controller) {
     _controller.onSave = onSave;
   }
 
@@ -40,10 +38,10 @@ class _AddTaskDialogState extends State<AddTaskDialog> {
     setState(() {
       isLoading = true;
     });
-    if (widget.taskId != null) {
-      task = await DatabaseHelper.instance.getTask(widget.taskId!);
+    if (widget.habitId != null) {
+      habit = await DatabaseHelper.instance.getHabit(widget.habitId!);
     } else {
-      task = new Task();
+      habit = new Habit();
     }
     setState(() {
       isLoading = false;
@@ -52,19 +50,36 @@ class _AddTaskDialogState extends State<AddTaskDialog> {
 
   onSave() async {
     if (formKey.currentState!.validate()) {
-      task.createdTime = DateTime.now();
-      if (task.id != null) {
-        await DatabaseHelper.instance.updateTask(task);
+      habit.createdTime = DateTime.now();
+      if (habit.id != null) {
+        List<WeeklyHabit> weeklyHabits = await DatabaseHelper.instance.getWeeklyHabitsForHabit(habit.id!);
+        for (WeeklyHabit wh in weeklyHabits) {
+          List<bool> days = [];
+          for (int i = 0; i < habit.repetitions; i++) {
+            if (wh.repetitionsDone > i) {
+              days.add(true);
+            } else {
+              days.add(false);
+            }
+          }
+          wh.repetitionsDone = days.where((element) => element == true).length;
+          wh.days = days;
+          await DatabaseHelper.instance.updateHabit(habit);
+          DatabaseHelper.instance.updateWeeklyHabit(wh);
+        }
       } else {
-        task.goalFK = widget.goalId;
-        task = await DatabaseHelper.instance.createTask(task);
+        habit = await DatabaseHelper.instance.createHabit(habit);
       }
-      if (widget.weekId != null && task.id != null) {
-        WeeklyTask weeklyTask = new WeeklyTask(taskFK: task.id!, weekFK: widget.weekId!, isFinished: false);
-        DatabaseHelper.instance.createWeeklyTask(weeklyTask);
+      if (widget.weekId != null && habit.id != null) {
+        List<bool> days = [];
+        for (int i = 0; i < habit.repetitions; i++) {
+          days.add(false);
+        }
+        WeeklyHabit weeklyHabit = new WeeklyHabit(habitFK: habit.id!, weekFK: widget.weekId!, repetitionsDone: 0, days: days);
+        DatabaseHelper.instance.createWeeklyHabit(weeklyHabit);
       }
       await widget.refreshParent();
-      Navigator.of(context).pop();
+      Navigator.pop(context);
     }
   }
 
@@ -77,14 +92,14 @@ class _AddTaskDialogState extends State<AddTaskDialog> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 TextFormField(
-                  autofocus: true,
+                  autofocus: MediaQuery.of(context).size.height > 600,
                   validator: (value) {
                     setState(() {
-                      task.title = value!;
+                      habit.title = value!;
                     });
                     return value!.isNotEmpty ? null : "Title is mandatory";
                   },
-                  initialValue: task.title,
+                  initialValue: habit.title,
                   keyboardType: TextInputType.visiblePassword,
                   decoration: InputDecoration(
                     hintText: "Title",
@@ -99,10 +114,10 @@ class _AddTaskDialogState extends State<AddTaskDialog> {
                 TextFormField(
                   onChanged: (value) {
                     setState(() {
-                      task.description = value;
+                      habit.description = value;
                     });
                   },
-                  initialValue: task.description,
+                  initialValue: habit.description,
                   keyboardType: TextInputType.visiblePassword,
                   decoration: InputDecoration(
                     hintText: "Description",
@@ -115,8 +130,61 @@ class _AddTaskDialogState extends State<AddTaskDialog> {
                   ),
                 ),
                 SizedBox(
-                  height: 10,
+                  height: 20,
                 ),
+                Container(
+                  width: double.infinity,
+                  child: Wrap(
+                    alignment: WrapAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        width: MediaQuery.of(context).size.width / 1.4 / 2.3,
+                        child: Wrap(
+                          children: [
+                            Text(
+                              "Repetitions: ",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                              ),
+                            ),
+                            Tooltip(
+                              preferBelow: false,
+                              showDuration: Duration(seconds: 5),
+                              message: "How many times will you be doing this habit in a week",
+                              textStyle: TextStyle(color: Colors.lightGreenAccent),
+                              padding: EdgeInsets.all(7),
+                              child: Icon(
+                                Icons.info_outline,
+                                color: Colors.lightGreenAccent,
+                                size: 19,
+                              ),
+                              triggerMode: TooltipTriggerMode.tap,
+                            ),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        child: NumberPicker(
+                          value: habit.repetitions,
+                          minValue: 1,
+                          maxValue: 7,
+                          onChanged: (value) => setState(() => habit.repetitions = value),
+                          itemWidth: 40,
+                          itemHeight: 30,
+                          axis: Axis.horizontal,
+                          selectedTextStyle: TextStyle(
+                            fontSize: 18,
+                            color: CupertinoColors.activeGreen,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          textStyle: TextStyle(fontSize: 14, color: Colors.white),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Divider(),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -132,7 +200,7 @@ class _AddTaskDialogState extends State<AddTaskDialog> {
                         Tooltip(
                           preferBelow: false,
                           showDuration: Duration(seconds: 5),
-                          message: "The effort you need to put in to complete this task",
+                          message: "The effort you need to put in to do a single repetition",
                           textStyle: TextStyle(color: Colors.lightGreenAccent),
                           padding: EdgeInsets.all(7),
                           child: Icon(
@@ -145,16 +213,17 @@ class _AddTaskDialogState extends State<AddTaskDialog> {
                       ],
                     ),
                     Container(
+                      margin: EdgeInsets.only(top: 5),
                       child: NumberPicker(
-                        value: task.effort,
+                        value: habit.effortSingle,
                         minValue: 0,
                         maxValue: 99,
-                        onChanged: (value) => setState(() => task.effort = value),
+                        onChanged: (value) => setState(() => habit.effortSingle = value),
                         itemWidth: 40,
                         itemHeight: 30,
                         axis: Axis.horizontal,
                         selectedTextStyle: TextStyle(
-                          fontSize: 15,
+                          fontSize: 18,
                           color: CupertinoColors.activeGreen,
                           fontWeight: FontWeight.bold,
                         ),
@@ -163,7 +232,6 @@ class _AddTaskDialogState extends State<AddTaskDialog> {
                     ),
                   ],
                 ),
-                Divider(),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -179,7 +247,7 @@ class _AddTaskDialogState extends State<AddTaskDialog> {
                         Tooltip(
                           preferBelow: false,
                           showDuration: Duration(seconds: 5),
-                          message: "The benefit you get after completing this task",
+                          message: "The benefit you get after a single repetition",
                           textStyle: TextStyle(color: Colors.lightGreenAccent),
                           padding: EdgeInsets.all(7),
                           child: Icon(
@@ -192,67 +260,19 @@ class _AddTaskDialogState extends State<AddTaskDialog> {
                       ],
                     ),
                     NumberPicker(
-                      value: task.benefit,
+                      value: habit.benefitSingle,
                       minValue: 0,
                       maxValue: 99,
-                      onChanged: (value) => setState(() => task.benefit = value),
+                      onChanged: (value) => setState(() => habit.benefitSingle = value),
                       itemWidth: 40,
                       itemHeight: 30,
                       axis: Axis.horizontal,
                       selectedTextStyle: TextStyle(
-                        fontSize: 15,
+                        fontSize: 18,
                         color: CupertinoColors.activeGreen,
                         fontWeight: FontWeight.bold,
                       ),
                       textStyle: TextStyle(fontSize: 14, color: Colors.white),
-                    ),
-                  ],
-                ),
-                Divider(),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text(
-                          "Reoccurring: ",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
-                          ),
-                        ),
-                        Tooltip(
-                          preferBelow: false,
-                          showDuration: Duration(seconds: 5),
-                          message: "Will the task occur in more than one week?",
-                          textStyle: TextStyle(color: Colors.lightGreenAccent),
-                          padding: EdgeInsets.all(7),
-                          child: Icon(
-                            Icons.info_outline,
-                            color: Colors.lightGreenAccent,
-                            size: 19,
-                          ),
-                          triggerMode: TooltipTriggerMode.tap,
-                        ),
-                      ],
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(right: 12.0),
-                      child: FlutterSwitch(
-                        width: 50,
-                        height: 25,
-                        toggleSize: 20,
-                        padding: 2,
-                        activeColor: Colors.green,
-                        inactiveColor: Colors.grey.shade600,
-                        value: task.isRepeating,
-                        onToggle: (value) {
-                          setState(() {
-                            task.isRepeating = value;
-                          });
-                        },
-                      ),
                     ),
                   ],
                 ),

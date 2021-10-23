@@ -61,6 +61,20 @@ class _GoalDetailsState extends State<GoalDetails> {
     Navigator.pop(context);
   }
 
+  Future<void> cardTapFunction(int id) async {
+    return await showDialog(
+      context: context,
+      builder: (context) {
+        return EditDialog(
+          afterDelete: refresh,
+          refreshParent: refresh,
+          noteType: NoteType.Task,
+          itemId: id,
+        );
+      },
+    );
+  }
+
   Future<void> floatingButtonClick(BuildContext context) async {
     return await showDialog(
       context: context,
@@ -167,6 +181,9 @@ class _GoalDetailsState extends State<GoalDetails> {
                                       margin: index == goal.tasks.length - 1 ? EdgeInsets.only(bottom: 50) : EdgeInsets.only(bottom: 0),
                                       child: TaskCard(
                                         taskId: task.id!,
+                                        tapFunction: () {
+                                          cardTapFunction(task.id!);
+                                        },
                                       ),
                                     );
                                   })

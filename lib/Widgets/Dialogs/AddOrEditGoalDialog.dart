@@ -4,23 +4,23 @@ import 'package:flutter/material.dart';
 
 import 'AddOrSelectDialog.dart';
 
-class AddGoalDialog extends StatefulWidget {
+class AddOrEditGoalDialog extends StatefulWidget {
   final int? weekId;
   final int? goalId;
   final Function refreshParent;
   final AddEditItemController controller;
 
-  const AddGoalDialog({Key? key, this.weekId, required this.refreshParent, required this.controller, this.goalId}) : super(key: key);
+  const AddOrEditGoalDialog({Key? key, this.weekId, required this.refreshParent, required this.controller, this.goalId}) : super(key: key);
 
   @override
-  _AddGoalDialogState createState() => _AddGoalDialogState(controller);
+  _AddOrEditGoalDialogState createState() => _AddOrEditGoalDialogState(controller);
 }
 
-class _AddGoalDialogState extends State<AddGoalDialog> {
+class _AddOrEditGoalDialogState extends State<AddOrEditGoalDialog> {
   late Goal goal;
   bool isLoading = true;
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
-  _AddGoalDialogState(AddEditItemController _controller) {
+  _AddOrEditGoalDialogState(AddEditItemController _controller) {
     _controller.onSave = onSave;
   }
 

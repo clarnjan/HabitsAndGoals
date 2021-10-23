@@ -2,6 +2,7 @@ import 'package:diplomska1/Classes/DatabaseHelper.dart';
 import 'package:diplomska1/Classes/DateService.dart';
 import 'package:diplomska1/Classes/Enums.dart';
 import 'package:diplomska1/Classes/Week.dart';
+import 'package:diplomska1/Widgets/Dialogs/EditDialog.dart';
 import 'package:diplomska1/Widgets/Habit%20widgets/HabitCard.dart';
 import 'package:diplomska1/Widgets/LabelWidget.dart';
 import 'package:diplomska1/Widgets/Task%20widgets/TaskCard.dart';
@@ -62,6 +63,20 @@ class _WeekDetailsState extends State<WeekDetails> {
     setState(() {
       isLoading = false;
     });
+  }
+
+  Future<void> cardTapFunction(int id, NoteType noteType) async {
+    return await showDialog(
+      context: context,
+      builder: (context) {
+        return EditDialog(
+          afterDelete: refresh,
+          refreshParent: refresh,
+          noteType: noteType,
+          itemId: id,
+        );
+      },
+    );
   }
 
   @override
@@ -186,6 +201,9 @@ class _WeekDetailsState extends State<WeekDetails> {
                                             child: HabitCard(
                                               weekId: week.id!,
                                               habitId: week.habits[index].habitFK,
+                                              tapFunction: () {
+                                                cardTapFunction(week.habits[index].habitFK, NoteType.Habit);
+                                              },
                                             ),
                                           );
                                         },
@@ -228,6 +246,9 @@ class _WeekDetailsState extends State<WeekDetails> {
                                             child: TaskCard(
                                               weekId: week.id!,
                                               taskId: week.tasks[index].taskFK,
+                                              tapFunction: () {
+                                                cardTapFunction(week.tasks[index].taskFK, NoteType.Task);
+                                              },
                                             ),
                                           );
                                         },

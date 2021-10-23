@@ -125,6 +125,9 @@ class _TaskListState extends State<TaskList> {
                                     ),
                                     child: TaskCard(
                                       taskId: oneTimeTasks[index].id!,
+                                      tapFunction: () {
+                                        cardTapFunction(oneTimeTasks[index].id!);
+                                      },
                                     ),
                                   );
                                 },

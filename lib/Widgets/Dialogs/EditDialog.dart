@@ -3,9 +3,9 @@ import 'package:diplomska1/Classes/Enums.dart';
 import 'package:diplomska1/Classes/Goal.dart';
 import 'package:diplomska1/Classes/Habit.dart';
 import 'package:diplomska1/Classes/Task.dart';
-import 'package:diplomska1/Widgets/Dialogs/AddGoalDialog.dart';
-import 'package:diplomska1/Widgets/Dialogs/AddHabitDialog.dart';
-import 'package:diplomska1/Widgets/Dialogs/AddTaskDialog.dart';
+import 'package:diplomska1/Widgets/Dialogs/AddOrEditGoalDialog.dart';
+import 'package:diplomska1/Widgets/Dialogs/AddOrEditHabitDialog.dart';
+import 'package:diplomska1/Widgets/Dialogs/AddOrEditTaskDialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -61,6 +61,7 @@ class _EditDialogState extends State<EditDialog> {
 
   mainButtonClick() {
     _controller.onSave();
+    widget.refreshParent();
   }
 
   secondButtonClick(BuildContext context) async {
@@ -116,19 +117,19 @@ class _EditDialogState extends State<EditDialog> {
   Widget getDialog() {
     switch (widget.noteType) {
       case NoteType.Habit:
-        return AddHabitDialog(
+        return AddOrEditHabitDialog(
           refreshParent: widget.refreshParent,
           habitId: habit.id,
           controller: _controller,
         );
       case NoteType.Task:
-        return AddTaskDialog(
+        return AddOrEditTaskDialog(
           refreshParent: widget.refreshParent,
           taskId: task.id,
           controller: _controller,
         );
       case NoteType.Goal:
-        return AddGoalDialog(
+        return AddOrEditGoalDialog(
           refreshParent: widget.refreshParent,
           goalId: goal.id,
           controller: _controller,

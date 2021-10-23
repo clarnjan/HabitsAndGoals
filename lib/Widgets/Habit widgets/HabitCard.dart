@@ -7,8 +7,9 @@ import 'package:flutter/material.dart';
 class HabitCard extends StatefulWidget {
   final int habitId;
   final int weekId;
+  final Function tapFunction;
 
-  HabitCard({required this.habitId, required this.weekId});
+  HabitCard({required this.habitId, required this.weekId, required this.tapFunction});
 
   @override
   _HabitCardState createState() => _HabitCardState();
@@ -37,6 +38,11 @@ class _HabitCardState extends State<HabitCard> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
+      onTap: () {
+        setState(() {
+          widget.tapFunction();
+        });
+      },
       child: Container(
         padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
         margin: EdgeInsets.only(
