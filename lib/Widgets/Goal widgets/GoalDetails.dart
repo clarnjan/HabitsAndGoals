@@ -1,14 +1,13 @@
 import 'package:diplomska1/Classes/DatabaseHelper.dart';
 import 'package:diplomska1/Classes/Enums.dart';
 import 'package:diplomska1/Classes/Goal.dart';
-import 'package:diplomska1/Widgets/Dialogs/CustomDialog.dart';
-import 'package:diplomska1/Widgets/Dialogs/DeleteDialog.dart';
+import 'package:diplomska1/Widgets/Dialogs/AddOrSelectDialog.dart';
+import 'package:diplomska1/Widgets/Dialogs/EditDialog.dart';
 import 'package:diplomska1/Widgets/EmptyState.dart';
+import 'package:diplomska1/Widgets/TaskCard.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
-
-import '../ClickableCard.dart';
 
 class GoalDetails extends StatefulWidget {
   final int goalId;
@@ -23,9 +22,6 @@ class GoalDetails extends StatefulWidget {
 class _GoalDetailsState extends State<GoalDetails> {
   late Goal goal;
   bool isLoading = true;
-  bool isEditing = false;
-  String? title;
-  String? description;
   final Key centerKey = ValueKey('second-sliver-list');
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   GlobalKey<RefreshIndicatorState> refreshState = GlobalKey<RefreshIndicatorState>();
@@ -41,11 +37,23 @@ class _GoalDetailsState extends State<GoalDetails> {
       isLoading = true;
     });
     this.goal = await DatabaseHelper.instance.getGoal(widget.goalId);
-    this.title = goal.title;
-    this.description = goal.description;
     setState(() {
       isLoading = false;
     });
+  }
+
+  Future<void> editGoal() async {
+    return await showDialog(
+      context: context,
+      builder: (context) {
+        return EditDialog(
+          afterDelete: afterDelete,
+          refreshParent: refresh,
+          noteType: NoteType.Goal,
+          itemId: widget.goalId,
+        );
+      },
+    );
   }
 
   afterDelete() async {
@@ -57,25 +65,11 @@ class _GoalDetailsState extends State<GoalDetails> {
     return await showDialog(
       context: context,
       builder: (context) {
-        return CustomDialog(
+        return AddOrSelectDialog(
           canSelect: true,
           refreshParent: refresh,
           noteType: NoteType.Task,
           goalId: widget.goalId,
-        );
-      },
-    );
-  }
-
-  Future<void> showDeleteDialog() async {
-    return await showDialog(
-      context: context,
-      builder: (context) {
-        return DeleteDialog(
-          goalId: widget.goalId,
-          title: goal.title,
-          refreshParent: refresh,
-          afterDelete: afterDelete,
         );
       },
     );
@@ -90,58 +84,25 @@ class _GoalDetailsState extends State<GoalDetails> {
               : Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    !isEditing
-                        ? Container(
-                            width: MediaQuery.of(context).size.width - 190,
-                            child: Text(
-                              goal.title,
-                              style: TextStyle(overflow: TextOverflow.ellipsis),
-                            ),
-                          )
-                        : Container(
-                            width: MediaQuery.of(context).size.width - 190,
-                            child: Text("Editing..."),
-                          ),
-                    IconButton(
-                      icon: Icon(!isEditing ? Icons.delete : Icons.cancel),
-                      onPressed: () {
-                        if (isEditing) {
-                          setState(() {
-                            isEditing = !isEditing;
-                          });
-                        } else {
-                          showDeleteDialog();
-                        }
-                      },
+                    Container(
+                      width: MediaQuery.of(context).size.width - 150,
+                      child: Text(
+                        goal.title,
+                        style: TextStyle(overflow: TextOverflow.ellipsis),
+                      ),
                     ),
                     IconButton(
-                      icon: Icon(!isEditing ? Icons.edit : Icons.save_outlined),
-                      onPressed: () {
-                        if (isEditing) {
-                          if (formKey.currentState!.validate()) {
-                            goal.title = title!;
-                            goal.description = description;
-                            DatabaseHelper.instance.updateGoal(goal);
-                            setState(() {
-                              isEditing = !isEditing;
-                            });
-                            widget.refreshParent();
-                          }
-                        } else {
-                          setState(() {
-                            isEditing = !isEditing;
-                          });
-                        }
-                      },
+                      icon: Icon(Icons.edit),
+                      onPressed: editGoal,
                     ),
                   ],
                 )),
       body: Stack(
         children: [
           Container(
-            color: Colors.grey[800],
+            color: Colors.grey.shade800,
             width: double.infinity,
-            padding: EdgeInsets.all(10),
+            padding: EdgeInsets.all(5),
             child: Flex(direction: Axis.vertical, children: [
               if (!isLoading)
                 Container(
@@ -149,63 +110,24 @@ class _GoalDetailsState extends State<GoalDetails> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      if (isEditing)
-                        Form(
-                          key: formKey,
-                          child: TextFormField(
-                            decoration: InputDecoration(
-                              label: Text(
-                                "Title:",
-                                style: TextStyle(color: Colors.white),
-                              ),
-                            ),
-                            autofocus: true,
-                            initialValue: title,
-                            keyboardType: TextInputType.visiblePassword,
-                            style: TextStyle(color: Colors.white),
-                            validator: (value) {
-                              setState(() {
-                                title = value;
-                              });
-                              return value!.isNotEmpty ? null : "Title is mandatory";
-                            },
+                      Container(
+                        padding: EdgeInsets.only(bottom: 10),
+                        child: Text(
+                          'Description: ',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
                           ),
                         ),
-                      if (!isEditing)
-                        Container(
-                          padding: EdgeInsets.only(bottom: 10),
-                          child: Text(
-                            'Description: ',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 18,
-                            ),
-                          ),
+                      ),
+                      Text(
+                        goal.description ?? 'No description added',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 17,
+                          fontStyle: FontStyle.italic,
                         ),
-                      !isEditing
-                          ? Text(
-                              goal.description ?? 'No description added',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 17,
-                                fontStyle: FontStyle.italic,
-                              ),
-                            )
-                          : TextFormField(
-                              initialValue: description,
-                              decoration: InputDecoration(
-                                  label: Text(
-                                "Description:",
-                                style: TextStyle(color: Colors.white),
-                              )),
-                              keyboardType: TextInputType.visiblePassword,
-                              onChanged: (value) {
-                                setState(() {
-                                  description = value;
-                                });
-                              },
-                              style: TextStyle(color: Colors.white),
-                            ),
+                      ),
                       SizedBox(
                         height: 20,
                       ),
@@ -240,13 +162,11 @@ class _GoalDetailsState extends State<GoalDetails> {
                               ? ListView.builder(
                                   itemCount: goal.tasks.length,
                                   itemBuilder: (context, index) {
-                                    final item = goal.tasks[index];
+                                    final task = goal.tasks[index];
                                     return Container(
                                       margin: index == goal.tasks.length - 1 ? EdgeInsets.only(bottom: 50) : EdgeInsets.only(bottom: 0),
-                                      child: ClickableCard(
-                                        isSelectable: false,
-                                        tapFunction: () {},
-                                        title: item.title,
+                                      child: TaskCard(
+                                        taskId: task.id!,
                                       ),
                                     );
                                   })

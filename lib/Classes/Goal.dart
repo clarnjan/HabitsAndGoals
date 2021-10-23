@@ -16,15 +16,15 @@ class Goal {
   String title;
   String? description;
   bool isFinished;
-  DateTime createdTime;
+  DateTime? createdTime;
   late List<Task> tasks;
 
   Goal({
     this.id,
-    required this.title,
+    this.title = "",
     this.description,
-    required this.isFinished,
-    required this.createdTime,
+    this.isFinished = false,
+    this.createdTime,
     this.tasks = const [],
   });
 
@@ -33,7 +33,7 @@ class Goal {
         GoalFields.title: title,
         GoalFields.description: description,
         GoalFields.isFinished: isFinished ? 1 : 0,
-        GoalFields.createdTime: createdTime.toIso8601String(),
+        GoalFields.createdTime: createdTime!.toIso8601String(),
       };
 
   Goal copy({

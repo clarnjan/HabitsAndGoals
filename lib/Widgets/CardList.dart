@@ -1,15 +1,14 @@
 import 'package:diplomska1/Classes/DatabaseHelper.dart';
 import 'package:diplomska1/Classes/Enums.dart';
+import 'package:diplomska1/Widgets/Dialogs/EditDialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'ClickableCard.dart';
-import 'Dialogs/CustomDialog.dart';
+import 'Dialogs/AddOrSelectDialog.dart';
 import 'EmptyState.dart';
 import 'Goal widgets/GoalDetails.dart';
-import 'Habit widgets/HabitDetails.dart';
 import 'MainMenu.dart';
-import 'Task widgets/TaskDetails.dart';
 
 class CardList extends StatefulWidget {
   final NoteType noteType;
@@ -72,7 +71,7 @@ class _CardListState extends State<CardList> {
           title: item.title,
           isSelectable: false,
           tapFunction: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => HabitDetails(item.id)));
+            cardTapFunction(item.id!);
           },
         );
       case NoteType.Task:
@@ -80,7 +79,7 @@ class _CardListState extends State<CardList> {
           title: item.title,
           isSelectable: false,
           tapFunction: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => TaskDetails(item.id)));
+            cardTapFunction(item.id!);
           },
         );
       case NoteType.Goal:
@@ -100,11 +99,25 @@ class _CardListState extends State<CardList> {
     }
   }
 
+  Future<void> cardTapFunction(int id) async {
+    return await showDialog(
+      context: context,
+      builder: (context) {
+        return EditDialog(
+          afterDelete: refresh,
+          refreshParent: refresh,
+          noteType: widget.noteType,
+          itemId: id,
+        );
+      },
+    );
+  }
+
   Future<void> floatingButtonClick(BuildContext context) async {
     return await showDialog(
       context: context,
       builder: (context) {
-        return CustomDialog(
+        return AddOrSelectDialog(
           canSelect: false,
           refreshParent: refresh,
           noteType: widget.noteType,

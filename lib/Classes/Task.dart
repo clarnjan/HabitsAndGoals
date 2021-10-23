@@ -22,18 +22,18 @@ class Task {
   int benefit;
   bool isRepeating;
   bool isFinished;
-  DateTime createdTime;
+  DateTime? createdTime;
 
   Task({
     this.id,
     this.goalFK,
-    required this.title,
+    this.title = "",
     this.description,
-    required this.effort,
-    required this.benefit,
-    required this.isRepeating,
-    required this.isFinished,
-    required this.createdTime,
+    this.effort = 1,
+    this.benefit = 1,
+    this.isRepeating = false,
+    this.isFinished = false,
+    this.createdTime,
   });
 
   Map<String, Object?> toJson() => {
@@ -45,7 +45,7 @@ class Task {
         TaskFields.benefit: benefit,
         TaskFields.isRepeating: isRepeating ? 1 : 0,
         TaskFields.isFinished: isFinished ? 1 : 0,
-        TaskFields.createdTime: createdTime.toIso8601String(),
+        TaskFields.createdTime: createdTime!.toIso8601String(),
       };
 
   Task copy({

@@ -20,17 +20,17 @@ class Habit {
   int benefitSingle;
   int repetitions;
   bool isPaused;
-  DateTime createdTime;
+  DateTime? createdTime;
 
   Habit({
     this.id,
-    required this.title,
+    this.title = "",
     this.description,
-    required this.effortSingle,
-    required this.benefitSingle,
-    required this.repetitions,
-    required this.isPaused,
-    required this.createdTime,
+    this.effortSingle = 1,
+    this.benefitSingle = 1,
+    this.repetitions = 1,
+    this.isPaused = false,
+    this.createdTime,
   });
 
   Map<String, Object?> toJson() => {
@@ -41,7 +41,7 @@ class Habit {
         HabitFields.benefitSingle: benefitSingle,
         HabitFields.repetitions: repetitions,
         HabitFields.isPaused: isPaused ? 1 : 0,
-        HabitFields.createdTime: createdTime.toIso8601String(),
+        HabitFields.createdTime: createdTime!.toIso8601String(),
       };
 
   Habit copy(

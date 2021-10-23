@@ -3,19 +3,19 @@ import 'package:diplomska1/Classes/Task.dart';
 import 'package:diplomska1/Classes/WeeklyTask.dart';
 import 'package:flutter/material.dart';
 
-class WeeklyTaskCard extends StatefulWidget {
+class TaskCard extends StatefulWidget {
   final int taskId;
-  final int weekId;
+  final int? weekId;
 
-  WeeklyTaskCard({required this.taskId, required this.weekId});
+  TaskCard({required this.taskId, this.weekId});
 
   @override
-  _WeeklyTaskCardState createState() => _WeeklyTaskCardState();
+  _TaskCardState createState() => _TaskCardState();
 }
 
-class _WeeklyTaskCardState extends State<WeeklyTaskCard> {
+class _TaskCardState extends State<TaskCard> {
   late Task task;
-  late WeeklyTask weeklyTask;
+  WeeklyTask? weeklyTask;
   bool isLoading = true;
 
   @override
@@ -26,11 +26,23 @@ class _WeeklyTaskCardState extends State<WeeklyTaskCard> {
 
   refresh() async {
     task = await DatabaseHelper.instance.getTask(widget.taskId);
-    weeklyTask = await DatabaseHelper.instance.getWeeklyTask(widget.weekId, widget.taskId);
+    if (widget.weekId != null) {
+      weeklyTask = await DatabaseHelper.instance.getWeeklyTask(widget.weekId!, widget.taskId);
+    }
     if (!mounted) return;
     setState(() {
       isLoading = false;
     });
+  }
+
+  bool isFinished() {
+    if (!task.isRepeating) {
+      return task.isFinished;
+    }
+    if (weeklyTask != null) {
+      return weeklyTask!.isFinished;
+    }
+    return false;
   }
 
   @override
@@ -67,22 +79,28 @@ class _WeeklyTaskCardState extends State<WeeklyTaskCard> {
                   InkWell(
                     onTap: () {
                       setState(() {
-                        weeklyTask.isFinished = !weeklyTask.isFinished;
-                        DatabaseHelper.instance.updateWeeklyTask(weeklyTask);
+                        if (!task.isRepeating) {
+                          task.isFinished = !task.isFinished;
+                          DatabaseHelper.instance.updateTask(task);
+                        }
+                        if (weeklyTask != null) {
+                          weeklyTask!.isFinished = !weeklyTask!.isFinished;
+                          DatabaseHelper.instance.updateWeeklyTask(weeklyTask!);
+                        }
                       });
                     },
                     child: Padding(
                       padding: const EdgeInsets.all(2.0),
                       child: Container(
                         decoration: BoxDecoration(
-                          color: weeklyTask.isFinished ? Colors.green.shade700 : Colors.transparent,
+                          color: isFinished() ? Colors.green.shade700 : Colors.transparent,
                           border: Border.all(
-                            color: weeklyTask.isFinished ? Colors.green.shade700 : Colors.white,
+                            color: isFinished() ? Colors.green.shade700 : Colors.white,
                             width: 1,
                           ),
                           borderRadius: BorderRadius.circular(6),
                         ),
-                        child: weeklyTask.isFinished
+                        child: isFinished()
                             ? Icon(
                                 Icons.check,
                                 size: 18.0,

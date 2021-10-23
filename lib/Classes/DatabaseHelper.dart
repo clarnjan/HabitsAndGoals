@@ -187,6 +187,13 @@ class DatabaseHelper {
     return result.map((json) => WeeklyHabit.fromJson(json)).toList();
   }
 
+  Future<List<WeeklyHabit>> getWeeklyHabitsForHabit(int habitId) async {
+    final db = await instance.database;
+    final result = await db
+        .query(weeklyHabitsTable, columns: WeeklyHabitFields.values, where: '${WeeklyHabitFields.habitFK} = ?', whereArgs: [habitId]);
+    return result.map((json) => WeeklyHabit.fromJson(json)).toList();
+  }
+
   Future<List<WeeklyTask>> getWeeklyTasksForWeek(int weekId) async {
     final db = await instance.database;
     final result =
@@ -300,23 +307,25 @@ class DatabaseHelper {
     return db.update(tasksTable, task.toJson(), where: '${TaskFields.id} = ?', whereArgs: [task.id]);
   }
 
+  Future<int> updateHabit(Habit habit) async {
+    final db = await instance.database;
+    return db.update(habitsTable, habit.toJson(), where: '${HabitFields.id} = ?', whereArgs: [habit.id]);
+  }
+
   Future<int> updateGoal(Goal goal) async {
     final db = await instance.database;
     return db.update(goalsTable, goal.toJson(), where: '${GoalFields.id} = ?', whereArgs: [goal.id]);
   }
 
-  Future<int> deleteWeek(int id) async {
-    final db = await instance.database;
-    return await db.delete(weeksTable, where: '${WeekFields.id} = ?', whereArgs: [id]);
-  }
-
   Future<int> deleteHabit(int id) async {
     final db = await instance.database;
+    db.delete(weeklyHabitsTable, where: '${WeeklyHabitFields.habitFK} = ?', whereArgs: [id]);
     return await db.delete(habitsTable, where: '${HabitFields.id} = ?', whereArgs: [id]);
   }
 
   Future<int> deleteTask(int id) async {
     final db = await instance.database;
+    db.delete(weeklyTasksTable, where: '${WeeklyTaskFields.taskFK} = ?', whereArgs: [id]);
     return await db.delete(tasksTable, where: '${TaskFields.id} = ?', whereArgs: [id]);
   }
 

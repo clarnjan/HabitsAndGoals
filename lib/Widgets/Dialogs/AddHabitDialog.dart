@@ -1,7 +1,7 @@
 import 'package:diplomska1/Classes/DatabaseHelper.dart';
 import 'package:diplomska1/Classes/Habit.dart';
 import 'package:diplomska1/Classes/WeeklyHabit.dart';
-import 'package:diplomska1/Widgets/Dialogs/CustomDialog.dart';
+import 'package:diplomska1/Widgets/Dialogs/AddOrSelectDialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
@@ -9,40 +9,66 @@ import 'package:numberpicker/numberpicker.dart';
 
 class AddHabitDialog extends StatefulWidget {
   final int? weekId;
+  final int? habitId;
   final Function refreshParent;
-  final AddItemController controller;
+  final AddEditItemController controller;
 
-  const AddHabitDialog({Key? key, this.weekId, required this.refreshParent, required this.controller}) : super(key: key);
+  const AddHabitDialog({Key? key, this.weekId, required this.refreshParent, required this.controller, this.habitId}) : super(key: key);
 
   @override
   _AddHabitDialogState createState() => _AddHabitDialogState(controller);
 }
 
 class _AddHabitDialogState extends State<AddHabitDialog> {
-  String? title;
-  String? description;
-  int effortSingle = 1;
-  int benefitSingle = 1;
-  int repetitions = 1;
+  late Habit habit;
+  bool isLoading = true;
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
-  final TextEditingController textEditingController = TextEditingController();
-  _AddHabitDialogState(AddItemController _controller) {
+  _AddHabitDialogState(AddEditItemController _controller) {
     _controller.onSave = onSave;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fetchData();
+  }
+
+  fetchData() async {
+    setState(() {
+      isLoading = true;
+    });
+    if (widget.habitId != null) {
+      habit = await DatabaseHelper.instance.getHabit(widget.habitId!);
+    } else {
+      habit = new Habit();
+    }
+    setState(() {
+      isLoading = false;
+    });
   }
 
   onSave() async {
     if (formKey.currentState!.validate()) {
-      Habit habit = Habit(
-        title: title!,
-        description: description,
-        effortSingle: effortSingle,
-        benefitSingle: benefitSingle,
-        repetitions: repetitions,
-        isPaused: false,
-        createdTime: DateTime.now(),
-      );
-
-      habit = await DatabaseHelper.instance.createHabit(habit);
+      habit.createdTime = DateTime.now();
+      if (habit.id != null) {
+        await DatabaseHelper.instance.updateHabit(habit);
+        List<WeeklyHabit> weeklyHabits = await DatabaseHelper.instance.getWeeklyHabitsForHabit(habit.id!);
+        for (WeeklyHabit wh in weeklyHabits) {
+          List<bool> days = [];
+          for (int i = 0; i < habit.repetitions; i++) {
+            if (wh.repetitionsDone > i) {
+              days.add(true);
+            } else {
+              days.add(false);
+            }
+          }
+          wh.repetitionsDone = days.length;
+          wh.days = days;
+          DatabaseHelper.instance.updateWeeklyHabit(wh);
+        }
+      } else {
+        habit = await DatabaseHelper.instance.createHabit(habit);
+      }
       if (widget.weekId != null && habit.id != null) {
         List<bool> days = [];
         for (int i = 0; i < habit.repetitions; i++) {
@@ -58,195 +84,204 @@ class _AddHabitDialogState extends State<AddHabitDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-      key: formKey,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          TextFormField(
-            autofocus: MediaQuery.of(context).size.height > 600,
-            controller: textEditingController,
-            validator: (value) {
-              setState(() {
-                title = value!;
-              });
-              return value!.isNotEmpty ? null : "Title is mandatory";
-            },
-            decoration: InputDecoration(
-              hintText: "Title",
-              hintStyle: TextStyle(
-                color: Colors.white,
-              ),
-            ),
-            style: TextStyle(
-              color: Colors.white,
-            ),
-          ),
-          TextField(
-            onChanged: (value) {
-              setState(() {
-                description = value;
-              });
-            },
-            decoration: InputDecoration(
-              hintText: "Description",
-              hintStyle: TextStyle(
-                color: Colors.white,
-              ),
-            ),
-            style: TextStyle(
-              color: Colors.white,
-            ),
-          ),
-          SizedBox(
-            height: 20,
-          ),
-          Container(
-            width: double.infinity,
-            child: Wrap(
-              alignment: WrapAlignment.spaceBetween,
+    return !isLoading
+        ? Form(
+            key: formKey,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
+                TextFormField(
+                  autofocus: MediaQuery.of(context).size.height > 600,
+                  validator: (value) {
+                    setState(() {
+                      habit.title = value!;
+                    });
+                    return value!.isNotEmpty ? null : "Title is mandatory";
+                  },
+                  initialValue: habit.title,
+                  keyboardType: TextInputType.visiblePassword,
+                  decoration: InputDecoration(
+                    hintText: "Title",
+                    hintStyle: TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
+                TextFormField(
+                  onChanged: (value) {
+                    setState(() {
+                      habit.description = value;
+                    });
+                  },
+                  initialValue: habit.description,
+                  keyboardType: TextInputType.visiblePassword,
+                  decoration: InputDecoration(
+                    hintText: "Description",
+                    hintStyle: TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
                 Container(
-                  width: MediaQuery.of(context).size.width / 1.4 / 2.3,
+                  width: double.infinity,
                   child: Wrap(
+                    alignment: WrapAlignment.spaceBetween,
                     children: [
-                      Text(
-                        "Repetitions: ",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
+                      Container(
+                        width: MediaQuery.of(context).size.width / 1.4 / 2.3,
+                        child: Wrap(
+                          children: [
+                            Text(
+                              "Repetitions: ",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                              ),
+                            ),
+                            Tooltip(
+                              preferBelow: false,
+                              showDuration: Duration(seconds: 5),
+                              message: "How many times will you be doing this habit in a week",
+                              textStyle: TextStyle(color: Colors.lightGreenAccent),
+                              padding: EdgeInsets.all(7),
+                              child: Icon(
+                                Icons.info_outline,
+                                color: Colors.lightGreenAccent,
+                                size: 19,
+                              ),
+                              triggerMode: TooltipTriggerMode.tap,
+                            ),
+                          ],
                         ),
                       ),
-                      Tooltip(
-                        preferBelow: false,
-                        showDuration: Duration(seconds: 5),
-                        message: "How many times will you be doing this habit in a week",
-                        textStyle: TextStyle(color: Colors.lightGreenAccent),
-                        padding: EdgeInsets.all(7),
-                        child: Icon(
-                          Icons.info_outline,
-                          color: Colors.lightGreenAccent,
-                          size: 19,
+                      Container(
+                        child: NumberPicker(
+                          value: habit.repetitions,
+                          minValue: 1,
+                          maxValue: 7,
+                          onChanged: (value) => setState(() => habit.repetitions = value),
+                          itemWidth: 40,
+                          itemHeight: 30,
+                          axis: Axis.horizontal,
+                          selectedTextStyle: TextStyle(
+                            fontSize: 18,
+                            color: CupertinoColors.activeGreen,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          textStyle: TextStyle(fontSize: 14, color: Colors.white),
                         ),
-                        triggerMode: TooltipTriggerMode.tap,
                       ),
                     ],
                   ),
                 ),
-                Container(
-                  child: NumberPicker(
-                    value: repetitions,
-                    minValue: 1,
-                    maxValue: 7,
-                    onChanged: (value) => setState(() => repetitions = value),
-                    itemWidth: 40,
-                    itemHeight: 30,
-                    axis: Axis.horizontal,
-                    selectedTextStyle: TextStyle(
-                      fontSize: 18,
-                      color: CupertinoColors.activeGreen,
-                      fontWeight: FontWeight.bold,
+                Divider(),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        Text(
+                          "Effort: ",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                          ),
+                        ),
+                        Tooltip(
+                          preferBelow: false,
+                          showDuration: Duration(seconds: 5),
+                          message: "The effort you need to put in to do a single repetition",
+                          textStyle: TextStyle(color: Colors.lightGreenAccent),
+                          padding: EdgeInsets.all(7),
+                          child: Icon(
+                            Icons.info_outline,
+                            color: Colors.lightGreenAccent,
+                            size: 19,
+                          ),
+                          triggerMode: TooltipTriggerMode.tap,
+                        ),
+                      ],
                     ),
-                    textStyle: TextStyle(fontSize: 14, color: Colors.white),
-                  ),
+                    Container(
+                      margin: EdgeInsets.only(top: 5),
+                      child: NumberPicker(
+                        value: habit.effortSingle,
+                        minValue: 0,
+                        maxValue: 99,
+                        onChanged: (value) => setState(() => habit.effortSingle = value),
+                        itemWidth: 40,
+                        itemHeight: 30,
+                        axis: Axis.horizontal,
+                        selectedTextStyle: TextStyle(
+                          fontSize: 18,
+                          color: CupertinoColors.activeGreen,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        textStyle: TextStyle(fontSize: 14, color: Colors.white),
+                      ),
+                    ),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        Text(
+                          "Benefit: ",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                          ),
+                        ),
+                        Tooltip(
+                          preferBelow: false,
+                          showDuration: Duration(seconds: 5),
+                          message: "The benefit you get after a single repetition",
+                          textStyle: TextStyle(color: Colors.lightGreenAccent),
+                          padding: EdgeInsets.all(7),
+                          child: Icon(
+                            Icons.info_outline,
+                            color: Colors.lightGreenAccent,
+                            size: 19,
+                          ),
+                          triggerMode: TooltipTriggerMode.tap,
+                        ),
+                      ],
+                    ),
+                    NumberPicker(
+                      value: habit.benefitSingle,
+                      minValue: 0,
+                      maxValue: 99,
+                      onChanged: (value) => setState(() => habit.benefitSingle = value),
+                      itemWidth: 40,
+                      itemHeight: 30,
+                      axis: Axis.horizontal,
+                      selectedTextStyle: TextStyle(
+                        fontSize: 18,
+                        color: CupertinoColors.activeGreen,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      textStyle: TextStyle(fontSize: 14, color: Colors.white),
+                    ),
+                  ],
                 ),
               ],
             ),
-          ),
-          Divider(),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                children: [
-                  Text(
-                    "Effort: ",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                    ),
-                  ),
-                  Tooltip(
-                    preferBelow: false,
-                    showDuration: Duration(seconds: 5),
-                    message: "The effort you need to put in to do a single repetition",
-                    textStyle: TextStyle(color: Colors.lightGreenAccent),
-                    padding: EdgeInsets.all(7),
-                    child: Icon(
-                      Icons.info_outline,
-                      color: Colors.lightGreenAccent,
-                      size: 19,
-                    ),
-                    triggerMode: TooltipTriggerMode.tap,
-                  ),
-                ],
-              ),
-              Container(
-                margin: EdgeInsets.only(top: 5),
-                child: NumberPicker(
-                  value: effortSingle,
-                  minValue: 0,
-                  maxValue: 99,
-                  onChanged: (value) => setState(() => effortSingle = value),
-                  itemWidth: 40,
-                  itemHeight: 30,
-                  axis: Axis.horizontal,
-                  selectedTextStyle: TextStyle(
-                    fontSize: 18,
-                    color: CupertinoColors.activeGreen,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  textStyle: TextStyle(fontSize: 14, color: Colors.white),
-                ),
-              ),
-            ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                children: [
-                  Text(
-                    "Benefit: ",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                    ),
-                  ),
-                  Tooltip(
-                    preferBelow: false,
-                    showDuration: Duration(seconds: 5),
-                    message: "The benefit you get after a single repetition",
-                    textStyle: TextStyle(color: Colors.lightGreenAccent),
-                    padding: EdgeInsets.all(7),
-                    child: Icon(
-                      Icons.info_outline,
-                      color: Colors.lightGreenAccent,
-                      size: 19,
-                    ),
-                    triggerMode: TooltipTriggerMode.tap,
-                  ),
-                ],
-              ),
-              NumberPicker(
-                value: benefitSingle,
-                minValue: 0,
-                maxValue: 99,
-                onChanged: (value) => setState(() => benefitSingle = value),
-                itemWidth: 40,
-                itemHeight: 30,
-                axis: Axis.horizontal,
-                selectedTextStyle: TextStyle(
-                  fontSize: 18,
-                  color: CupertinoColors.activeGreen,
-                  fontWeight: FontWeight.bold,
-                ),
-                textStyle: TextStyle(fontSize: 14, color: Colors.white),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
+          )
+        : Container(
+            child: Center(
+              child: CircularProgressIndicator(),
+            ),
+          );
   }
 }

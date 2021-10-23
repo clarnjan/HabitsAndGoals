@@ -2,15 +2,15 @@ import 'package:diplomska1/Classes/DatabaseHelper.dart';
 import 'package:diplomska1/Classes/DateService.dart';
 import 'package:diplomska1/Classes/Enums.dart';
 import 'package:diplomska1/Classes/Week.dart';
+import 'package:diplomska1/Widgets/HabitCard.dart';
 import 'package:diplomska1/Widgets/LabelWidget.dart';
-import 'package:diplomska1/Widgets/WeeklyHabitCard.dart';
-import 'package:diplomska1/Widgets/WeeklyTaskCard.dart';
+import 'package:diplomska1/Widgets/TaskCard.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
-import '../Dialogs/CustomDialog.dart';
+import '../Dialogs/AddOrSelectDialog.dart';
 import '../EmptyState.dart';
 import '../MainMenu.dart';
 import 'WeeksPopup.dart';
@@ -183,7 +183,7 @@ class _WeekDetailsState extends State<WeekDetails> {
                                             margin: EdgeInsets.only(
                                               bottom: week.tasks.isNotEmpty || index < week.habits.length - 1 ? 0 : 70,
                                             ),
-                                            child: WeeklyHabitCard(
+                                            child: HabitCard(
                                               weekId: week.id!,
                                               habitId: week.habits[index].habitFK,
                                             ),
@@ -225,7 +225,7 @@ class _WeekDetailsState extends State<WeekDetails> {
                                             margin: EdgeInsets.only(
                                               bottom: index < week.tasks.length - 1 ? 0 : 70,
                                             ),
-                                            child: WeeklyTaskCard(
+                                            child: TaskCard(
                                               weekId: week.id!,
                                               taskId: week.tasks[index].taskFK,
                                             ),
@@ -288,7 +288,7 @@ class _WeekDetailsState extends State<WeekDetails> {
                         await showDialog(
                             context: context,
                             builder: (context) {
-                              return CustomDialog(
+                              return AddOrSelectDialog(
                                 weekId: week.id!,
                                 canSelect: true,
                                 refreshParent: refresh,
@@ -310,7 +310,7 @@ class _WeekDetailsState extends State<WeekDetails> {
                         await showDialog(
                             context: context,
                             builder: (context) {
-                              return CustomDialog(
+                              return AddOrSelectDialog(
                                 weekId: week.id!,
                                 canSelect: true,
                                 refreshParent: refresh,

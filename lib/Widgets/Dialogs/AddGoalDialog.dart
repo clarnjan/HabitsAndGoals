@@ -2,38 +2,56 @@ import 'package:diplomska1/Classes/DatabaseHelper.dart';
 import 'package:diplomska1/Classes/Goal.dart';
 import 'package:flutter/material.dart';
 
-import 'CustomDialog.dart';
+import 'AddOrSelectDialog.dart';
 
 class AddGoalDialog extends StatefulWidget {
   final int? weekId;
+  final int? goalId;
   final Function refreshParent;
-  final AddItemController controller;
+  final AddEditItemController controller;
 
-  const AddGoalDialog({Key? key, this.weekId, required this.refreshParent, required this.controller}) : super(key: key);
+  const AddGoalDialog({Key? key, this.weekId, required this.refreshParent, required this.controller, this.goalId}) : super(key: key);
 
   @override
   _AddGoalDialogState createState() => _AddGoalDialogState(controller);
 }
 
 class _AddGoalDialogState extends State<AddGoalDialog> {
-  String? title;
-  String? description;
+  late Goal goal;
+  bool isLoading = true;
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
-  final TextEditingController textEditingController = TextEditingController();
-  _AddGoalDialogState(AddItemController _controller) {
+  _AddGoalDialogState(AddEditItemController _controller) {
     _controller.onSave = onSave;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fetchData();
+  }
+
+  fetchData() async {
+    setState(() {
+      isLoading = true;
+    });
+    if (widget.goalId != null) {
+      goal = await DatabaseHelper.instance.getGoal(widget.goalId!);
+    } else {
+      goal = new Goal();
+    }
+    setState(() {
+      isLoading = false;
+    });
   }
 
   onSave() async {
     if (formKey.currentState!.validate()) {
-      Goal goal = Goal(
-        title: title!,
-        description: description,
-        createdTime: DateTime.now(),
-        isFinished: false,
-      );
-
-      DatabaseHelper.instance.createGoal(goal);
+      goal.createdTime = DateTime.now();
+      if (goal.id != null) {
+        await DatabaseHelper.instance.updateGoal(goal);
+      } else {
+        goal = await DatabaseHelper.instance.createGoal(goal);
+      }
       await widget.refreshParent();
       Navigator.of(context).pop();
     }
@@ -41,54 +59,63 @@ class _AddGoalDialogState extends State<AddGoalDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-      key: formKey,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          SizedBox(
-            height: 20,
-          ),
-          TextFormField(
-            autofocus: true,
-            controller: textEditingController,
-            validator: (value) {
-              setState(() {
-                title = value!;
-              });
-              return value!.isNotEmpty ? null : "Title is mandatory";
-            },
-            decoration: InputDecoration(
-              hintText: "Title",
-              hintStyle: TextStyle(
-                color: Colors.white,
-              ),
+    return !isLoading
+        ? Form(
+            key: formKey,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SizedBox(
+                  height: 20,
+                ),
+                TextFormField(
+                  autofocus: true,
+                  validator: (value) {
+                    setState(() {
+                      goal.title = value!;
+                    });
+                    return value!.isNotEmpty ? null : "Title is mandatory";
+                  },
+                  initialValue: goal.title,
+                  keyboardType: TextInputType.visiblePassword,
+                  decoration: InputDecoration(
+                    hintText: "Title",
+                    hintStyle: TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                TextFormField(
+                  onChanged: (value) {
+                    setState(() {
+                      goal.description = value;
+                    });
+                  },
+                  initialValue: goal.description,
+                  keyboardType: TextInputType.visiblePassword,
+                  decoration: InputDecoration(
+                    hintText: "Description",
+                    hintStyle: TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
+              ],
             ),
-            style: TextStyle(
-              color: Colors.white,
+          )
+        : Container(
+            child: Center(
+              child: CircularProgressIndicator(),
             ),
-          ),
-          SizedBox(
-            height: 20,
-          ),
-          TextField(
-            onChanged: (value) {
-              setState(() {
-                description = value;
-              });
-            },
-            decoration: InputDecoration(
-              hintText: "Description",
-              hintStyle: TextStyle(
-                color: Colors.white,
-              ),
-            ),
-            style: TextStyle(
-              color: Colors.white,
-            ),
-          ),
-        ],
-      ),
-    );
+          );
   }
 }

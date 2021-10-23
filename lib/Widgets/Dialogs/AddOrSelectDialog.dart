@@ -16,25 +16,26 @@ import 'AddHabitDialog.dart';
 import 'SelectHabitsDialog.dart';
 import 'SelectTasksDialog.dart';
 
-class AddItemController {
+class AddEditItemController {
   late void Function() onSave;
 }
 
-class CustomDialog extends StatefulWidget {
+class AddOrSelectDialog extends StatefulWidget {
   final int? weekId;
   final int? goalId;
   final Function refreshParent;
   final bool canSelect;
   final NoteType noteType;
 
-  const CustomDialog({Key? key, this.weekId, required this.refreshParent, required this.canSelect, required this.noteType, this.goalId})
+  const AddOrSelectDialog(
+      {Key? key, this.weekId, required this.refreshParent, required this.canSelect, required this.noteType, this.goalId})
       : super(key: key);
 
   @override
-  _CustomDialogState createState() => _CustomDialogState();
+  _AddOrSelectDialogState createState() => _AddOrSelectDialogState();
 }
 
-class _CustomDialogState extends State<CustomDialog> {
+class _AddOrSelectDialogState extends State<AddOrSelectDialog> {
   late Week week;
   late Goal goal;
   List<Habit> habits = [];
@@ -43,7 +44,7 @@ class _CustomDialogState extends State<CustomDialog> {
   List<Task> selectedTasks = [];
   bool isLoading = false;
   bool isSelecting = false;
-  final AddItemController _controller = AddItemController();
+  final AddEditItemController _controller = AddEditItemController();
 
   @override
   void initState() {
