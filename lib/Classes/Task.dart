@@ -1,7 +1,19 @@
 final String tasksTable = 'tasks';
 
 class TaskFields {
-  static final List<String> values = [id, goalFK, weekFK, title, description, effort, benefit, isRepeating, isFinished, createdTime];
+  static final List<String> values = [
+    id,
+    goalFK,
+    weekFK,
+    title,
+    description,
+    effort,
+    benefit,
+    isRepeating,
+    isFinished,
+    createdTime,
+    reminderTime
+  ];
   static final String id = '_id';
   static final String goalFK = 'goalFK';
   static final String weekFK = 'weekFK';
@@ -12,6 +24,7 @@ class TaskFields {
   static final String isRepeating = 'isRepeating';
   static final String isFinished = 'isFinished';
   static final String createdTime = 'createdTime';
+  static final String reminderTime = 'reminderTime';
 }
 
 class Task {
@@ -25,6 +38,7 @@ class Task {
   bool isRepeating;
   bool isFinished;
   DateTime? createdTime;
+  DateTime? reminderTime;
 
   Task({
     this.id,
@@ -37,6 +51,7 @@ class Task {
     this.isRepeating = false,
     this.isFinished = false,
     this.createdTime,
+    this.reminderTime,
   });
 
   Map<String, Object?> toJson() => {
@@ -50,6 +65,7 @@ class Task {
         TaskFields.isRepeating: isRepeating ? 1 : 0,
         TaskFields.isFinished: isFinished ? 1 : 0,
         TaskFields.createdTime: createdTime!.toIso8601String(),
+        TaskFields.reminderTime: reminderTime != null ? reminderTime!.toIso8601String() : null,
       };
 
   Task copy({
@@ -63,6 +79,7 @@ class Task {
     bool? isRepeating,
     bool? isFinished,
     DateTime? createdTime,
+    DateTime? reminderTime,
   }) =>
       Task(
         id: id ?? this.id,
@@ -75,6 +92,7 @@ class Task {
         isRepeating: isRepeating ?? this.isRepeating,
         isFinished: isFinished ?? this.isFinished,
         createdTime: createdTime ?? this.createdTime,
+        reminderTime: reminderTime ?? this.reminderTime,
       );
 
   static Task fromJson(Map<String, Object?> json) => Task(
@@ -88,5 +106,6 @@ class Task {
         isRepeating: json[TaskFields.isRepeating] == 1,
         isFinished: json[TaskFields.isFinished] == 1,
         createdTime: DateTime.parse(json[TaskFields.createdTime] as String),
+        reminderTime: DateTime.parse(json[TaskFields.reminderTime] as String),
       );
 }

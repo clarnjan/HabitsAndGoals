@@ -27,6 +27,7 @@ dependencies:
   flutter_speed_dial: ^4.4.0+2
   flutter_switch: ^0.3.2
   numberpicker: ^2.1.1
+  flutter_local_notifications: ^9.0.1
 
   sqflite:
 

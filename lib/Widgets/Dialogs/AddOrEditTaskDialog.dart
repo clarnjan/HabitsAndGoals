@@ -1,10 +1,15 @@
 import 'package:diplomska1/Classes/DatabaseHelper.dart';
+import 'package:diplomska1/Classes/DateService.dart';
 import 'package:diplomska1/Classes/Task.dart';
 import 'package:diplomska1/Classes/WeeklyTask.dart';
+import 'package:diplomska1/main.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:numberpicker/numberpicker.dart';
+import 'package:timezone/data/latest.dart';
+import 'package:timezone/timezone.dart' as tz;
 
 import 'AddOrSelectDialog.dart';
 
@@ -34,6 +39,7 @@ class _AddOrEditTaskDialogState extends State<AddOrEditTaskDialog> {
   @override
   void initState() {
     super.initState();
+    initializeTimeZones();
     fetchData();
   }
 
@@ -65,12 +71,42 @@ class _AddOrEditTaskDialogState extends State<AddOrEditTaskDialog> {
         }
         task = await DatabaseHelper.instance.createTask(task);
       }
+      if (task.reminderTime != null && task.id != null) {
+        displayNotification();
+      }
       if (widget.weekId != null && task.id != null) {
         WeeklyTask weeklyTask = new WeeklyTask(taskFK: task.id!, weekFK: widget.weekId!, isFinished: false);
         DatabaseHelper.instance.createWeeklyTask(weeklyTask);
       }
       await widget.refreshParent();
       Navigator.of(context).pop();
+    }
+  }
+
+  Future<void> displayNotification() async {
+    flutterLocalNotificationsPlugin.zonedSchedule(
+        task.id!,
+        "Reminder",
+        "Reminder for ${task.title}",
+        tz.TZDateTime.from(task.reminderTime!, tz.local),
+        NotificationDetails(
+          android: AndroidNotificationDetails('channel id', 'channel body'),
+        ),
+        uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
+        androidAllowWhileIdle: true);
+  }
+
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+        context: context, initialDate: DateTime.now(), firstDate: DateTime.now(), lastDate: DateTime.now().add(Duration(days: 365)));
+    if (picked != null) {
+      final initalTime = TimeOfDay(hour: 9, minute: 0);
+      final time = await showTimePicker(context: context, initialTime: initalTime);
+      if (time != null) {
+        setState(() {
+          task.reminderTime = picked.add(Duration(hours: time.hour, minutes: time.minute));
+        });
+      }
     }
   }
 
@@ -83,7 +119,7 @@ class _AddOrEditTaskDialogState extends State<AddOrEditTaskDialog> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 TextFormField(
-                  autofocus: true,
+                  autofocus: MediaQuery.of(context).size.height > 720,
                   validator: (value) {
                     setState(() {
                       task.title = value!;
@@ -284,6 +320,28 @@ class _AddOrEditTaskDialogState extends State<AddOrEditTaskDialog> {
                     ),
                   ],
                 ),
+                if (!task.isRepeating) Divider(),
+                if (!task.isRepeating)
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Reminder: ",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                        ),
+                      ),
+                      Container(
+                        width: 150,
+                        alignment: Alignment.centerRight,
+                        child: TextButton(
+                          onPressed: () => _selectDate(context),
+                          child: Text(task.reminderTime != null ? DateService.formatDateAndTime(task.reminderTime!) : "Add a reminder"),
+                        ),
+                      )
+                    ],
+                  )
               ],
             ),
           )

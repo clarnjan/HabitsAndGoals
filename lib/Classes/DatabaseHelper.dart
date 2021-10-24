@@ -68,6 +68,7 @@ class DatabaseHelper {
           ${TaskFields.isRepeating} BOOLEAN NOT NULL,
           ${TaskFields.isFinished} BOOLEAN NOT NULL,
           ${TaskFields.createdTime} TEXT NOT NULL,
+          ${TaskFields.reminderTime} TEXT NULL,
           FOREIGN KEY(${TaskFields.goalFK}) REFERENCES $goalsTable(${GoalFields.id}) ON DELETE SET NULL
         );''');
     batch.execute('''
