@@ -1,7 +1,11 @@
 import 'package:diplomska1/Classes/DatabaseHelper.dart';
 import 'package:diplomska1/Classes/DateService.dart';
 import 'package:diplomska1/Classes/Enums.dart';
+import 'package:diplomska1/Classes/Habit.dart';
+import 'package:diplomska1/Classes/Task.dart';
 import 'package:diplomska1/Classes/Week.dart';
+import 'package:diplomska1/Classes/WeeklyHabit.dart';
+import 'package:diplomska1/Classes/WeeklyTask.dart';
 import 'package:diplomska1/Widgets/Dialogs/EditDialog.dart';
 import 'package:diplomska1/Widgets/Habit%20widgets/HabitCard.dart';
 import 'package:diplomska1/Widgets/LabelWidget.dart';
@@ -29,6 +33,10 @@ class _WeekDetailsState extends State<WeekDetails> {
   late Week week;
   bool isLoading = true;
   bool shouldShow = false;
+  int habitsEffort = 0;
+  int tasksEffort = 0;
+  int habitsBenefit = 0;
+  int tasksBenefit = 0;
   final Key centerKey = ValueKey('second-sliver-list');
   final ScrollController scrollController = ScrollController();
   GlobalKey<RefreshIndicatorState> refreshState = GlobalKey<RefreshIndicatorState>();
@@ -48,8 +56,56 @@ class _WeekDetailsState extends State<WeekDetails> {
     } else if (widget.initialWeek!.id == null) {
       week = await DatabaseHelper.instance.getWeekByStartDate(widget.initialWeek!.startDate);
     }
+    await updateHabitsEffortAndBenefit();
+    await updateTasksEffortAndBenefit();
     setState(() {
       isLoading = false;
+    });
+  }
+
+  updateHabitsEffortAndBenefit() async {
+    habitsEffort = 0;
+    habitsBenefit = 0;
+    for (WeeklyHabit wh in week.habits) {
+      Habit habit = await DatabaseHelper.instance.getHabit(wh.habitFK);
+      habitsEffort += wh.repetitionsDone * habit.effortSingle;
+      habitsBenefit += wh.repetitionsDone * habit.benefitSingle;
+    }
+  }
+
+  updateTasksEffortAndBenefit() async {
+    tasksEffort = 0;
+    tasksBenefit = 0;
+    for (WeeklyTask wt in week.tasks) {
+      if (wt.isFinished) {
+        Task task = await DatabaseHelper.instance.getTask(wt.taskFK);
+        tasksEffort += task.effort;
+        tasksBenefit += task.benefit;
+      }
+    }
+  }
+
+  habitCheckChanged(bool isFinished, int effort, int benefit) {
+    setState(() {
+      if (isFinished) {
+        habitsEffort += effort;
+        habitsBenefit += benefit;
+      } else {
+        habitsEffort -= effort;
+        habitsBenefit -= benefit;
+      }
+    });
+  }
+
+  taskCheckChanged(bool isFinished, int effort, int benefit) {
+    setState(() {
+      if (isFinished) {
+        tasksEffort += effort;
+        tasksBenefit += benefit;
+      } else {
+        tasksEffort -= effort;
+        tasksBenefit -= benefit;
+      }
     });
   }
 
@@ -60,6 +116,8 @@ class _WeekDetailsState extends State<WeekDetails> {
     if (week.id != null) {
       week = await DatabaseHelper.instance.getWeek(week.id!);
     }
+    await updateHabitsEffortAndBenefit();
+    await updateTasksEffortAndBenefit();
     setState(() {
       isLoading = false;
     });
@@ -165,11 +223,39 @@ class _WeekDetailsState extends State<WeekDetails> {
                                   physics: ScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
                                   shrinkWrap: true,
                                   slivers: <Widget>[
+                                    if (week.habits.length > 0 || week.tasks.length > 0)
+                                      SliverList(
+                                          delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
+                                        return Container(
+                                          padding: EdgeInsets.fromLTRB(5, 10, 5, 0),
+                                          child: Wrap(
+                                            alignment: WrapAlignment.spaceBetween,
+                                            children: [
+                                              Text(
+                                                "Total effort and benefit:",
+                                                style: TextStyle(
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.green,
+                                                ),
+                                              ),
+                                              Text(
+                                                "${habitsEffort + tasksEffort} - ${habitsBenefit + tasksBenefit}",
+                                                style: TextStyle(
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.green,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        );
+                                      }, childCount: 1)),
                                     if (week.habits.length > 0)
                                       SliverList(
                                           delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
                                         return Container(
-                                          padding: EdgeInsets.all(10),
+                                          padding: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
                                           child: Row(
                                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                             children: [
@@ -181,7 +267,7 @@ class _WeekDetailsState extends State<WeekDetails> {
                                                 ),
                                               ),
                                               Text(
-                                                "X - Y",
+                                                "$habitsEffort - $habitsBenefit",
                                                 style: TextStyle(
                                                   fontSize: 18,
                                                   color: Colors.white,
@@ -204,6 +290,7 @@ class _WeekDetailsState extends State<WeekDetails> {
                                               tapFunction: () {
                                                 cardTapFunction(week.habits[index].habitFK, NoteType.Habit);
                                               },
+                                              checkBoxChanged: habitCheckChanged,
                                             ),
                                           );
                                         },
@@ -214,7 +301,7 @@ class _WeekDetailsState extends State<WeekDetails> {
                                       SliverList(
                                           delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
                                         return Container(
-                                          padding: EdgeInsets.all(10),
+                                          padding: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
                                           child: Row(
                                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                             children: [
@@ -226,7 +313,7 @@ class _WeekDetailsState extends State<WeekDetails> {
                                                 ),
                                               ),
                                               Text(
-                                                "X - Y",
+                                                "$tasksEffort - $tasksBenefit",
                                                 style: TextStyle(
                                                   fontSize: 18,
                                                   color: Colors.white,
@@ -249,6 +336,7 @@ class _WeekDetailsState extends State<WeekDetails> {
                                               tapFunction: () {
                                                 cardTapFunction(week.tasks[index].taskFK, NoteType.Task);
                                               },
+                                              checkBoxChanged: taskCheckChanged,
                                             ),
                                           );
                                         },

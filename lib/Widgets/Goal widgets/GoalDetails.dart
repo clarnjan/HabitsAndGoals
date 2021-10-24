@@ -1,6 +1,7 @@
 import 'package:diplomska1/Classes/DatabaseHelper.dart';
 import 'package:diplomska1/Classes/Enums.dart';
 import 'package:diplomska1/Classes/Goal.dart';
+import 'package:diplomska1/Classes/Task.dart';
 import 'package:diplomska1/Widgets/Dialogs/AddOrSelectDialog.dart';
 import 'package:diplomska1/Widgets/Dialogs/EditDialog.dart';
 import 'package:diplomska1/Widgets/EmptyState.dart';
@@ -22,6 +23,8 @@ class GoalDetails extends StatefulWidget {
 class _GoalDetailsState extends State<GoalDetails> {
   late Goal goal;
   bool isLoading = true;
+  int tasksEffort = 0;
+  int tasksBenefit = 0;
   final Key centerKey = ValueKey('second-sliver-list');
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   GlobalKey<RefreshIndicatorState> refreshState = GlobalKey<RefreshIndicatorState>();
@@ -37,8 +40,32 @@ class _GoalDetailsState extends State<GoalDetails> {
       isLoading = true;
     });
     this.goal = await DatabaseHelper.instance.getGoal(widget.goalId);
+    await updateTasksEffortAndBenefit();
     setState(() {
       isLoading = false;
+    });
+  }
+
+  updateTasksEffortAndBenefit() async {
+    tasksEffort = 0;
+    tasksBenefit = 0;
+    for (Task t in goal.tasks) {
+      if (t.isFinished) {
+        tasksEffort += t.effort;
+        tasksBenefit += t.benefit;
+      }
+    }
+  }
+
+  taskCheckChanged(bool isFinished, int effort, int benefit) {
+    setState(() {
+      if (isFinished) {
+        tasksEffort += effort;
+        tasksBenefit += benefit;
+      } else {
+        tasksEffort -= effort;
+        tasksBenefit -= benefit;
+      }
     });
   }
 
@@ -149,12 +176,24 @@ class _GoalDetailsState extends State<GoalDetails> {
                         height: 20,
                         thickness: 2,
                       ),
-                      Text(
-                        "Tasks:",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 18,
-                        ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "Tasks:",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 18,
+                            ),
+                          ),
+                          Text(
+                            "$tasksEffort - $tasksBenefit",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 18,
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
@@ -184,6 +223,7 @@ class _GoalDetailsState extends State<GoalDetails> {
                                         tapFunction: () {
                                           cardTapFunction(task.id!);
                                         },
+                                        checkBoxChanged: taskCheckChanged,
                                       ),
                                     );
                                   })

@@ -7,8 +7,9 @@ class TaskCard extends StatefulWidget {
   final int taskId;
   final int? weekId;
   final Function tapFunction;
+  final Function? checkBoxChanged;
 
-  TaskCard({required this.taskId, this.weekId, required this.tapFunction});
+  TaskCard({required this.taskId, this.weekId, required this.tapFunction, this.checkBoxChanged});
 
   @override
   _TaskCardState createState() => _TaskCardState();
@@ -44,6 +45,24 @@ class _TaskCardState extends State<TaskCard> {
       return weeklyTask!.isFinished;
     }
     return false;
+  }
+
+  checkChanged() {
+    setState(() {
+      if (!task.isRepeating) {
+        task.isFinished = !task.isFinished;
+        DatabaseHelper.instance.updateTask(task);
+      }
+      if (weeklyTask != null) {
+        weeklyTask!.isFinished = !weeklyTask!.isFinished;
+        DatabaseHelper.instance.updateWeeklyTask(weeklyTask!);
+        if (widget.checkBoxChanged != null) {
+          widget.checkBoxChanged!(weeklyTask!.isFinished, task.effort, task.benefit);
+        }
+      } else if (widget.checkBoxChanged != null) {
+        widget.checkBoxChanged!(task.isFinished, task.effort, task.benefit);
+      }
+    });
   }
 
   @override
@@ -84,18 +103,7 @@ class _TaskCardState extends State<TaskCard> {
                       ),
                     ),
                     InkWell(
-                      onTap: () {
-                        setState(() {
-                          if (!task.isRepeating) {
-                            task.isFinished = !task.isFinished;
-                            DatabaseHelper.instance.updateTask(task);
-                          }
-                          if (weeklyTask != null) {
-                            weeklyTask!.isFinished = !weeklyTask!.isFinished;
-                            DatabaseHelper.instance.updateWeeklyTask(weeklyTask!);
-                          }
-                        });
-                      },
+                      onTap: checkChanged,
                       child: Padding(
                         padding: const EdgeInsets.all(2.0),
                         child: Container(

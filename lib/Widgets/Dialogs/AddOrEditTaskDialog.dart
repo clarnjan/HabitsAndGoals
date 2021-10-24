@@ -251,7 +251,7 @@ class _AddOrEditTaskDialogState extends State<AddOrEditTaskDialog> {
                             inactiveColor: Colors.grey.shade600,
                             value: task.isRepeating,
                             onToggle: (value) {
-                              if (task.id == null) {
+                              if (task.id == null && widget.goalId == null) {
                                 setState(() {
                                   task.isRepeating = value;
                                 });
@@ -266,7 +266,8 @@ class _AddOrEditTaskDialogState extends State<AddOrEditTaskDialog> {
                           key: repetitionTooltipKey,
                           preferBelow: false,
                           showDuration: Duration(seconds: 3),
-                          message: "Cannot change task's reoccurring value",
+                          message:
+                              widget.goalId == null ? "Cannot change task's reoccurring value" : "Cannot add a reoccurring task to a goal",
                           textStyle: TextStyle(color: Colors.lightGreenAccent),
                           padding: EdgeInsets.all(7),
                           child: Icon(

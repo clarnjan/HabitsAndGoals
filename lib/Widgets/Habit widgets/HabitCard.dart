@@ -8,8 +8,9 @@ class HabitCard extends StatefulWidget {
   final int habitId;
   final int weekId;
   final Function tapFunction;
+  final Function checkBoxChanged;
 
-  HabitCard({required this.habitId, required this.weekId, required this.tapFunction});
+  HabitCard({required this.habitId, required this.weekId, required this.tapFunction, required this.checkBoxChanged});
 
   @override
   _HabitCardState createState() => _HabitCardState();
@@ -32,6 +33,19 @@ class _HabitCardState extends State<HabitCard> {
     if (!mounted) return;
     setState(() {
       isLoading = false;
+    });
+  }
+
+  checkChanged(int index) {
+    setState(() {
+      weeklyHabit.days[index] = !weeklyHabit.days[index];
+      if (weeklyHabit.days[index]) {
+        weeklyHabit.repetitionsDone++;
+      } else {
+        weeklyHabit.repetitionsDone--;
+      }
+      widget.checkBoxChanged(weeklyHabit.days[index], habit.effortSingle, habit.benefitSingle);
+      DatabaseHelper.instance.updateWeeklyHabit(weeklyHabit);
     });
   }
 
@@ -80,15 +94,7 @@ class _HabitCardState extends State<HabitCard> {
                           for (int i = 0; i < weeklyHabit.days.length; i++)
                             InkWell(
                               onTap: () {
-                                setState(() {
-                                  weeklyHabit.days[i] = !weeklyHabit.days[i];
-                                  if (weeklyHabit.days[i]) {
-                                    weeklyHabit.repetitionsDone++;
-                                  } else {
-                                    weeklyHabit.repetitionsDone--;
-                                  }
-                                  DatabaseHelper.instance.updateWeeklyHabit(weeklyHabit);
-                                });
+                                checkChanged(i);
                               },
                               child: Padding(
                                 padding: const EdgeInsets.all(2.0),

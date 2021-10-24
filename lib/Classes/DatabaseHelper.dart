@@ -63,6 +63,7 @@ class DatabaseHelper {
           ${TaskFields.title} TEXT NOT NULL,
           ${TaskFields.description} TEXT NULL,
           ${TaskFields.goalFK} INTEGER,
+          ${TaskFields.weekFK} INTEGER,
           ${TaskFields.effort} INTEGER NOT NULL,
           ${TaskFields.benefit} INTEGER NOT NULL,
           ${TaskFields.isRepeating} BOOLEAN NOT NULL,
