@@ -54,7 +54,6 @@ class DatabaseHelper {
           ${HabitFields.effortSingle} INTEGER NOT NULL,
           ${HabitFields.benefitSingle} INTEGER NOT NULL,
           ${HabitFields.repetitions} INTEGER NOT NULL,
-          ${HabitFields.isPaused} BOOLEAN NOT NULL,
           ${HabitFields.createdTime} TEXT NOT NULL
         );''');
     batch.execute('''
@@ -62,14 +61,14 @@ class DatabaseHelper {
           ${TaskFields.id} INTEGER PRIMARY KEY AUTOINCREMENT,
           ${TaskFields.title} TEXT NOT NULL,
           ${TaskFields.description} TEXT NULL,
-          ${TaskFields.goalFK} INTEGER,
-          ${TaskFields.weekFK} INTEGER,
+          ${TaskFields.goalFK} INTEGER NULL,
+          ${TaskFields.weekFK} INTEGER NULL,
           ${TaskFields.effort} INTEGER NOT NULL,
           ${TaskFields.benefit} INTEGER NOT NULL,
           ${TaskFields.isRepeating} BOOLEAN NOT NULL,
           ${TaskFields.isFinished} BOOLEAN NOT NULL,
           ${TaskFields.createdTime} TEXT NOT NULL,
-          FOREIGN KEY(${TaskFields.goalFK}) REFERENCES $goalsTable(${GoalFields.id})
+          FOREIGN KEY(${TaskFields.goalFK}) REFERENCES $goalsTable(${GoalFields.id}) ON DELETE SET NULL
         );''');
     batch.execute('''
         CREATE TABLE $weeklyTasksTable (
@@ -77,8 +76,8 @@ class DatabaseHelper {
           ${WeeklyTaskFields.taskFK} INTEGER NOT NULL,
           ${WeeklyTaskFields.weekFK} INTEGER NOT NULL,
           ${WeeklyTaskFields.isFinished} BOOLEAN NOT NULL,
-          FOREIGN KEY(${WeeklyTaskFields.taskFK}) REFERENCES $tasksTable(${TaskFields.id}),
-          FOREIGN KEY(${WeeklyTaskFields.weekFK}) REFERENCES $weeksTable(${WeekFields.id})
+          FOREIGN KEY(${WeeklyTaskFields.taskFK}) REFERENCES $tasksTable(${TaskFields.id}) ON DELETE CASCADE,
+          FOREIGN KEY(${WeeklyTaskFields.weekFK}) REFERENCES $weeksTable(${WeekFields.id}) ON DELETE CASCADE
         );''');
     batch.execute('''
         CREATE TABLE $weeklyHabitsTable (
@@ -93,8 +92,8 @@ class DatabaseHelper {
           ${WeeklyHabitFields.dayFive} BOOLEAN NULL DEFAULT NULL,
           ${WeeklyHabitFields.daySix} BOOLEAN NULL DEFAULT NULL,
           ${WeeklyHabitFields.daySeven} BOOLEAN NULL DEFAULT NULL,
-          FOREIGN KEY(${WeeklyHabitFields.habitFK}) REFERENCES $habitsTable(${HabitFields.id}),
-          FOREIGN KEY(${WeeklyHabitFields.weekFK}) REFERENCES $weeksTable(${WeekFields.id})
+          FOREIGN KEY(${WeeklyHabitFields.habitFK}) REFERENCES $habitsTable(${HabitFields.id}) ON DELETE CASCADE,
+          FOREIGN KEY(${WeeklyHabitFields.weekFK}) REFERENCES $weeksTable(${WeekFields.id}) ON DELETE CASCADE
         );''');
     var result = await batch.commit();
     DateTime today = DateTime.now();
@@ -320,18 +319,19 @@ class DatabaseHelper {
 
   Future<int> deleteHabit(int id) async {
     final db = await instance.database;
-    db.delete(weeklyHabitsTable, where: '${WeeklyHabitFields.habitFK} = ?', whereArgs: [id]);
+    await db.execute("PRAGMA foreign_keys = ON;");
     return await db.delete(habitsTable, where: '${HabitFields.id} = ?', whereArgs: [id]);
   }
 
   Future<int> deleteTask(int id) async {
     final db = await instance.database;
-    db.delete(weeklyTasksTable, where: '${WeeklyTaskFields.taskFK} = ?', whereArgs: [id]);
+    await db.execute("PRAGMA foreign_keys = ON;");
     return await db.delete(tasksTable, where: '${TaskFields.id} = ?', whereArgs: [id]);
   }
 
   Future<int> deleteGoal(int id) async {
     final db = await instance.database;
+    await db.execute("PRAGMA foreign_keys = ON;");
     return await db.delete(goalsTable, where: '${GoalFields.id} = ?', whereArgs: [id]);
   }
 

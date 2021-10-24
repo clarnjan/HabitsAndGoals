@@ -65,9 +65,12 @@ class _AddOrSelectDialogState extends State<AddOrSelectDialog> {
           }
         } else if (widget.noteType == NoteType.Task) {
           week = await DatabaseHelper.instance.getWeek(widget.weekId!);
-          tasks = await DatabaseHelper.instance.getAllTasks();
-          for (WeeklyTask wt in week.tasks) {
-            this.tasks.removeWhere((element) => element.id == wt.taskFK || element.weekFK != null);
+          final allTasks = await DatabaseHelper.instance.getAllTasks();
+          tasks = [];
+          for (Task t in allTasks) {
+            if (week.tasks.where((wt) => wt.taskFK == t.id).isEmpty && t.weekFK == null) {
+              tasks.add(t);
+            }
           }
         }
       } else if (widget.goalId != null) {
@@ -121,6 +124,7 @@ class _AddOrSelectDialogState extends State<AddOrSelectDialog> {
             }
             if (!task.isRepeating) {
               task.weekFK = widget.weekId;
+              await DatabaseHelper.instance.updateTask(task);
             }
             WeeklyTask weeklyTask = new WeeklyTask(taskFK: task.id!, weekFK: widget.weekId!, isFinished: false);
             weeklyTask = await DatabaseHelper.instance.createWeeklyTask(weeklyTask);

@@ -57,7 +57,12 @@ class _AddOrEditTaskDialogState extends State<AddOrEditTaskDialog> {
       if (task.id != null) {
         await DatabaseHelper.instance.updateTask(task);
       } else {
-        task.goalFK = widget.goalId;
+        if (widget.goalId != null) {
+          task.goalFK = widget.goalId;
+        }
+        if (widget.weekId != null) {
+          task.weekFK = widget.weekId;
+        }
         task = await DatabaseHelper.instance.createTask(task);
       }
       if (widget.weekId != null && task.id != null) {
