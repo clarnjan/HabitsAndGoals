@@ -48,7 +48,7 @@ class Task {
     this.description,
     this.effort = 1,
     this.benefit = 1,
-    this.isRepeating = false,
+    this.isRepeating = true,
     this.isFinished = false,
     this.createdTime,
     this.reminderTime,

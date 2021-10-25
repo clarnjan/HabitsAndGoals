@@ -66,7 +66,7 @@ class _AddOrEditTaskDialogState extends State<AddOrEditTaskDialog> {
         if (widget.goalId != null) {
           task.goalFK = widget.goalId;
         }
-        if (widget.weekId != null) {
+        if (!task.isRepeating && widget.weekId != null) {
           task.weekFK = widget.weekId;
         }
         task = await DatabaseHelper.instance.createTask(task);
@@ -119,7 +119,7 @@ class _AddOrEditTaskDialogState extends State<AddOrEditTaskDialog> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 TextFormField(
-                  autofocus: MediaQuery.of(context).size.height > 720,
+                  autofocus: MediaQuery.of(context).size.height > 600,
                   validator: (value) {
                     setState(() {
                       task.title = value!;
