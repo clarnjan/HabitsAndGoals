@@ -106,6 +106,6 @@ class Task {
         isRepeating: json[TaskFields.isRepeating] == 1,
         isFinished: json[TaskFields.isFinished] == 1,
         createdTime: DateTime.parse(json[TaskFields.createdTime] as String),
-        reminderTime: DateTime.parse(json[TaskFields.reminderTime] as String),
+        reminderTime: json[TaskFields.reminderTime] != null ? DateTime.parse(json[TaskFields.reminderTime] as String) : null,
       );
 }

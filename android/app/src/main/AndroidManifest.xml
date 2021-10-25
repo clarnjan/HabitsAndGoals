@@ -1,7 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.diplomska1">
     <application
-        android:label="diplomska1">
+        android:label="Grow App"
+        android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity">
             <!-- Specifies an Android theme to apply to this Activity as soon as

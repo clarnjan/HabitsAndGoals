@@ -72,7 +72,7 @@ class _AddOrEditTaskDialogState extends State<AddOrEditTaskDialog> {
         task = await DatabaseHelper.instance.createTask(task);
       }
       if (task.reminderTime != null && task.id != null) {
-        displayNotification();
+        //displayNotification();
       }
       if (widget.weekId != null && task.id != null) {
         WeeklyTask weeklyTask = new WeeklyTask(taskFK: task.id!, weekFK: widget.weekId!, isFinished: false);
