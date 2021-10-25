@@ -90,8 +90,8 @@ class _AddOrEditTaskDialogState extends State<AddOrEditTaskDialog> {
         "Reminder for ${task.title}",
         tz.TZDateTime.from(task.reminderTime!, tz.local),
         NotificationDetails(
-          android: AndroidNotificationDetails('channel id', 'channel body'),
-        ),
+            android: AndroidNotificationDetails('channel id', 'channel body'),
+            iOS: IOSNotificationDetails(presentAlert: true, presentBadge: true, presentSound: true)),
         uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
         androidAllowWhileIdle: true);
   }
@@ -100,8 +100,8 @@ class _AddOrEditTaskDialogState extends State<AddOrEditTaskDialog> {
     final DateTime? picked = await showDatePicker(
         context: context, initialDate: DateTime.now(), firstDate: DateTime.now(), lastDate: DateTime.now().add(Duration(days: 365)));
     if (picked != null) {
-      final initalTime = TimeOfDay(hour: 9, minute: 0);
-      final time = await showTimePicker(context: context, initialTime: initalTime);
+      final initialTime = TimeOfDay(hour: 9, minute: 0);
+      final time = await showTimePicker(context: context, initialTime: initialTime);
       if (time != null) {
         setState(() {
           task.reminderTime = picked.add(Duration(hours: time.hour, minutes: time.minute));

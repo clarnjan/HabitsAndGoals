@@ -12,12 +12,12 @@ FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNo
 void initializeSettings() async {
   WidgetsFlutterBinding.ensureInitialized();
   var initializeAndroid = AndroidInitializationSettings("res_app_icon");
-  // var initializeIOS = IOSInitializationSettings(
-  //   requestAlertPermission: true,
-  //   requestBadgePermission: true,
-  //   requestSoundPermission: true,
-  // );
-  var initializationSettings = InitializationSettings(android: initializeAndroid);
+  var initializeIOS = IOSInitializationSettings(
+      requestAlertPermission: true,
+      requestBadgePermission: true,
+      requestSoundPermission: true,
+      onDidReceiveLocalNotification: (int id, String? title, String? body, String? payload) async {});
+  var initializationSettings = InitializationSettings(android: initializeAndroid, iOS: initializeIOS);
   await flutterLocalNotificationsPlugin.initialize(initializationSettings);
 }
 
