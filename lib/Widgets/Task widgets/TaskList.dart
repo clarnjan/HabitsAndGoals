@@ -19,8 +19,8 @@ class TaskList extends StatefulWidget {
 }
 
 class _TaskListState extends State<TaskList> {
-  late List<Task> oneTimeTasks;
-  late List<Task> repeatingTasks;
+  List<Task> oneTimeTasks = [];
+  List<Task> repeatingTasks = [];
   bool isLoading = true;
   final Key centerKey = ValueKey('second-sliver-list');
   final ScrollController scrollController = ScrollController();
@@ -92,109 +92,104 @@ class _TaskListState extends State<TaskList> {
               onRefresh: () async {
                 await refresh();
               },
-              child: isLoading
-                  ? Center(
-                      child: CircularProgressIndicator(),
-                    )
-                  : oneTimeTasks.length > 0 || repeatingTasks.length > 0
-                      ? CustomScrollView(
-                          controller: scrollController,
-                          physics: ScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
-                          shrinkWrap: true,
-                          slivers: <Widget>[
-                            if (oneTimeTasks.length > 0)
-                              SliverList(
-                                  delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
-                                return Container(
-                                  padding: EdgeInsets.all(10),
-                                  child: Text(
-                                    "One time tasks:",
-                                    style: TextStyle(
-                                      fontSize: 18,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                );
-                              }, childCount: 1)),
-                            SliverList(
-                              delegate: SliverChildBuilderDelegate(
-                                (BuildContext context, int index) {
-                                  return Container(
-                                    margin: EdgeInsets.only(
-                                      bottom: oneTimeTasks.isNotEmpty || index < oneTimeTasks.length - 1 ? 0 : 70,
-                                    ),
-                                    child: TaskCard(
-                                      taskId: oneTimeTasks[index].id!,
-                                      tapFunction: () {
-                                        cardTapFunction(oneTimeTasks[index].id!);
-                                      },
-                                    ),
-                                  );
-                                },
-                                childCount: oneTimeTasks.length,
+              child: oneTimeTasks.length > 0 || repeatingTasks.length > 0
+                  ? CustomScrollView(
+                      controller: scrollController,
+                      physics: ScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+                      shrinkWrap: true,
+                      slivers: <Widget>[
+                        if (oneTimeTasks.length > 0)
+                          SliverList(
+                              delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
+                            return Container(
+                              padding: EdgeInsets.all(10),
+                              child: Text(
+                                "One time tasks:",
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  color: Colors.white,
+                                ),
                               ),
-                            ),
-                            if (repeatingTasks.length > 0)
-                              SliverList(
-                                  delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
-                                return Container(
-                                  padding: EdgeInsets.all(10),
-                                  child: Text(
-                                    "Repeating tasks:",
-                                    style: TextStyle(
-                                      fontSize: 18,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                );
-                              }, childCount: 1)),
-                            SliverList(
-                              delegate: SliverChildBuilderDelegate(
-                                (BuildContext context, int index) {
-                                  return Container(
-                                    margin: EdgeInsets.only(
-                                      bottom: index < repeatingTasks.length - 1 ? 0 : 70,
-                                    ),
-                                    child: ClickableCard(
-                                      title: repeatingTasks[index].title,
-                                      isSelectable: false,
-                                      tapFunction: () {
-                                        cardTapFunction(repeatingTasks[index].id!);
-                                      },
-                                    ),
-                                  );
-                                },
-                                childCount: repeatingTasks.length,
-                              ),
-                            ),
-                          ],
-                        )
-                      : ListView(
-                          children: [
-                            EmptyState(text: "No tasks added.\nClick the button below to add some"),
-                          ],
+                            );
+                          }, childCount: 1)),
+                        SliverList(
+                          delegate: SliverChildBuilderDelegate(
+                            (BuildContext context, int index) {
+                              return Container(
+                                margin: EdgeInsets.only(
+                                  bottom: oneTimeTasks.isNotEmpty || index < oneTimeTasks.length - 1 ? 0 : 70,
+                                ),
+                                child: TaskCard(
+                                  task: oneTimeTasks[index],
+                                  tapFunction: () {
+                                    cardTapFunction(oneTimeTasks[index].id!);
+                                  },
+                                ),
+                              );
+                            },
+                            childCount: oneTimeTasks.length,
+                          ),
                         ),
+                        if (repeatingTasks.length > 0)
+                          SliverList(
+                              delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
+                            return Container(
+                              padding: EdgeInsets.all(10),
+                              child: Text(
+                                "Repeating tasks:",
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            );
+                          }, childCount: 1)),
+                        SliverList(
+                          delegate: SliverChildBuilderDelegate(
+                            (BuildContext context, int index) {
+                              return Container(
+                                margin: EdgeInsets.only(
+                                  bottom: index < repeatingTasks.length - 1 ? 0 : 70,
+                                ),
+                                child: ClickableCard(
+                                  title: repeatingTasks[index].title,
+                                  isSelectable: false,
+                                  tapFunction: () {
+                                    cardTapFunction(repeatingTasks[index].id!);
+                                  },
+                                ),
+                              );
+                            },
+                            childCount: repeatingTasks.length,
+                          ),
+                        ),
+                      ],
+                    )
+                  : ListView(
+                      children: [
+                        EmptyState(text: "No tasks added.\nClick the button below to add some"),
+                      ],
+                    ),
             ),
           ),
-          if (!isLoading)
-            Positioned(
-              right: 20,
-              bottom: 20,
-              child: Container(
-                width: 67,
-                height: 67,
-                child: FittedBox(
-                  child: FloatingActionButton(
-                    onPressed: () async {
-                      await floatingButtonClick(context);
-                    },
-                    backgroundColor: Colors.green,
-                    foregroundColor: Colors.grey.shade800,
-                    child: Icon(Icons.add),
-                  ),
+          Positioned(
+            right: 20,
+            bottom: 20,
+            child: Container(
+              width: 67,
+              height: 67,
+              child: FittedBox(
+                child: FloatingActionButton(
+                  onPressed: () async {
+                    await floatingButtonClick(context);
+                  },
+                  backgroundColor: Colors.green,
+                  foregroundColor: Colors.grey.shade800,
+                  child: Icon(Icons.add),
                 ),
               ),
             ),
+          ),
         ],
       ),
     );

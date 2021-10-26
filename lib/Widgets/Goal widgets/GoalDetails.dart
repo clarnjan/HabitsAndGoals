@@ -176,25 +176,26 @@ class _GoalDetailsState extends State<GoalDetails> {
                         height: 20,
                         thickness: 2,
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "Tasks:",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 18,
+                      if (goal.tasks.length > 0)
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "Tasks:",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 18,
+                              ),
                             ),
-                          ),
-                          Text(
-                            "$tasksEffort - $tasksBenefit",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 18,
+                            Text(
+                              "$tasksEffort - $tasksBenefit",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 18,
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
+                          ],
+                        ),
                     ],
                   ),
                 ),
@@ -219,7 +220,7 @@ class _GoalDetailsState extends State<GoalDetails> {
                                     return Container(
                                       margin: index == goal.tasks.length - 1 ? EdgeInsets.only(bottom: 50) : EdgeInsets.only(bottom: 0),
                                       child: TaskCard(
-                                        taskId: task.id!,
+                                        task: task,
                                         tapFunction: () {
                                           cardTapFunction(task.id!);
                                         },

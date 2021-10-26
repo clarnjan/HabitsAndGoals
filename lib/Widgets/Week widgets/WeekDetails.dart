@@ -30,13 +30,15 @@ class WeekDetails extends StatefulWidget {
 }
 
 class _WeekDetailsState extends State<WeekDetails> {
-  late Week week;
+  Week? week;
   bool isLoading = true;
   bool shouldShow = false;
   int habitsEffort = 0;
   int tasksEffort = 0;
   int habitsBenefit = 0;
   int tasksBenefit = 0;
+  List<Habit> habits = [];
+  List<Task> tasks = [];
   final Key centerKey = ValueKey('second-sliver-list');
   final ScrollController scrollController = ScrollController();
   GlobalKey<RefreshIndicatorState> refreshState = GlobalKey<RefreshIndicatorState>();
@@ -56,6 +58,12 @@ class _WeekDetailsState extends State<WeekDetails> {
     } else if (widget.initialWeek!.id == null) {
       week = await DatabaseHelper.instance.getWeekByStartDate(widget.initialWeek!.startDate);
     }
+    for (WeeklyHabit wh in week!.habits) {
+      habits.add(await DatabaseHelper.instance.getHabit(wh.habitFK));
+    }
+    for (WeeklyTask wt in week!.tasks) {
+      tasks.add(await DatabaseHelper.instance.getTask(wt.taskFK));
+    }
     await updateHabitsEffortAndBenefit();
     await updateTasksEffortAndBenefit();
     setState(() {
@@ -66,7 +74,7 @@ class _WeekDetailsState extends State<WeekDetails> {
   updateHabitsEffortAndBenefit() async {
     habitsEffort = 0;
     habitsBenefit = 0;
-    for (WeeklyHabit wh in week.habits) {
+    for (WeeklyHabit wh in week!.habits) {
       Habit habit = await DatabaseHelper.instance.getHabit(wh.habitFK);
       habitsEffort += wh.repetitionsDone * habit.effortSingle;
       habitsBenefit += wh.repetitionsDone * habit.benefitSingle;
@@ -76,7 +84,7 @@ class _WeekDetailsState extends State<WeekDetails> {
   updateTasksEffortAndBenefit() async {
     tasksEffort = 0;
     tasksBenefit = 0;
-    for (WeeklyTask wt in week.tasks) {
+    for (WeeklyTask wt in week!.tasks) {
       if (wt.isFinished) {
         Task task = await DatabaseHelper.instance.getTask(wt.taskFK);
         tasksEffort += task.effort;
@@ -113,8 +121,14 @@ class _WeekDetailsState extends State<WeekDetails> {
     setState(() {
       isLoading = true;
     });
-    if (week.id != null) {
-      week = await DatabaseHelper.instance.getWeek(week.id!);
+    if (week!.id != null) {
+      week = await DatabaseHelper.instance.getWeek(week!.id!);
+    }
+    for (WeeklyHabit wh in week!.habits) {
+      habits.add(await DatabaseHelper.instance.getHabit(wh.habitFK));
+    }
+    for (WeeklyTask wt in week!.tasks) {
+      tasks.add(await DatabaseHelper.instance.getTask(wt.taskFK));
     }
     await updateHabitsEffortAndBenefit();
     await updateTasksEffortAndBenefit();
@@ -156,48 +170,36 @@ class _WeekDetailsState extends State<WeekDetails> {
           child: MainMenu(),
         ),
         appBar: AppBar(
-          title: isLoading
-              ? Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Expanded(
-                      child: Text('Loading'),
+            title: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(week != null ? week!.title.split(" ")[0] : 'Loading...'),
+                  if (week != null)
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(DateService.formatDate(week!.startDate)),
+                        Text(' - '),
+                        Text(DateService.formatDate(week!.endDate)),
+                      ],
                     ),
-                    SizedBox(
-                      width: 70,
-                    ),
-                  ],
-                )
-              : Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text(week.title.split(" ")[0]),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(DateService.formatDate(week.startDate)),
-                              Text(' - '),
-                              Text(DateService.formatDate(week.endDate)),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                    IconButton(
-                      icon: Icon(Icons.arrow_drop_down_outlined),
-                      onPressed: () {
-                        setState(() {
-                          shouldShow = !shouldShow;
-                        });
-                      },
-                    ),
-                  ],
-                ),
-        ),
+                ],
+              ),
+            ),
+            IconButton(
+              icon: Icon(Icons.arrow_drop_down_outlined),
+              onPressed: () {
+                setState(() {
+                  shouldShow = !shouldShow;
+                });
+              },
+            ),
+          ],
+        )),
         body: Stack(
           children: [
             Container(
@@ -205,7 +207,7 @@ class _WeekDetailsState extends State<WeekDetails> {
               width: double.infinity,
               padding: EdgeInsets.all(5),
               child: Flex(direction: Axis.vertical, children: [
-                isLoading
+                week == null
                     ? Expanded(
                         child: Center(
                           child: CircularProgressIndicator(),
@@ -217,13 +219,13 @@ class _WeekDetailsState extends State<WeekDetails> {
                           onRefresh: () async {
                             await refresh();
                           },
-                          child: week.habits.length > 0 || week.tasks.length > 0
+                          child: week!.habits.length > 0 || week!.tasks.length > 0
                               ? CustomScrollView(
                                   controller: scrollController,
                                   physics: ScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
                                   shrinkWrap: true,
                                   slivers: <Widget>[
-                                    if (week.habits.length > 0 || week.tasks.length > 0)
+                                    if (week!.habits.length > 0 || week!.tasks.length > 0)
                                       SliverList(
                                           delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
                                         return Container(
@@ -251,7 +253,7 @@ class _WeekDetailsState extends State<WeekDetails> {
                                           ),
                                         );
                                       }, childCount: 1)),
-                                    if (week.habits.length > 0)
+                                    if (week!.habits.length > 0)
                                       SliverList(
                                           delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
                                         return Container(
@@ -282,22 +284,22 @@ class _WeekDetailsState extends State<WeekDetails> {
                                         (BuildContext context, int index) {
                                           return Container(
                                             margin: EdgeInsets.only(
-                                              bottom: week.tasks.isNotEmpty || index < week.habits.length - 1 ? 0 : 70,
+                                              bottom: week!.tasks.isNotEmpty || index < week!.habits.length - 1 ? 0 : 70,
                                             ),
                                             child: HabitCard(
-                                              weekId: week.id!,
-                                              habitId: week.habits[index].habitFK,
+                                              habit: habits.firstWhere((element) => element.id == week!.habits[index].habitFK),
+                                              weeklyHabit: week!.habits[index],
                                               tapFunction: () {
-                                                cardTapFunction(week.habits[index].habitFK, NoteType.Habit);
+                                                cardTapFunction(week!.habits[index].habitFK, NoteType.Habit);
                                               },
                                               checkBoxChanged: habitCheckChanged,
                                             ),
                                           );
                                         },
-                                        childCount: week.habits.length,
+                                        childCount: week!.habits.length,
                                       ),
                                     ),
-                                    if (week.tasks.length > 0)
+                                    if (week!.tasks.length > 0)
                                       SliverList(
                                           delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
                                         return Container(
@@ -328,19 +330,19 @@ class _WeekDetailsState extends State<WeekDetails> {
                                         (BuildContext context, int index) {
                                           return Container(
                                             margin: EdgeInsets.only(
-                                              bottom: index < week.tasks.length - 1 ? 0 : 70,
+                                              bottom: index < week!.tasks.length - 1 ? 0 : 70,
                                             ),
                                             child: TaskCard(
-                                              weekId: week.id!,
-                                              taskId: week.tasks[index].taskFK,
+                                              weeklyTask: week!.tasks[index],
+                                              task: tasks.firstWhere((element) => element.id == week!.tasks[index].taskFK),
                                               tapFunction: () {
-                                                cardTapFunction(week.tasks[index].taskFK, NoteType.Task);
+                                                cardTapFunction(week!.tasks[index].taskFK, NoteType.Task);
                                               },
                                               checkBoxChanged: taskCheckChanged,
                                             ),
                                           );
                                         },
-                                        childCount: week.tasks.length,
+                                        childCount: week!.tasks.length,
                                       ),
                                     ),
                                   ],
@@ -354,16 +356,16 @@ class _WeekDetailsState extends State<WeekDetails> {
                       ),
               ]),
             ),
-            if (!isLoading)
+            if (week != null)
               Positioned(
                 right: 0,
                 top: 0,
                 child: WeeksPopup(
                   show: shouldShow,
-                  selectedWeek: week,
+                  selectedWeek: week!,
                 ),
               ),
-            if (!isLoading)
+            if (week != null)
               Positioned(
                 right: 20,
                 bottom: 20,
@@ -398,7 +400,7 @@ class _WeekDetailsState extends State<WeekDetails> {
                             context: context,
                             builder: (context) {
                               return AddOrSelectDialog(
-                                weekId: week.id!,
+                                weekId: week!.id!,
                                 canSelect: true,
                                 refreshParent: refresh,
                                 noteType: NoteType.Habit,
@@ -420,7 +422,7 @@ class _WeekDetailsState extends State<WeekDetails> {
                             context: context,
                             builder: (context) {
                               return AddOrSelectDialog(
-                                weekId: week.id!,
+                                weekId: week!.id!,
                                 canSelect: true,
                                 refreshParent: refresh,
                                 noteType: NoteType.Task,

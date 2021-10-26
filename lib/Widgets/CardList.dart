@@ -21,7 +21,7 @@ class CardList extends StatefulWidget {
 }
 
 class _CardListState extends State<CardList> {
-  late List items;
+  List items = [];
   bool isLoading = true;
   String appBarTitle = "Loading";
   late FloatingButtonType floatingButtonType;
@@ -149,60 +149,53 @@ class _CardListState extends State<CardList> {
             width: double.infinity,
             padding: EdgeInsets.all(5),
             child: Flex(direction: Axis.vertical, children: [
-              isLoading
-                  ? Expanded(
-                      child: Center(
-                        child: CircularProgressIndicator(),
+              Expanded(
+                child: widget.noteType == NoteType.Task
+                    ? TaskList()
+                    : RefreshIndicator(
+                        key: refreshState,
+                        onRefresh: () async {
+                          await refresh();
+                        },
+                        child: items.length > 0
+                            ? ListView.builder(
+                                itemCount: items.length,
+                                itemBuilder: (context, index) {
+                                  final item = items[index];
+                                  return Container(
+                                    margin: index == items.length - 1 ? EdgeInsets.only(bottom: 50) : EdgeInsets.only(bottom: 0),
+                                    child: getCard(item),
+                                  );
+                                })
+                            : ListView(
+                                children: [
+                                  EmptyState(
+                                    text: getEmptyStateText(),
+                                  ),
+                                ],
+                              ),
                       ),
-                    )
-                  : Expanded(
-                      child: widget.noteType == NoteType.Task
-                          ? TaskList()
-                          : RefreshIndicator(
-                              key: refreshState,
-                              onRefresh: () async {
-                                await refresh();
-                              },
-                              child: items.length > 0
-                                  ? ListView.builder(
-                                      itemCount: items.length,
-                                      itemBuilder: (context, index) {
-                                        final item = items[index];
-                                        return Container(
-                                          margin: index == items.length - 1 ? EdgeInsets.only(bottom: 50) : EdgeInsets.only(bottom: 0),
-                                          child: getCard(item),
-                                        );
-                                      })
-                                  : ListView(
-                                      children: [
-                                        EmptyState(
-                                          text: getEmptyStateText(),
-                                        ),
-                                      ],
-                                    ),
-                            ),
-                    ),
+              ),
             ]),
           ),
-          if (!isLoading)
-            Positioned(
-              right: 20,
-              bottom: 20,
-              child: Container(
-                width: 67,
-                height: 67,
-                child: FittedBox(
-                  child: FloatingActionButton(
-                    onPressed: () async {
-                      await floatingButtonClick(context);
-                    },
-                    backgroundColor: Colors.green,
-                    foregroundColor: Colors.grey.shade800,
-                    child: Icon(Icons.add),
-                  ),
+          Positioned(
+            right: 20,
+            bottom: 20,
+            child: Container(
+              width: 67,
+              height: 67,
+              child: FittedBox(
+                child: FloatingActionButton(
+                  onPressed: () async {
+                    await floatingButtonClick(context);
+                  },
+                  backgroundColor: Colors.green,
+                  foregroundColor: Colors.grey.shade800,
+                  child: Icon(Icons.add),
                 ),
               ),
             ),
+          ),
         ],
       ),
     );
