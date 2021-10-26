@@ -22,7 +22,7 @@ class _HabitCardState extends State<HabitCard> {
     super.initState();
   }
 
-  checkChanged(int index) {
+  checkChanged(int index) async {
     setState(() {
       widget.weeklyHabit.days[index] = !widget.weeklyHabit.days[index];
       if (widget.weeklyHabit.days[index]) {
@@ -31,8 +31,8 @@ class _HabitCardState extends State<HabitCard> {
         widget.weeklyHabit.repetitionsDone--;
       }
       widget.checkBoxChanged(widget.weeklyHabit.days[index], widget.habit.effortSingle, widget.habit.benefitSingle);
-      DatabaseHelper.instance.updateWeeklyHabit(widget.weeklyHabit);
     });
+    await DatabaseHelper.instance.updateWeeklyHabit(widget.weeklyHabit);
   }
 
   @override

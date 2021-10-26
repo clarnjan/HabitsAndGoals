@@ -21,7 +21,7 @@ class GoalDetails extends StatefulWidget {
 }
 
 class _GoalDetailsState extends State<GoalDetails> {
-  late Goal goal;
+  Goal? goal;
   bool isLoading = true;
   int tasksEffort = 0;
   int tasksBenefit = 0;
@@ -49,7 +49,7 @@ class _GoalDetailsState extends State<GoalDetails> {
   updateTasksEffortAndBenefit() async {
     tasksEffort = 0;
     tasksBenefit = 0;
-    for (Task t in goal.tasks) {
+    for (Task t in goal!.tasks) {
       if (t.isFinished) {
         tasksEffort += t.effort;
         tasksBenefit += t.benefit;
@@ -120,24 +120,18 @@ class _GoalDetailsState extends State<GoalDetails> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          title: isLoading
-              ? Text('loading')
-              : Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Container(
-                      width: MediaQuery.of(context).size.width - 150,
-                      child: Text(
-                        goal.title,
-                        style: TextStyle(overflow: TextOverflow.ellipsis),
-                      ),
-                    ),
-                    IconButton(
-                      icon: Icon(Icons.edit),
-                      onPressed: editGoal,
-                    ),
-                  ],
-                )),
+          title: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            'Goal details',
+          ),
+          IconButton(
+            icon: Icon(Icons.edit),
+            onPressed: editGoal,
+          ),
+        ],
+      )),
       body: Stack(
         children: [
           Container(
@@ -145,28 +139,47 @@ class _GoalDetailsState extends State<GoalDetails> {
             width: double.infinity,
             padding: EdgeInsets.all(5),
             child: Flex(direction: Axis.vertical, children: [
-              if (!isLoading)
+              if (goal != null)
                 Container(
                   padding: EdgeInsets.symmetric(vertical: 10, horizontal: 0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      Text(
+                        'Title: ',
+                        style: TextStyle(
+                          color: Colors.green,
+                          fontSize: 18,
+                        ),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Text(
+                        goal!.title,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 17,
+                        ),
+                      ),
+                      SizedBox(
+                        height: 15,
+                      ),
                       Container(
                         padding: EdgeInsets.only(bottom: 10),
                         child: Text(
                           'Description: ',
                           style: TextStyle(
-                            color: Colors.white,
+                            color: Colors.green,
                             fontSize: 18,
                           ),
                         ),
                       ),
                       Text(
-                        goal.description ?? 'No description added',
+                        goal!.description ?? 'No description added',
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 17,
-                          fontStyle: FontStyle.italic,
                         ),
                       ),
                       SizedBox(
@@ -176,30 +189,30 @@ class _GoalDetailsState extends State<GoalDetails> {
                         height: 20,
                         thickness: 2,
                       ),
-                      if (goal.tasks.length > 0)
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              "Tasks:",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 18,
-                              ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "Tasks:",
+                            style: TextStyle(
+                              color: Colors.green,
+                              fontSize: 18,
                             ),
+                          ),
+                          if (goal!.tasks.length > 0)
                             Text(
                               "$tasksEffort - $tasksBenefit",
                               style: TextStyle(
-                                color: Colors.white,
+                                color: Colors.green,
                                 fontSize: 18,
                               ),
                             ),
-                          ],
-                        ),
+                        ],
+                      ),
                     ],
                   ),
                 ),
-              isLoading
+              goal == null
                   ? Expanded(
                       child: Center(
                         child: CircularProgressIndicator(),
@@ -212,13 +225,13 @@ class _GoalDetailsState extends State<GoalDetails> {
                           onRefresh: () async {
                             await refresh();
                           },
-                          child: goal.tasks.length > 0
+                          child: goal!.tasks.length > 0
                               ? ListView.builder(
-                                  itemCount: goal.tasks.length,
+                                  itemCount: goal!.tasks.length,
                                   itemBuilder: (context, index) {
-                                    final task = goal.tasks[index];
+                                    final task = goal!.tasks[index];
                                     return Container(
-                                      margin: index == goal.tasks.length - 1 ? EdgeInsets.only(bottom: 50) : EdgeInsets.only(bottom: 0),
+                                      margin: index == goal!.tasks.length - 1 ? EdgeInsets.only(bottom: 50) : EdgeInsets.only(bottom: 0),
                                       child: TaskCard(
                                         task: task,
                                         tapFunction: () {
@@ -236,7 +249,7 @@ class _GoalDetailsState extends State<GoalDetails> {
                     ),
             ]),
           ),
-          if (!isLoading)
+          if (goal != null)
             Positioned(
               right: 20,
               bottom: 20,

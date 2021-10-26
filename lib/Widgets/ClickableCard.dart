@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 
 class ClickableCard extends StatefulWidget {
   final String title;
+  final String? effortAndBenefit;
   final Function tapFunction;
   final bool isSelectable;
 
-  ClickableCard({required this.tapFunction, required this.title, required this.isSelectable});
+  ClickableCard({required this.tapFunction, required this.title, required this.isSelectable, this.effortAndBenefit});
 
   @override
   _ClickableCardState createState() => _ClickableCardState();
@@ -39,6 +40,14 @@ class _ClickableCardState extends State<ClickableCard> {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            if (!widget.isSelectable)
+              Text(
+                "Title: ",
+                style: TextStyle(
+                  fontSize: 15,
+                  color: Colors.green,
+                ),
+              ),
             Expanded(
               child: Text(
                 widget.title,
@@ -48,6 +57,21 @@ class _ClickableCardState extends State<ClickableCard> {
                 ),
               ),
             ),
+            if (widget.effortAndBenefit != null)
+              Row(
+                children: [
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Text(
+                    widget.effortAndBenefit.toString(),
+                    style: TextStyle(
+                      fontSize: 15,
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
+              ),
           ],
         ),
       ),

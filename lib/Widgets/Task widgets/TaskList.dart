@@ -102,12 +102,12 @@ class _TaskListState extends State<TaskList> {
                           SliverList(
                               delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
                             return Container(
-                              padding: EdgeInsets.all(10),
+                              padding: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
                               child: Text(
                                 "One time tasks:",
                                 style: TextStyle(
                                   fontSize: 18,
-                                  color: Colors.white,
+                                  color: Colors.green,
                                 ),
                               ),
                             );
@@ -134,12 +134,12 @@ class _TaskListState extends State<TaskList> {
                           SliverList(
                               delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
                             return Container(
-                              padding: EdgeInsets.all(10),
+                              padding: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
                               child: Text(
                                 "Repeating tasks:",
                                 style: TextStyle(
                                   fontSize: 18,
-                                  color: Colors.white,
+                                  color: Colors.green,
                                 ),
                               ),
                             );
@@ -154,6 +154,7 @@ class _TaskListState extends State<TaskList> {
                                 child: ClickableCard(
                                   title: repeatingTasks[index].title,
                                   isSelectable: false,
+                                  effortAndBenefit: "${repeatingTasks[index].effort} - ${repeatingTasks[index].benefit}",
                                   tapFunction: () {
                                     cardTapFunction(repeatingTasks[index].id!);
                                   },

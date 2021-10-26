@@ -66,6 +66,7 @@ class _CardListState extends State<CardList> {
         return ClickableCard(
           title: item.title,
           isSelectable: false,
+          effortAndBenefit: "${item.effortSingle * item.repetitions} - ${item.benefitSingle * item.repetitions}",
           tapFunction: () {
             cardTapFunction(item.id!);
           },
@@ -74,6 +75,7 @@ class _CardListState extends State<CardList> {
         return ClickableCard(
           title: item.title,
           isSelectable: false,
+          effortAndBenefit: "${item.effort} - ${item.benefit}",
           tapFunction: () {
             cardTapFunction(item.id!);
           },

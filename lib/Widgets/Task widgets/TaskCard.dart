@@ -31,15 +31,13 @@ class _TaskCardState extends State<TaskCard> {
     return false;
   }
 
-  checkChanged() {
+  checkChanged() async {
     setState(() {
       if (!widget.task.isRepeating) {
         widget.task.isFinished = !widget.task.isFinished;
-        DatabaseHelper.instance.updateTask(widget.task);
       }
       if (widget.weeklyTask != null) {
         widget.weeklyTask!.isFinished = !widget.weeklyTask!.isFinished;
-        DatabaseHelper.instance.updateWeeklyTask(widget.weeklyTask!);
         if (widget.checkBoxChanged != null) {
           widget.checkBoxChanged!(widget.weeklyTask!.isFinished, widget.task.effort, widget.task.benefit);
         }
@@ -47,6 +45,12 @@ class _TaskCardState extends State<TaskCard> {
         widget.checkBoxChanged!(widget.task.isFinished, widget.task.effort, widget.task.benefit);
       }
     });
+    if (!widget.task.isRepeating) {
+      await DatabaseHelper.instance.updateTask(widget.task);
+    }
+    if (widget.weeklyTask != null) {
+      await DatabaseHelper.instance.updateWeeklyTask(widget.weeklyTask!);
+    }
   }
 
   @override
@@ -74,12 +78,24 @@ class _TaskCardState extends State<TaskCard> {
             children: [
               Container(
                 width: MediaQuery.of(context).size.width - 105,
-                child: Text(
-                  widget.task.title,
-                  style: TextStyle(
-                    fontSize: 15,
-                    color: Colors.white,
-                  ),
+                child: Row(
+                  children: [
+                    if (widget.weeklyTask == null)
+                      Text(
+                        'Title: ',
+                        style: TextStyle(
+                          fontSize: 15,
+                          color: Colors.green,
+                        ),
+                      ),
+                    Text(
+                      widget.task.title,
+                      style: TextStyle(
+                        fontSize: 15,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
                 ),
               ),
               InkWell(

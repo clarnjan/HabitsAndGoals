@@ -61,7 +61,6 @@ class _EditDialogState extends State<EditDialog> {
 
   mainButtonClick() {
     _controller.onSave();
-    widget.refreshParent();
   }
 
   secondButtonClick(BuildContext context) async {

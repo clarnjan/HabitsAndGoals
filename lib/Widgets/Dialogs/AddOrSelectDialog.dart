@@ -113,7 +113,7 @@ class _AddOrSelectDialogState extends State<AddOrSelectDialog> {
               days.add(false);
             }
             WeeklyHabit weeklyHabit = new WeeklyHabit(habitFK: habit.id!, weekFK: widget.weekId!, repetitionsDone: 0, days: days);
-            DatabaseHelper.instance.createWeeklyHabit(weeklyHabit);
+            await DatabaseHelper.instance.createWeeklyHabit(weeklyHabit);
           }
         }
       } else if (widget.weekId != null && widget.noteType == NoteType.Task) {

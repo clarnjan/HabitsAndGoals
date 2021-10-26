@@ -27,6 +27,7 @@ class _SelectTasksDialogState extends State<SelectTasksDialog> {
                 child: ClickableCard(
                   isSelectable: true,
                   title: task.title,
+                  effortAndBenefit: "${task.effort} - ${task.benefit}",
                   tapFunction: () {
                     widget.selectTask(task);
                   },

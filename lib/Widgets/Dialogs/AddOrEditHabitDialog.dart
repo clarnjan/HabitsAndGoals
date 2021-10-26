@@ -53,6 +53,7 @@ class _AddOrEditHabitDialogState extends State<AddOrEditHabitDialog> {
       habit.createdTime = DateTime.now();
       if (habit.id != null) {
         List<WeeklyHabit> weeklyHabits = await DatabaseHelper.instance.getWeeklyHabitsForHabit(habit.id!);
+        await DatabaseHelper.instance.updateHabit(habit);
         for (WeeklyHabit wh in weeklyHabits) {
           List<bool> days = [];
           for (int i = 0; i < habit.repetitions; i++) {
@@ -64,8 +65,7 @@ class _AddOrEditHabitDialogState extends State<AddOrEditHabitDialog> {
           }
           wh.repetitionsDone = days.where((element) => element == true).length;
           wh.days = days;
-          await DatabaseHelper.instance.updateHabit(habit);
-          DatabaseHelper.instance.updateWeeklyHabit(wh);
+          await DatabaseHelper.instance.updateWeeklyHabit(wh);
         }
       } else {
         habit = await DatabaseHelper.instance.createHabit(habit);
@@ -76,7 +76,7 @@ class _AddOrEditHabitDialogState extends State<AddOrEditHabitDialog> {
           days.add(false);
         }
         WeeklyHabit weeklyHabit = new WeeklyHabit(habitFK: habit.id!, weekFK: widget.weekId!, repetitionsDone: 0, days: days);
-        DatabaseHelper.instance.createWeeklyHabit(weeklyHabit);
+        await DatabaseHelper.instance.createWeeklyHabit(weeklyHabit);
       }
       await widget.refreshParent();
       Navigator.pop(context);

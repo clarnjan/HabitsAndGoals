@@ -27,6 +27,7 @@ class _SelectHabitsDialogState extends State<SelectHabitsDialog> {
                 child: ClickableCard(
                   isSelectable: true,
                   title: habit.title,
+                  effortAndBenefit: "${habit.effortSingle * habit.repetitions} - ${habit.benefitSingle * habit.repetitions}",
                   tapFunction: () {
                     widget.selectHabit(habit);
                   },

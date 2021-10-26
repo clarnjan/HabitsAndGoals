@@ -51,6 +51,7 @@ class _AddOrEditTaskDialogState extends State<AddOrEditTaskDialog> {
       task = await DatabaseHelper.instance.getTask(widget.taskId!);
     } else {
       task = new Task();
+      task.isRepeating = widget.goalId == null;
     }
     setState(() {
       isLoading = false;
@@ -65,8 +66,7 @@ class _AddOrEditTaskDialogState extends State<AddOrEditTaskDialog> {
       } else {
         if (widget.goalId != null) {
           task.goalFK = widget.goalId;
-        }
-        if (!task.isRepeating && widget.weekId != null) {
+        } else if (!task.isRepeating && widget.weekId != null) {
           task.weekFK = widget.weekId;
         }
         task = await DatabaseHelper.instance.createTask(task);
@@ -76,7 +76,7 @@ class _AddOrEditTaskDialogState extends State<AddOrEditTaskDialog> {
       }
       if (widget.weekId != null && task.id != null) {
         WeeklyTask weeklyTask = new WeeklyTask(taskFK: task.id!, weekFK: widget.weekId!, isFinished: false);
-        DatabaseHelper.instance.createWeeklyTask(weeklyTask);
+        await DatabaseHelper.instance.createWeeklyTask(weeklyTask);
       }
       await widget.refreshParent();
       Navigator.of(context).pop();
