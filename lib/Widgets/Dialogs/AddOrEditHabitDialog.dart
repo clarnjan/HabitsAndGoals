@@ -1,6 +1,6 @@
 import 'package:diplomska1/Classes/DatabaseHelper.dart';
-import 'package:diplomska1/Classes/Habit.dart';
-import 'package:diplomska1/Classes/WeeklyHabit.dart';
+import 'package:diplomska1/Classes/Tables/Habit.dart';
+import 'package:diplomska1/Classes/Tables/WeeklyHabit.dart';
 import 'package:diplomska1/Widgets/Dialogs/AddOrSelectDialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -13,11 +13,17 @@ class AddOrEditHabitDialog extends StatefulWidget {
   final Function refreshParent;
   final AddEditItemController controller;
 
-  const AddOrEditHabitDialog({Key? key, this.weekId, required this.refreshParent, required this.controller, this.habitId})
+  const AddOrEditHabitDialog(
+      {Key? key,
+      this.weekId,
+      required this.refreshParent,
+      required this.controller,
+      this.habitId})
       : super(key: key);
 
   @override
-  _AddOrEditHabitDialogState createState() => _AddOrEditHabitDialogState(controller);
+  _AddOrEditHabitDialogState createState() =>
+      _AddOrEditHabitDialogState(controller);
 }
 
 class _AddOrEditHabitDialogState extends State<AddOrEditHabitDialog> {
@@ -52,7 +58,8 @@ class _AddOrEditHabitDialogState extends State<AddOrEditHabitDialog> {
     if (formKey.currentState!.validate()) {
       habit.createdTime = DateTime.now();
       if (habit.id != null) {
-        List<WeeklyHabit> weeklyHabits = await DatabaseHelper.instance.getWeeklyHabitsForHabit(habit.id!);
+        List<WeeklyHabit> weeklyHabits =
+            await DatabaseHelper.instance.getWeeklyHabitsForHabit(habit.id!);
         await DatabaseHelper.instance.updateHabit(habit);
         for (WeeklyHabit wh in weeklyHabits) {
           List<bool> days = [];
@@ -75,7 +82,11 @@ class _AddOrEditHabitDialogState extends State<AddOrEditHabitDialog> {
         for (int i = 0; i < habit.repetitions; i++) {
           days.add(false);
         }
-        WeeklyHabit weeklyHabit = new WeeklyHabit(habitFK: habit.id!, weekFK: widget.weekId!, repetitionsDone: 0, days: days);
+        WeeklyHabit weeklyHabit = new WeeklyHabit(
+            habitFK: habit.id!,
+            weekFK: widget.weekId!,
+            repetitionsDone: 0,
+            days: days);
         await DatabaseHelper.instance.createWeeklyHabit(weeklyHabit);
       }
       await widget.refreshParent();
@@ -151,8 +162,10 @@ class _AddOrEditHabitDialogState extends State<AddOrEditHabitDialog> {
                             Tooltip(
                               preferBelow: false,
                               showDuration: Duration(seconds: 5),
-                              message: "How many times will you be doing this habit in a week",
-                              textStyle: TextStyle(color: Colors.lightGreenAccent),
+                              message:
+                                  "How many times will you be doing this habit in a week",
+                              textStyle:
+                                  TextStyle(color: Colors.lightGreenAccent),
                               padding: EdgeInsets.all(7),
                               child: Icon(
                                 Icons.info_outline,
@@ -169,7 +182,8 @@ class _AddOrEditHabitDialogState extends State<AddOrEditHabitDialog> {
                           value: habit.repetitions,
                           minValue: 1,
                           maxValue: 7,
-                          onChanged: (value) => setState(() => habit.repetitions = value),
+                          onChanged: (value) =>
+                              setState(() => habit.repetitions = value),
                           itemWidth: 40,
                           itemHeight: 30,
                           axis: Axis.horizontal,
@@ -178,7 +192,8 @@ class _AddOrEditHabitDialogState extends State<AddOrEditHabitDialog> {
                             color: CupertinoColors.activeGreen,
                             fontWeight: FontWeight.bold,
                           ),
-                          textStyle: TextStyle(fontSize: 14, color: Colors.white),
+                          textStyle:
+                              TextStyle(fontSize: 14, color: Colors.white),
                         ),
                       ),
                     ],
@@ -200,7 +215,8 @@ class _AddOrEditHabitDialogState extends State<AddOrEditHabitDialog> {
                         Tooltip(
                           preferBelow: false,
                           showDuration: Duration(seconds: 5),
-                          message: "The effort you need to put in to do a single repetition",
+                          message:
+                              "The effort you need to put in to do a single repetition",
                           textStyle: TextStyle(color: Colors.lightGreenAccent),
                           padding: EdgeInsets.all(7),
                           child: Icon(
@@ -217,8 +233,9 @@ class _AddOrEditHabitDialogState extends State<AddOrEditHabitDialog> {
                       child: NumberPicker(
                         value: habit.effortSingle,
                         minValue: 0,
-                        maxValue: 99,
-                        onChanged: (value) => setState(() => habit.effortSingle = value),
+                        maxValue: 10,
+                        onChanged: (value) =>
+                            setState(() => habit.effortSingle = value),
                         itemWidth: 40,
                         itemHeight: 30,
                         axis: Axis.horizontal,
@@ -247,7 +264,8 @@ class _AddOrEditHabitDialogState extends State<AddOrEditHabitDialog> {
                         Tooltip(
                           preferBelow: false,
                           showDuration: Duration(seconds: 5),
-                          message: "The benefit you get after a single repetition",
+                          message:
+                              "The benefit you get after a single repetition",
                           textStyle: TextStyle(color: Colors.lightGreenAccent),
                           padding: EdgeInsets.all(7),
                           child: Icon(
@@ -262,8 +280,9 @@ class _AddOrEditHabitDialogState extends State<AddOrEditHabitDialog> {
                     NumberPicker(
                       value: habit.benefitSingle,
                       minValue: 0,
-                      maxValue: 99,
-                      onChanged: (value) => setState(() => habit.benefitSingle = value),
+                      maxValue: 10,
+                      onChanged: (value) =>
+                          setState(() => habit.benefitSingle = value),
                       itemWidth: 40,
                       itemHeight: 30,
                       axis: Axis.horizontal,

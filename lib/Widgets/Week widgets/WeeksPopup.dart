@@ -1,5 +1,5 @@
 import 'package:diplomska1/Classes/DateService.dart';
-import 'package:diplomska1/Classes/Week.dart';
+import 'package:diplomska1/Classes/Tables/Week.dart';
 import 'package:diplomska1/Widgets/Week%20widgets/WeekCard.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -23,17 +23,22 @@ class _WeeksPopupState extends State<WeeksPopup> {
   List<Week> futureWeeks = [];
   final Key centerKey = ValueKey('second-sliver-list');
   final ScrollController scrollController = ScrollController();
-  GlobalKey<RefreshIndicatorState> refreshState = GlobalKey<RefreshIndicatorState>();
+  GlobalKey<RefreshIndicatorState> refreshState =
+      GlobalKey<RefreshIndicatorState>();
 
   @override
   void initState() {
     super.initState();
     addInitialData();
     scrollController.addListener(() {
-      if (scrollController.position.pixels >= scrollController.position.maxScrollExtent && !isLoading) {
+      if (scrollController.position.pixels >=
+              scrollController.position.maxScrollExtent &&
+          !isLoading) {
         addToEnd();
       }
-      if (scrollController.position.pixels <= scrollController.position.minScrollExtent && !isLoading) {
+      if (scrollController.position.pixels <=
+              scrollController.position.minScrollExtent &&
+          !isLoading) {
         addToStart();
       }
     });
@@ -43,11 +48,14 @@ class _WeeksPopupState extends State<WeeksPopup> {
     setState(() {
       isLoading = true;
     });
-    for (DateTime startDate = widget.selectedWeek.startDate; !startDate.isAfter(widget.selectedWeek.startDate.add(Duration(days: 7 * 8)));) {
+    for (DateTime startDate = widget.selectedWeek.startDate;
+        !startDate.isAfter(
+            widget.selectedWeek.startDate.add(Duration(days: 7 * 8)));) {
       futureWeeks.add(getWeek(startDate));
       startDate = startDate.add(Duration(days: 7));
     }
-    DateTime startDate = widget.selectedWeek.startDate.subtract(Duration(days: 7));
+    DateTime startDate =
+        widget.selectedWeek.startDate.subtract(Duration(days: 7));
     pastWeeks.add(getWeek(startDate));
     setState(() {
       isLoading = false;
@@ -56,7 +64,8 @@ class _WeeksPopupState extends State<WeeksPopup> {
 
   Week getWeek(DateTime startDate) {
     DateTime endDate = DateService.getEndDate(startDate);
-    String title = "Week ${DateService.formatDate(startDate)} - ${DateService.formatDate(endDate)}";
+    String title =
+        "Week ${DateService.formatDate(startDate)} - ${DateService.formatDate(endDate)}";
     return new Week(title: title, startDate: startDate, endDate: endDate);
   }
 
@@ -125,7 +134,8 @@ class _WeeksPopupState extends State<WeeksPopup> {
                       alignment: Alignment.center,
                       child: WeekCard(
                         week: futureWeeks[index],
-                        isCurrent: futureWeeks[index].startDate == widget.selectedWeek.startDate,
+                        isCurrent: futureWeeks[index].startDate ==
+                            widget.selectedWeek.startDate,
                       ),
                     );
                   },

@@ -1,17 +1,17 @@
 import 'package:diplomska1/Classes/DatabaseHelper.dart';
 import 'package:diplomska1/Classes/Enums.dart';
-import 'package:diplomska1/Classes/Goal.dart';
-import 'package:diplomska1/Classes/Habit.dart';
-import 'package:diplomska1/Classes/Task.dart';
-import 'package:diplomska1/Classes/Week.dart';
-import 'package:diplomska1/Classes/WeeklyHabit.dart';
-import 'package:diplomska1/Classes/WeeklyTask.dart';
+import 'package:diplomska1/Classes/Tables/Goal.dart';
+import 'package:diplomska1/Classes/Tables/Habit.dart';
+import 'package:diplomska1/Classes/Tables/Task.dart';
+import 'package:diplomska1/Classes/Tables/Week.dart';
+import 'package:diplomska1/Classes/Tables/WeeklyHabit.dart';
+import 'package:diplomska1/Classes/Tables/WeeklyTask.dart';
 import 'package:diplomska1/Widgets/Dialogs/AddOrEditGoalDialog.dart';
 import 'package:diplomska1/Widgets/Dialogs/AddOrEditTaskDialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../DialogButtons.dart';
+import '../Shared widgets/DialogButtons.dart';
 import 'AddOrEditHabitDialog.dart';
 import 'SelectHabitsDialog.dart';
 import 'SelectTasksDialog.dart';
@@ -28,7 +28,12 @@ class AddOrSelectDialog extends StatefulWidget {
   final NoteType noteType;
 
   const AddOrSelectDialog(
-      {Key? key, this.weekId, required this.refreshParent, required this.canSelect, required this.noteType, this.goalId})
+      {Key? key,
+      this.weekId,
+      required this.refreshParent,
+      required this.canSelect,
+      required this.noteType,
+      this.goalId})
       : super(key: key);
 
   @override
@@ -68,7 +73,8 @@ class _AddOrSelectDialogState extends State<AddOrSelectDialog> {
           final allTasks = await DatabaseHelper.instance.getAllTasks();
           tasks = [];
           for (Task t in allTasks) {
-            if (week.tasks.where((wt) => wt.taskFK == t.id).isEmpty && t.weekFK == null) {
+            if (week.tasks.where((wt) => wt.taskFK == t.id).isEmpty &&
+                t.weekFK == null) {
               tasks.add(t);
             }
           }
@@ -76,7 +82,8 @@ class _AddOrSelectDialogState extends State<AddOrSelectDialog> {
       } else if (widget.goalId != null) {
         goal = await DatabaseHelper.instance.getGoal(widget.goalId!);
         tasks = await DatabaseHelper.instance.getAllTasks();
-        tasks.removeWhere((element) => element.goalFK != null || element.isRepeating);
+        tasks.removeWhere(
+            (element) => element.goalFK != null || element.isRepeating);
       }
     }
     setState(() {
@@ -112,7 +119,11 @@ class _AddOrSelectDialogState extends State<AddOrSelectDialog> {
             for (int i = 0; i < habit.repetitions; i++) {
               days.add(false);
             }
-            WeeklyHabit weeklyHabit = new WeeklyHabit(habitFK: habit.id!, weekFK: widget.weekId!, repetitionsDone: 0, days: days);
+            WeeklyHabit weeklyHabit = new WeeklyHabit(
+                habitFK: habit.id!,
+                weekFK: widget.weekId!,
+                repetitionsDone: 0,
+                days: days);
             await DatabaseHelper.instance.createWeeklyHabit(weeklyHabit);
           }
         }
@@ -126,8 +137,10 @@ class _AddOrSelectDialogState extends State<AddOrSelectDialog> {
               task.weekFK = widget.weekId;
               await DatabaseHelper.instance.updateTask(task);
             }
-            WeeklyTask weeklyTask = new WeeklyTask(taskFK: task.id!, weekFK: widget.weekId!, isFinished: false);
-            weeklyTask = await DatabaseHelper.instance.createWeeklyTask(weeklyTask);
+            WeeklyTask weeklyTask = new WeeklyTask(
+                taskFK: task.id!, weekFK: widget.weekId!, isFinished: false);
+            weeklyTask =
+                await DatabaseHelper.instance.createWeeklyTask(weeklyTask);
           }
         }
       } else if (widget.goalId != null) {
@@ -227,7 +240,8 @@ class _AddOrSelectDialogState extends State<AddOrSelectDialog> {
         ),
       ),
       titlePadding: EdgeInsets.fromLTRB(10, 10, 10, 0),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(10))),
       contentPadding: EdgeInsets.fromLTRB(10, 0, 10, 0),
       backgroundColor: Colors.grey[800],
       content: !isLoading
@@ -238,7 +252,9 @@ class _AddOrSelectDialogState extends State<AddOrSelectDialog> {
               ),
               width: MediaQuery.of(context).size.width / 1.4,
               child: SingleChildScrollView(
-                child: widget.canSelect && (widget.weekId != null || widget.goalId != null) && isSelecting
+                child: widget.canSelect &&
+                        (widget.weekId != null || widget.goalId != null) &&
+                        isSelecting
                     ? Padding(
                         padding: const EdgeInsets.only(top: 10),
                         child: getSelectDialog(),

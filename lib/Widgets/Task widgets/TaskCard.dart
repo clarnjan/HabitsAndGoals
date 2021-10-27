@@ -1,6 +1,6 @@
 import 'package:diplomska1/Classes/DatabaseHelper.dart';
-import 'package:diplomska1/Classes/Task.dart';
-import 'package:diplomska1/Classes/WeeklyTask.dart';
+import 'package:diplomska1/Classes/Tables/Task.dart';
+import 'package:diplomska1/Classes/Tables/WeeklyTask.dart';
 import 'package:flutter/material.dart';
 
 class TaskCard extends StatefulWidget {
@@ -9,7 +9,11 @@ class TaskCard extends StatefulWidget {
   final Function tapFunction;
   final Function? checkBoxChanged;
 
-  TaskCard({required this.task, required this.tapFunction, this.weeklyTask, this.checkBoxChanged});
+  TaskCard(
+      {required this.task,
+      required this.tapFunction,
+      this.weeklyTask,
+      this.checkBoxChanged});
 
   @override
   _TaskCardState createState() => _TaskCardState();
@@ -39,10 +43,12 @@ class _TaskCardState extends State<TaskCard> {
       if (widget.weeklyTask != null) {
         widget.weeklyTask!.isFinished = !widget.weeklyTask!.isFinished;
         if (widget.checkBoxChanged != null) {
-          widget.checkBoxChanged!(widget.weeklyTask!.isFinished, widget.task.effort, widget.task.benefit);
+          widget.checkBoxChanged!(widget.weeklyTask!.isFinished,
+              widget.task.effort, widget.task.benefit);
         }
       } else if (widget.checkBoxChanged != null) {
-        widget.checkBoxChanged!(widget.task.isFinished, widget.task.effort, widget.task.benefit);
+        widget.checkBoxChanged!(
+            widget.task.isFinished, widget.task.effort, widget.task.benefit);
       }
     });
     if (!widget.task.isRepeating) {
@@ -104,9 +110,12 @@ class _TaskCardState extends State<TaskCard> {
                   padding: const EdgeInsets.all(2.0),
                   child: Container(
                     decoration: BoxDecoration(
-                      color: isFinished() ? Colors.green.shade700 : Colors.transparent,
+                      color: isFinished()
+                          ? Colors.green.shade700
+                          : Colors.transparent,
                       border: Border.all(
-                        color: isFinished() ? Colors.green.shade700 : Colors.white,
+                        color:
+                            isFinished() ? Colors.green.shade700 : Colors.white,
                         width: 1,
                       ),
                       borderRadius: BorderRadius.circular(6),

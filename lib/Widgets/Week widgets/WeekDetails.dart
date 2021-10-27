@@ -1,14 +1,14 @@
 import 'package:diplomska1/Classes/DatabaseHelper.dart';
 import 'package:diplomska1/Classes/DateService.dart';
 import 'package:diplomska1/Classes/Enums.dart';
-import 'package:diplomska1/Classes/Habit.dart';
-import 'package:diplomska1/Classes/Task.dart';
-import 'package:diplomska1/Classes/Week.dart';
-import 'package:diplomska1/Classes/WeeklyHabit.dart';
-import 'package:diplomska1/Classes/WeeklyTask.dart';
+import 'package:diplomska1/Classes/Tables/Habit.dart';
+import 'package:diplomska1/Classes/Tables/Task.dart';
+import 'package:diplomska1/Classes/Tables/Week.dart';
+import 'package:diplomska1/Classes/Tables/WeeklyHabit.dart';
+import 'package:diplomska1/Classes/Tables/WeeklyTask.dart';
 import 'package:diplomska1/Widgets/Dialogs/EditDialog.dart';
 import 'package:diplomska1/Widgets/Habit%20widgets/HabitCard.dart';
-import 'package:diplomska1/Widgets/LabelWidget.dart';
+import 'package:diplomska1/Widgets/Shared%20widgets/LabelWidget.dart';
 import 'package:diplomska1/Widgets/Task%20widgets/TaskCard.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -16,8 +16,8 @@ import 'package:flutter/painting.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
 import '../Dialogs/AddOrSelectDialog.dart';
-import '../EmptyState.dart';
 import '../MainMenu.dart';
+import '../Shared widgets/EmptyState.dart';
 import 'WeeksPopup.dart';
 
 class WeekDetails extends StatefulWidget {
@@ -41,7 +41,8 @@ class _WeekDetailsState extends State<WeekDetails> {
   List<Task> tasks = [];
   final Key centerKey = ValueKey('second-sliver-list');
   final ScrollController scrollController = ScrollController();
-  GlobalKey<RefreshIndicatorState> refreshState = GlobalKey<RefreshIndicatorState>();
+  GlobalKey<RefreshIndicatorState> refreshState =
+      GlobalKey<RefreshIndicatorState>();
 
   @override
   void initState() {
@@ -56,7 +57,8 @@ class _WeekDetailsState extends State<WeekDetails> {
     if (widget.initialWeek == null) {
       week = await DatabaseHelper.instance.getCurrentWeek();
     } else if (widget.initialWeek!.id == null) {
-      week = await DatabaseHelper.instance.getWeekByStartDate(widget.initialWeek!.startDate);
+      week = await DatabaseHelper.instance
+          .getWeekByStartDate(widget.initialWeek!.startDate);
     }
     await updateHabitsAndTasks();
     await updateHabitsEffortAndBenefit();
@@ -220,19 +222,26 @@ class _WeekDetailsState extends State<WeekDetails> {
                           onRefresh: () async {
                             await refresh();
                           },
-                          child: week!.habits.length > 0 || week!.tasks.length > 0
+                          child: week!.habits.length > 0 ||
+                                  week!.tasks.length > 0
                               ? CustomScrollView(
                                   controller: scrollController,
-                                  physics: ScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+                                  physics: ScrollPhysics(
+                                      parent: AlwaysScrollableScrollPhysics()),
                                   shrinkWrap: true,
                                   slivers: <Widget>[
-                                    if (week!.habits.length > 0 || week!.tasks.length > 0)
+                                    if (week!.habits.length > 0 ||
+                                        week!.tasks.length > 0)
                                       SliverList(
-                                          delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
+                                          delegate: SliverChildBuilderDelegate(
+                                              (BuildContext context,
+                                                  int index) {
                                         return Container(
-                                          padding: EdgeInsets.fromLTRB(5, 10, 5, 0),
+                                          padding:
+                                              EdgeInsets.fromLTRB(5, 10, 5, 0),
                                           child: Wrap(
-                                            alignment: WrapAlignment.spaceBetween,
+                                            alignment:
+                                                WrapAlignment.spaceBetween,
                                             children: [
                                               Text(
                                                 "Total effort and benefit:",
@@ -256,11 +265,15 @@ class _WeekDetailsState extends State<WeekDetails> {
                                       }, childCount: 1)),
                                     if (week!.habits.length > 0)
                                       SliverList(
-                                          delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
+                                          delegate: SliverChildBuilderDelegate(
+                                              (BuildContext context,
+                                                  int index) {
                                         return Container(
-                                          padding: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 10, horizontal: 5),
                                           child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
                                             children: [
                                               Text(
                                                 "Habits:",
@@ -286,15 +299,31 @@ class _WeekDetailsState extends State<WeekDetails> {
                                           (BuildContext context, int index) {
                                             return Container(
                                               margin: EdgeInsets.only(
-                                                bottom: week!.tasks.isNotEmpty || index < week!.habits.length - 1 ? 0 : 70,
+                                                bottom: week!
+                                                            .tasks.isNotEmpty ||
+                                                        index <
+                                                            week!.habits
+                                                                    .length -
+                                                                1
+                                                    ? 0
+                                                    : 70,
                                               ),
                                               child: HabitCard(
-                                                habit: habits.firstWhere((element) => element.id == week!.habits[index].habitFK),
-                                                weeklyHabit: week!.habits[index],
+                                                habit: habits.firstWhere(
+                                                    (element) =>
+                                                        element.id ==
+                                                        week!.habits[index]
+                                                            .habitFK),
+                                                weeklyHabit:
+                                                    week!.habits[index],
                                                 tapFunction: () {
-                                                  cardTapFunction(week!.habits[index].habitFK, NoteType.Habit);
+                                                  cardTapFunction(
+                                                      week!.habits[index]
+                                                          .habitFK,
+                                                      NoteType.Habit);
                                                 },
-                                                checkBoxChanged: habitCheckChanged,
+                                                checkBoxChanged:
+                                                    habitCheckChanged,
                                               ),
                                             );
                                           },
@@ -303,11 +332,15 @@ class _WeekDetailsState extends State<WeekDetails> {
                                       ),
                                     if (week!.tasks.length > 0)
                                       SliverList(
-                                          delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
+                                          delegate: SliverChildBuilderDelegate(
+                                              (BuildContext context,
+                                                  int index) {
                                         return Container(
-                                          padding: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 10, horizontal: 5),
                                           child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
                                             children: [
                                               Text(
                                                 "Tasks:",
@@ -333,15 +366,25 @@ class _WeekDetailsState extends State<WeekDetails> {
                                           (BuildContext context, int index) {
                                             return Container(
                                               margin: EdgeInsets.only(
-                                                bottom: index < week!.tasks.length - 1 ? 0 : 70,
+                                                bottom: index <
+                                                        week!.tasks.length - 1
+                                                    ? 0
+                                                    : 70,
                                               ),
                                               child: TaskCard(
                                                 weeklyTask: week!.tasks[index],
-                                                task: tasks.firstWhere((element) => element.id == week!.tasks[index].taskFK),
+                                                task: tasks.firstWhere(
+                                                    (element) =>
+                                                        element.id ==
+                                                        week!.tasks[index]
+                                                            .taskFK),
                                                 tapFunction: () {
-                                                  cardTapFunction(week!.tasks[index].taskFK, NoteType.Task);
+                                                  cardTapFunction(
+                                                      week!.tasks[index].taskFK,
+                                                      NoteType.Task);
                                                 },
-                                                checkBoxChanged: taskCheckChanged,
+                                                checkBoxChanged:
+                                                    taskCheckChanged,
                                               ),
                                             );
                                           },
@@ -352,7 +395,9 @@ class _WeekDetailsState extends State<WeekDetails> {
                                 )
                               : ListView(
                                   children: [
-                                    EmptyState(text: "No habits or tasks added for this week.\nClick the button below to add some"),
+                                    EmptyState(
+                                        text:
+                                            "No habits or tasks added for this week.\nClick the button below to add some"),
                                   ],
                                 ),
                         ),

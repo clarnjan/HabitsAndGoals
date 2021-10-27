@@ -1,5 +1,5 @@
-import 'package:diplomska1/Classes/WeeklyHabit.dart';
-import 'package:diplomska1/Classes/WeeklyTask.dart';
+import 'package:diplomska1/Classes/Tables/WeeklyHabit.dart';
+import 'package:diplomska1/Classes/Tables/WeeklyTask.dart';
 
 final String weeksTable = 'weeks';
 
@@ -18,7 +18,6 @@ class Week {
   DateTime endDate;
   late List<WeeklyHabit> habits;
   late List<WeeklyTask> tasks;
-
 
   Week({
     this.id,

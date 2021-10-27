@@ -1,10 +1,10 @@
 import 'package:diplomska1/Classes/DatabaseHelper.dart';
 import 'package:diplomska1/Classes/Enums.dart';
-import 'package:diplomska1/Classes/Goal.dart';
-import 'package:diplomska1/Classes/Task.dart';
+import 'package:diplomska1/Classes/Tables/Goal.dart';
+import 'package:diplomska1/Classes/Tables/Task.dart';
 import 'package:diplomska1/Widgets/Dialogs/AddOrSelectDialog.dart';
 import 'package:diplomska1/Widgets/Dialogs/EditDialog.dart';
-import 'package:diplomska1/Widgets/EmptyState.dart';
+import 'package:diplomska1/Widgets/Shared%20widgets/EmptyState.dart';
 import 'package:diplomska1/Widgets/Task%20widgets/TaskCard.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +14,9 @@ class GoalDetails extends StatefulWidget {
   final int goalId;
   final Function refreshParent;
 
-  const GoalDetails({Key? key, required this.goalId, required this.refreshParent}) : super(key: key);
+  const GoalDetails(
+      {Key? key, required this.goalId, required this.refreshParent})
+      : super(key: key);
 
   @override
   _GoalDetailsState createState() => _GoalDetailsState();
@@ -27,7 +29,8 @@ class _GoalDetailsState extends State<GoalDetails> {
   int tasksBenefit = 0;
   final Key centerKey = ValueKey('second-sliver-list');
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
-  GlobalKey<RefreshIndicatorState> refreshState = GlobalKey<RefreshIndicatorState>();
+  GlobalKey<RefreshIndicatorState> refreshState =
+      GlobalKey<RefreshIndicatorState>();
 
   @override
   void initState() {
@@ -231,7 +234,9 @@ class _GoalDetailsState extends State<GoalDetails> {
                                   itemBuilder: (context, index) {
                                     final task = goal!.tasks[index];
                                     return Container(
-                                      margin: index == goal!.tasks.length - 1 ? EdgeInsets.only(bottom: 50) : EdgeInsets.only(bottom: 0),
+                                      margin: index == goal!.tasks.length - 1
+                                          ? EdgeInsets.only(bottom: 50)
+                                          : EdgeInsets.only(bottom: 0),
                                       child: TaskCard(
                                         task: task,
                                         tapFunction: () {
@@ -242,7 +247,9 @@ class _GoalDetailsState extends State<GoalDetails> {
                                     );
                                   })
                               : ListView(children: [
-                                  EmptyState(text: "No tasks associated with this goal.\nClick the button below to add some"),
+                                  EmptyState(
+                                      text:
+                                          "No tasks associated with this goal.\nClick the button below to add some"),
                                 ]),
                         ),
                       ),

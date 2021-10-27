@@ -1,5 +1,5 @@
 import 'package:diplomska1/Classes/DatabaseHelper.dart';
-import 'package:diplomska1/Classes/Goal.dart';
+import 'package:diplomska1/Classes/Tables/Goal.dart';
 import 'package:flutter/material.dart';
 
 import 'AddOrSelectDialog.dart';
@@ -10,10 +10,17 @@ class AddOrEditGoalDialog extends StatefulWidget {
   final Function refreshParent;
   final AddEditItemController controller;
 
-  const AddOrEditGoalDialog({Key? key, this.weekId, required this.refreshParent, required this.controller, this.goalId}) : super(key: key);
+  const AddOrEditGoalDialog(
+      {Key? key,
+      this.weekId,
+      required this.refreshParent,
+      required this.controller,
+      this.goalId})
+      : super(key: key);
 
   @override
-  _AddOrEditGoalDialogState createState() => _AddOrEditGoalDialogState(controller);
+  _AddOrEditGoalDialogState createState() =>
+      _AddOrEditGoalDialogState(controller);
 }
 
 class _AddOrEditGoalDialogState extends State<AddOrEditGoalDialog> {

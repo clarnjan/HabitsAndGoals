@@ -1,9 +1,15 @@
-import 'package:diplomska1/Classes/Task.dart';
+import 'package:diplomska1/Classes/Tables/Task.dart';
 
 final String goalsTable = 'goals';
 
 class GoalFields {
-  static final List<String> values = [id, title, description, isFinished, createdTime];
+  static final List<String> values = [
+    id,
+    title,
+    description,
+    isFinished,
+    createdTime
+  ];
   static final String id = '_id';
   static final String title = 'title';
   static final String description = 'description';

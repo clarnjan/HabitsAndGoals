@@ -1,6 +1,6 @@
 import 'package:diplomska1/Classes/DatabaseHelper.dart';
-import 'package:diplomska1/Classes/Habit.dart';
-import 'package:diplomska1/Classes/WeeklyHabit.dart';
+import 'package:diplomska1/Classes/Tables/Habit.dart';
+import 'package:diplomska1/Classes/Tables/WeeklyHabit.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -10,7 +10,11 @@ class HabitCard extends StatefulWidget {
   final Function tapFunction;
   final Function checkBoxChanged;
 
-  HabitCard({required this.habit, required this.weeklyHabit, required this.tapFunction, required this.checkBoxChanged});
+  HabitCard(
+      {required this.habit,
+      required this.weeklyHabit,
+      required this.tapFunction,
+      required this.checkBoxChanged});
 
   @override
   _HabitCardState createState() => _HabitCardState();
@@ -30,7 +34,8 @@ class _HabitCardState extends State<HabitCard> {
       } else {
         widget.weeklyHabit.repetitionsDone--;
       }
-      widget.checkBoxChanged(widget.weeklyHabit.days[index], widget.habit.effortSingle, widget.habit.benefitSingle);
+      widget.checkBoxChanged(widget.weeklyHabit.days[index],
+          widget.habit.effortSingle, widget.habit.benefitSingle);
     });
     await DatabaseHelper.instance.updateWeeklyHabit(widget.weeklyHabit);
   }
@@ -82,9 +87,13 @@ class _HabitCardState extends State<HabitCard> {
                           padding: const EdgeInsets.all(2.0),
                           child: Container(
                             decoration: BoxDecoration(
-                              color: widget.weeklyHabit.days[i] ? Colors.green.shade700 : Colors.transparent,
+                              color: widget.weeklyHabit.days[i]
+                                  ? Colors.green.shade700
+                                  : Colors.transparent,
                               border: Border.all(
-                                color: widget.weeklyHabit.days[i] ? Colors.green.shade700 : Colors.white,
+                                color: widget.weeklyHabit.days[i]
+                                    ? Colors.green.shade700
+                                    : Colors.white,
                                 width: 1,
                               ),
                               borderRadius: BorderRadius.circular(6),

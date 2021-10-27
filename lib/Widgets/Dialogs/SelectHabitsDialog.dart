@@ -1,14 +1,16 @@
-import 'package:diplomska1/Classes/Habit.dart';
+import 'package:diplomska1/Classes/Tables/Habit.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../ClickableCard.dart';
+import '../Shared widgets/ClickableCard.dart';
 
 class SelectHabitsDialog extends StatefulWidget {
   final List<Habit> habits;
   final Function selectHabit;
 
-  const SelectHabitsDialog({Key? key, required this.selectHabit, required this.habits}) : super(key: key);
+  const SelectHabitsDialog(
+      {Key? key, required this.selectHabit, required this.habits})
+      : super(key: key);
 
   @override
   _SelectHabitsDialogState createState() => _SelectHabitsDialogState();
@@ -27,7 +29,8 @@ class _SelectHabitsDialogState extends State<SelectHabitsDialog> {
                 child: ClickableCard(
                   isSelectable: true,
                   title: habit.title,
-                  effortAndBenefit: "${habit.effortSingle * habit.repetitions} - ${habit.benefitSingle * habit.repetitions}",
+                  effortAndBenefit:
+                      "${habit.effortSingle * habit.repetitions} - ${habit.benefitSingle * habit.repetitions}",
                   tapFunction: () {
                     widget.selectHabit(habit);
                   },

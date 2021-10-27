@@ -1,15 +1,15 @@
 import 'package:diplomska1/Classes/DatabaseHelper.dart';
 import 'package:diplomska1/Classes/Enums.dart';
-import 'package:diplomska1/Classes/Goal.dart';
-import 'package:diplomska1/Classes/Habit.dart';
-import 'package:diplomska1/Classes/Task.dart';
+import 'package:diplomska1/Classes/Tables/Goal.dart';
+import 'package:diplomska1/Classes/Tables/Habit.dart';
+import 'package:diplomska1/Classes/Tables/Task.dart';
 import 'package:diplomska1/Widgets/Dialogs/AddOrEditGoalDialog.dart';
 import 'package:diplomska1/Widgets/Dialogs/AddOrEditHabitDialog.dart';
 import 'package:diplomska1/Widgets/Dialogs/AddOrEditTaskDialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../DialogButtons.dart';
+import '../Shared widgets/DialogButtons.dart';
 import 'AddOrSelectDialog.dart';
 
 class EditDialog extends StatefulWidget {
@@ -18,7 +18,12 @@ class EditDialog extends StatefulWidget {
   final Function afterDelete;
   final NoteType noteType;
 
-  const EditDialog({Key? key, required this.itemId, required this.refreshParent, required this.noteType, required this.afterDelete})
+  const EditDialog(
+      {Key? key,
+      required this.itemId,
+      required this.refreshParent,
+      required this.noteType,
+      required this.afterDelete})
       : super(key: key);
 
   @override
@@ -156,7 +161,8 @@ class _EditDialogState extends State<EditDialog> {
               ),
             ),
             titlePadding: EdgeInsets.fromLTRB(10, 10, 10, 0),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(10))),
             contentPadding: EdgeInsets.fromLTRB(10, 0, 10, 0),
             backgroundColor: Colors.grey[800],
             content: !isLoading
@@ -194,7 +200,8 @@ class _EditDialogState extends State<EditDialog> {
               style: TextStyle(color: Colors.white),
             ),
             titlePadding: EdgeInsets.all(10),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(10))),
             contentPadding: EdgeInsets.fromLTRB(10, 10, 10, 0),
             backgroundColor: Colors.grey[800],
             content: Container(

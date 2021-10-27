@@ -1,15 +1,15 @@
 import 'package:diplomska1/Classes/DatabaseHelper.dart';
 import 'package:diplomska1/Classes/Enums.dart';
-import 'package:diplomska1/Classes/Task.dart';
-import 'package:diplomska1/Widgets/ClickableCard.dart';
+import 'package:diplomska1/Classes/Tables/Task.dart';
 import 'package:diplomska1/Widgets/Dialogs/AddOrSelectDialog.dart';
 import 'package:diplomska1/Widgets/Dialogs/EditDialog.dart';
+import 'package:diplomska1/Widgets/Shared%20widgets/ClickableCard.dart';
 import 'package:diplomska1/Widgets/Task%20widgets/TaskCard.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../EmptyState.dart';
 import '../MainMenu.dart';
+import '../Shared widgets/EmptyState.dart';
 
 class TaskList extends StatefulWidget {
   const TaskList({Key? key}) : super(key: key);
@@ -24,7 +24,8 @@ class _TaskListState extends State<TaskList> {
   bool isLoading = true;
   final Key centerKey = ValueKey('second-sliver-list');
   final ScrollController scrollController = ScrollController();
-  GlobalKey<RefreshIndicatorState> refreshState = GlobalKey<RefreshIndicatorState>();
+  GlobalKey<RefreshIndicatorState> refreshState =
+      GlobalKey<RefreshIndicatorState>();
 
   @override
   void initState() {
@@ -95,14 +96,17 @@ class _TaskListState extends State<TaskList> {
               child: oneTimeTasks.length > 0 || repeatingTasks.length > 0
                   ? CustomScrollView(
                       controller: scrollController,
-                      physics: ScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+                      physics: ScrollPhysics(
+                          parent: AlwaysScrollableScrollPhysics()),
                       shrinkWrap: true,
                       slivers: <Widget>[
                         if (oneTimeTasks.length > 0)
                           SliverList(
-                              delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
+                              delegate: SliverChildBuilderDelegate(
+                                  (BuildContext context, int index) {
                             return Container(
-                              padding: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 5),
                               child: Text(
                                 "One time tasks:",
                                 style: TextStyle(
@@ -117,7 +121,10 @@ class _TaskListState extends State<TaskList> {
                             (BuildContext context, int index) {
                               return Container(
                                 margin: EdgeInsets.only(
-                                  bottom: oneTimeTasks.isNotEmpty || index < oneTimeTasks.length - 1 ? 0 : 70,
+                                  bottom: oneTimeTasks.isNotEmpty ||
+                                          index < oneTimeTasks.length - 1
+                                      ? 0
+                                      : 70,
                                 ),
                                 child: TaskCard(
                                   task: oneTimeTasks[index],
@@ -132,9 +139,11 @@ class _TaskListState extends State<TaskList> {
                         ),
                         if (repeatingTasks.length > 0)
                           SliverList(
-                              delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
+                              delegate: SliverChildBuilderDelegate(
+                                  (BuildContext context, int index) {
                             return Container(
-                              padding: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 5),
                               child: Text(
                                 "Repeating tasks:",
                                 style: TextStyle(
@@ -149,12 +158,15 @@ class _TaskListState extends State<TaskList> {
                             (BuildContext context, int index) {
                               return Container(
                                 margin: EdgeInsets.only(
-                                  bottom: index < repeatingTasks.length - 1 ? 0 : 70,
+                                  bottom: index < repeatingTasks.length - 1
+                                      ? 0
+                                      : 70,
                                 ),
                                 child: ClickableCard(
                                   title: repeatingTasks[index].title,
                                   isSelectable: false,
-                                  effortAndBenefit: "${repeatingTasks[index].effort} - ${repeatingTasks[index].benefit}",
+                                  effortAndBenefit:
+                                      "${repeatingTasks[index].effort} - ${repeatingTasks[index].benefit}",
                                   tapFunction: () {
                                     cardTapFunction(repeatingTasks[index].id!);
                                   },
@@ -168,7 +180,9 @@ class _TaskListState extends State<TaskList> {
                     )
                   : ListView(
                       children: [
-                        EmptyState(text: "No tasks added.\nClick the button below to add some"),
+                        EmptyState(
+                            text:
+                                "No tasks added.\nClick the button below to add some"),
                       ],
                     ),
             ),

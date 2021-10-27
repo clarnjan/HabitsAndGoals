@@ -1,14 +1,16 @@
-import 'package:diplomska1/Classes/Task.dart';
+import 'package:diplomska1/Classes/Tables/Task.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../ClickableCard.dart';
+import '../Shared widgets/ClickableCard.dart';
 
 class SelectTasksDialog extends StatefulWidget {
   final List<Task> tasks;
   final Function selectTask;
 
-  const SelectTasksDialog({Key? key, required this.selectTask, required this.tasks}) : super(key: key);
+  const SelectTasksDialog(
+      {Key? key, required this.selectTask, required this.tasks})
+      : super(key: key);
 
   @override
   _SelectTasksDialogState createState() => _SelectTasksDialogState();

@@ -1,7 +1,7 @@
 import 'package:diplomska1/Classes/DatabaseHelper.dart';
 import 'package:diplomska1/Classes/DateService.dart';
-import 'package:diplomska1/Classes/Task.dart';
-import 'package:diplomska1/Classes/WeeklyTask.dart';
+import 'package:diplomska1/Classes/Tables/Task.dart';
+import 'package:diplomska1/Classes/Tables/WeeklyTask.dart';
 import 'package:diplomska1/main.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -20,11 +20,18 @@ class AddOrEditTaskDialog extends StatefulWidget {
   final Function refreshParent;
   final AddEditItemController controller;
 
-  const AddOrEditTaskDialog({Key? key, this.weekId, required this.refreshParent, required this.controller, this.goalId, this.taskId})
+  const AddOrEditTaskDialog(
+      {Key? key,
+      this.weekId,
+      required this.refreshParent,
+      required this.controller,
+      this.goalId,
+      this.taskId})
       : super(key: key);
 
   @override
-  _AddOrEditTaskDialogState createState() => _AddOrEditTaskDialogState(controller);
+  _AddOrEditTaskDialogState createState() =>
+      _AddOrEditTaskDialogState(controller);
 }
 
 class _AddOrEditTaskDialogState extends State<AddOrEditTaskDialog> {
@@ -75,7 +82,8 @@ class _AddOrEditTaskDialogState extends State<AddOrEditTaskDialog> {
         //displayNotification();
       }
       if (widget.weekId != null && task.id != null) {
-        WeeklyTask weeklyTask = new WeeklyTask(taskFK: task.id!, weekFK: widget.weekId!, isFinished: false);
+        WeeklyTask weeklyTask = new WeeklyTask(
+            taskFK: task.id!, weekFK: widget.weekId!, isFinished: false);
         await DatabaseHelper.instance.createWeeklyTask(weeklyTask);
       }
       await widget.refreshParent();
@@ -91,20 +99,27 @@ class _AddOrEditTaskDialogState extends State<AddOrEditTaskDialog> {
         tz.TZDateTime.from(task.reminderTime!, tz.local),
         NotificationDetails(
             android: AndroidNotificationDetails('channel id', 'channel body'),
-            iOS: IOSNotificationDetails(presentAlert: true, presentBadge: true, presentSound: true)),
-        uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
+            iOS: IOSNotificationDetails(
+                presentAlert: true, presentBadge: true, presentSound: true)),
+        uiLocalNotificationDateInterpretation:
+            UILocalNotificationDateInterpretation.absoluteTime,
         androidAllowWhileIdle: true);
   }
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
-        context: context, initialDate: DateTime.now(), firstDate: DateTime.now(), lastDate: DateTime.now().add(Duration(days: 365)));
+        context: context,
+        initialDate: DateTime.now(),
+        firstDate: DateTime.now(),
+        lastDate: DateTime.now().add(Duration(days: 365)));
     if (picked != null) {
       final initialTime = TimeOfDay(hour: 9, minute: 0);
-      final time = await showTimePicker(context: context, initialTime: initialTime);
+      final time =
+          await showTimePicker(context: context, initialTime: initialTime);
       if (time != null) {
         setState(() {
-          task.reminderTime = picked.add(Duration(hours: time.hour, minutes: time.minute));
+          task.reminderTime =
+              picked.add(Duration(hours: time.hour, minutes: time.minute));
         });
       }
     }
@@ -174,7 +189,8 @@ class _AddOrEditTaskDialogState extends State<AddOrEditTaskDialog> {
                         Tooltip(
                           preferBelow: false,
                           showDuration: Duration(seconds: 5),
-                          message: "The effort you need to put in to complete this task",
+                          message:
+                              "The effort you need to put in to complete this task",
                           textStyle: TextStyle(color: Colors.lightGreenAccent),
                           padding: EdgeInsets.all(7),
                           child: Icon(
@@ -190,8 +206,9 @@ class _AddOrEditTaskDialogState extends State<AddOrEditTaskDialog> {
                       child: NumberPicker(
                         value: task.effort,
                         minValue: 0,
-                        maxValue: 99,
-                        onChanged: (value) => setState(() => task.effort = value),
+                        maxValue: 10,
+                        onChanged: (value) =>
+                            setState(() => task.effort = value),
                         itemWidth: 40,
                         itemHeight: 30,
                         axis: Axis.horizontal,
@@ -221,7 +238,8 @@ class _AddOrEditTaskDialogState extends State<AddOrEditTaskDialog> {
                         Tooltip(
                           preferBelow: false,
                           showDuration: Duration(seconds: 5),
-                          message: "The benefit you get after completing this task",
+                          message:
+                              "The benefit you get after completing this task",
                           textStyle: TextStyle(color: Colors.lightGreenAccent),
                           padding: EdgeInsets.all(7),
                           child: Icon(
@@ -236,8 +254,9 @@ class _AddOrEditTaskDialogState extends State<AddOrEditTaskDialog> {
                     NumberPicker(
                       value: task.benefit,
                       minValue: 0,
-                      maxValue: 99,
-                      onChanged: (value) => setState(() => task.benefit = value),
+                      maxValue: 10,
+                      onChanged: (value) =>
+                          setState(() => task.benefit = value),
                       itemWidth: 40,
                       itemHeight: 30,
                       axis: Axis.horizontal,
@@ -297,7 +316,8 @@ class _AddOrEditTaskDialogState extends State<AddOrEditTaskDialog> {
                                   task.isRepeating = value;
                                 });
                               } else {
-                                final dynamic tooltip = repetitionTooltipKey.currentState;
+                                final dynamic tooltip =
+                                    repetitionTooltipKey.currentState;
                                 tooltip.ensureTooltipVisible();
                               }
                             },
@@ -307,8 +327,9 @@ class _AddOrEditTaskDialogState extends State<AddOrEditTaskDialog> {
                           key: repetitionTooltipKey,
                           preferBelow: false,
                           showDuration: Duration(seconds: 3),
-                          message:
-                              widget.goalId == null ? "Cannot change task's reoccurring value" : "Cannot add a reoccurring task to a goal",
+                          message: widget.goalId == null
+                              ? "Cannot change task's reoccurring value"
+                              : "Cannot add a reoccurring task to a goal",
                           textStyle: TextStyle(color: Colors.lightGreenAccent),
                           padding: EdgeInsets.all(7),
                           child: Icon(
@@ -337,7 +358,10 @@ class _AddOrEditTaskDialogState extends State<AddOrEditTaskDialog> {
                         alignment: Alignment.centerRight,
                         child: TextButton(
                           onPressed: () => _selectDate(context),
-                          child: Text(task.reminderTime != null ? DateService.formatDateAndTime(task.reminderTime!) : "Add a reminder"),
+                          child: Text(task.reminderTime != null
+                              ? DateService.formatDateAndTime(
+                                  task.reminderTime!)
+                              : "Add a reminder"),
                         ),
                       )
                     ],

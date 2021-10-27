@@ -1,5 +1,5 @@
 import 'package:diplomska1/Classes/DateService.dart';
-import 'package:diplomska1/Classes/Week.dart';
+import 'package:diplomska1/Classes/Tables/Week.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -20,7 +20,10 @@ class _WeekCardState extends State<WeekCard> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => WeekDetails(initialWeek: widget.week)));
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (context) => WeekDetails(initialWeek: widget.week)));
       },
       child: Container(
         width: double.infinity,

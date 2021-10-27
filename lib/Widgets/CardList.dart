@@ -4,11 +4,11 @@ import 'package:diplomska1/Widgets/Dialogs/EditDialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'ClickableCard.dart';
 import 'Dialogs/AddOrSelectDialog.dart';
-import 'EmptyState.dart';
 import 'Goal widgets/GoalDetails.dart';
 import 'MainMenu.dart';
+import 'Shared widgets/ClickableCard.dart';
+import 'Shared widgets/EmptyState.dart';
 import 'Task widgets/TaskList.dart';
 
 class CardList extends StatefulWidget {
@@ -25,7 +25,8 @@ class _CardListState extends State<CardList> {
   bool isLoading = true;
   String appBarTitle = "Loading";
   late FloatingButtonType floatingButtonType;
-  GlobalKey<RefreshIndicatorState> refreshState = GlobalKey<RefreshIndicatorState>();
+  GlobalKey<RefreshIndicatorState> refreshState =
+      GlobalKey<RefreshIndicatorState>();
 
   @override
   void initState() {
@@ -66,7 +67,8 @@ class _CardListState extends State<CardList> {
         return ClickableCard(
           title: item.title,
           isSelectable: false,
-          effortAndBenefit: "${item.effortSingle * item.repetitions} - ${item.benefitSingle * item.repetitions}",
+          effortAndBenefit:
+              "${item.effortSingle * item.repetitions} - ${item.benefitSingle * item.repetitions}",
           tapFunction: () {
             cardTapFunction(item.id!);
           },
@@ -165,7 +167,9 @@ class _CardListState extends State<CardList> {
                                 itemBuilder: (context, index) {
                                   final item = items[index];
                                   return Container(
-                                    margin: index == items.length - 1 ? EdgeInsets.only(bottom: 50) : EdgeInsets.only(bottom: 0),
+                                    margin: index == items.length - 1
+                                        ? EdgeInsets.only(bottom: 50)
+                                        : EdgeInsets.only(bottom: 0),
                                     child: getCard(item),
                                   );
                                 })
