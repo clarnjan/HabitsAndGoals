@@ -210,7 +210,7 @@ class _WeekDetailsState extends State<WeekDetails> {
               width: double.infinity,
               padding: EdgeInsets.all(5),
               child: Flex(direction: Axis.vertical, children: [
-                week == null
+                isLoading || week == null
                     ? Expanded(
                         child: Center(
                           child: CircularProgressIndicator(),

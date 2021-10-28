@@ -121,7 +121,7 @@ class _TaskListState extends State<TaskList> {
                             (BuildContext context, int index) {
                               return Container(
                                 margin: EdgeInsets.only(
-                                  bottom: oneTimeTasks.isNotEmpty ||
+                                  bottom: repeatingTasks.isNotEmpty ||
                                           index < oneTimeTasks.length - 1
                                       ? 0
                                       : 70,
