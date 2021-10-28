@@ -7,8 +7,11 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'Widgets/CardList.dart';
 import 'Widgets/Task widgets/TaskList.dart';
 
-FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+//Декларирање на променлива за праќање норификации
+FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    FlutterLocalNotificationsPlugin();
 
+//Подесуцање на норификациите
 void initializeSettings() async {
   WidgetsFlutterBinding.ensureInitialized();
   var initializeAndroid = AndroidInitializationSettings("res_app_icon");
@@ -16,11 +19,14 @@ void initializeSettings() async {
       requestAlertPermission: true,
       requestBadgePermission: true,
       requestSoundPermission: true,
-      onDidReceiveLocalNotification: (int id, String? title, String? body, String? payload) async {});
-  var initializationSettings = InitializationSettings(android: initializeAndroid, iOS: initializeIOS);
+      onDidReceiveLocalNotification:
+          (int id, String? title, String? body, String? payload) async {});
+  var initializationSettings =
+      InitializationSettings(android: initializeAndroid, iOS: initializeIOS);
   await flutterLocalNotificationsPlugin.initialize(initializationSettings);
 }
 
+//Главната програма
 void main() {
   initializeSettings();
   runApp(MyApp());

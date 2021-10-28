@@ -1,5 +1,7 @@
+//Име на табелата
 final String tasksTable = 'tasks';
 
+//Помошна класа со статични променливи за имињата на колоните
 class TaskFields {
   static final List<String> values = [
     id,
@@ -27,6 +29,7 @@ class TaskFields {
   static final String reminderTime = 'reminderTime';
 }
 
+//Класа која ја претставува табелата Tasks
 class Task {
   int? id;
   int? goalFK;
@@ -65,7 +68,8 @@ class Task {
         TaskFields.isRepeating: isRepeating ? 1 : 0,
         TaskFields.isFinished: isFinished ? 1 : 0,
         TaskFields.createdTime: createdTime!.toIso8601String(),
-        TaskFields.reminderTime: reminderTime != null ? reminderTime!.toIso8601String() : null,
+        TaskFields.reminderTime:
+            reminderTime != null ? reminderTime!.toIso8601String() : null,
       };
 
   Task copy({
@@ -106,6 +110,8 @@ class Task {
         isRepeating: json[TaskFields.isRepeating] == 1,
         isFinished: json[TaskFields.isFinished] == 1,
         createdTime: DateTime.parse(json[TaskFields.createdTime] as String),
-        reminderTime: json[TaskFields.reminderTime] != null ? DateTime.parse(json[TaskFields.reminderTime] as String) : null,
+        reminderTime: json[TaskFields.reminderTime] != null
+            ? DateTime.parse(json[TaskFields.reminderTime] as String)
+            : null,
       );
 }

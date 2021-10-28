@@ -13,6 +13,7 @@ import 'package:timezone/timezone.dart' as tz;
 
 import 'AddOrSelectDialog.dart';
 
+//Дијалог за додавање и едитирање на задача
 class AddOrEditTaskDialog extends StatefulWidget {
   final int? weekId;
   final int? goalId;
@@ -50,6 +51,7 @@ class _AddOrEditTaskDialogState extends State<AddOrEditTaskDialog> {
     fetchData();
   }
 
+  //Земање на иницијални податоци од базата
   fetchData() async {
     setState(() {
       isLoading = true;
@@ -65,6 +67,7 @@ class _AddOrEditTaskDialogState extends State<AddOrEditTaskDialog> {
     });
   }
 
+  //Клик на копчето Save
   onSave() async {
     if (formKey.currentState!.validate()) {
       task.createdTime = DateTime.now();
@@ -79,7 +82,7 @@ class _AddOrEditTaskDialogState extends State<AddOrEditTaskDialog> {
         task = await DatabaseHelper.instance.createTask(task);
       }
       if (task.reminderTime != null && task.id != null) {
-        //displayNotification();
+        displayNotification();
       }
       if (widget.weekId != null && task.id != null) {
         WeeklyTask weeklyTask = new WeeklyTask(

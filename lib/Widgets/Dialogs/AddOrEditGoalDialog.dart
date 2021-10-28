@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'AddOrSelectDialog.dart';
 
+//Дијалог за додавање и едитирање на цел
 class AddOrEditGoalDialog extends StatefulWidget {
   final int? weekId;
   final int? goalId;
@@ -37,6 +38,7 @@ class _AddOrEditGoalDialogState extends State<AddOrEditGoalDialog> {
     fetchData();
   }
 
+  //Земање на иницијални податоци од базата
   fetchData() async {
     setState(() {
       isLoading = true;
@@ -51,6 +53,7 @@ class _AddOrEditGoalDialogState extends State<AddOrEditGoalDialog> {
     });
   }
 
+  //Клик на копчето Save
   onSave() async {
     if (formKey.currentState!.validate()) {
       goal.createdTime = DateTime.now();

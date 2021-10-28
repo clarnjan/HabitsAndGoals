@@ -11,6 +11,7 @@ import 'package:sqflite/sqflite.dart';
 import 'Tables/Task.dart';
 
 class DatabaseHelper {
+  //Помошна класа која содржи методи за манипулација со базата на податоци
   static final DatabaseHelper instance = DatabaseHelper._init();
 
   static Database? _database;
@@ -23,12 +24,14 @@ class DatabaseHelper {
     return _database!;
   }
 
+  //Иницијализација на базата
   Future<Database> _initDB(String filePath) async {
     final dbPath = await getDatabasesPath();
     final path = join(dbPath, filePath);
     return await openDatabase(path, version: 1, onCreate: _createDB);
   }
 
+  //Креирање на табелите во базата
   Future _createDB(Database db, int version) async {
     Batch batch = db.batch();
     batch.execute('''
@@ -110,35 +113,34 @@ class DatabaseHelper {
     return result;
   }
 
+  //Затворање на инстанцата
   Future close() async {
     final db = await instance.database;
     db.close();
   }
 
-  Future<List<Week>> getAllWeeks() async {
-    final db = await instance.database;
-    final result = await db.query(weeksTable);
-    return result.map((json) => Week.fromJson(json)).toList();
-  }
-
+  //Метод кој ги враќа сите креирани навики
   Future<List<Habit>> getAllHabits() async {
     final db = await instance.database;
     final result = await db.query(habitsTable);
     return result.map((json) => Habit.fromJson(json)).toList();
   }
 
+  //Метод кој ги враќа сите креирани задачи
   Future<List<Task>> getAllTasks() async {
     final db = await instance.database;
     final result = await db.query(tasksTable);
     return result.map((json) => Task.fromJson(json)).toList();
   }
 
+  //Метод кој ги враќа сите креирани цели
   Future<List<Goal>> getAllGoals() async {
     final db = await instance.database;
     final result = await db.query(goalsTable);
     return result.map((json) => Goal.fromJson(json)).toList();
   }
 
+  //Метод кој ја враќа неделата со дадено id
   Future<Week> getWeek(int id) async {
     final db = await instance.database;
     final result = await db.query(weeksTable,
@@ -155,6 +157,7 @@ class DatabaseHelper {
     }
   }
 
+  //Метод кој ја враќа неделата според почетниот датум
   Future<Week> getWeekByStartDate(DateTime startDate) async {
     final db = await instance.database;
     final result = await db.query(weeksTable, columns: WeekFields.values);
@@ -185,6 +188,7 @@ class DatabaseHelper {
     throw Exception("Error occurred");
   }
 
+  //Метод кој ја враќа тековната недела
   Future<Week> getCurrentWeek() async {
     DateTime today = DateTime.now();
     DateTime startDate =
@@ -192,6 +196,7 @@ class DatabaseHelper {
     return await getWeekByStartDate(startDate);
   }
 
+  //Метод кој ги враќа сите weekly habits креирани во дадената недела
   Future<List<WeeklyHabit>> getWeeklyHabitsForWeek(int weekId) async {
     final db = await instance.database;
     final result = await db.query(weeklyHabitsTable,
@@ -201,6 +206,7 @@ class DatabaseHelper {
     return result.map((json) => WeeklyHabit.fromJson(json)).toList();
   }
 
+  //Метод кој ги враќа сите weekly habits креирани за дадена навика
   Future<List<WeeklyHabit>> getWeeklyHabitsForHabit(int habitId) async {
     final db = await instance.database;
     final result = await db.query(weeklyHabitsTable,
@@ -210,6 +216,7 @@ class DatabaseHelper {
     return result.map((json) => WeeklyHabit.fromJson(json)).toList();
   }
 
+  //Метод кој ги враќа сите weekly tasks креирани во дадената недела
   Future<List<WeeklyTask>> getWeeklyTasksForWeek(int weekId) async {
     final db = await instance.database;
     final result = await db.query(weeklyTasksTable,
@@ -219,6 +226,7 @@ class DatabaseHelper {
     return result.map((json) => WeeklyTask.fromJson(json)).toList();
   }
 
+  //Метод кој ги враќа сите задачи во дадената цел
   Future<List<Task>> getTasksForGoal(int goalId) async {
     final db = await instance.database;
     final result = await db.query(tasksTable,
@@ -228,6 +236,7 @@ class DatabaseHelper {
     return result.map((json) => Task.fromJson(json)).toList();
   }
 
+  //Метод кој ја враќа навиката според id
   Future<Habit> getHabit(int id) async {
     final db = await instance.database;
     final result = await db.query(habitsTable,
@@ -241,6 +250,7 @@ class DatabaseHelper {
     }
   }
 
+  //Метод кој ја враќа задачата според id
   Future<Task> getTask(int id) async {
     final db = await instance.database;
     final result = await db.query(tasksTable,
@@ -254,6 +264,7 @@ class DatabaseHelper {
     }
   }
 
+  //Метод кој ја целта навиката според id
   Future<Goal> getGoal(int id) async {
     final db = await instance.database;
     final result = await db.query(goalsTable,
@@ -269,6 +280,7 @@ class DatabaseHelper {
     }
   }
 
+  //Метод кој ја враќа weekly habit за дадена недела и навика
   Future<WeeklyHabit> getWeeklyHabit(int weekId, int habitId) async {
     final db = await instance.database;
     final result = await db.query(weeklyHabitsTable,
@@ -283,6 +295,7 @@ class DatabaseHelper {
     }
   }
 
+  //Метод кој ја враќа weekly task за дадена недела и задача
   Future<WeeklyTask> getWeeklyTask(int weekId, int taskId) async {
     final db = await instance.database;
     final result = await db.query(weeklyTasksTable,
@@ -297,6 +310,7 @@ class DatabaseHelper {
     }
   }
 
+  //Креирање недела
   Future<Week> createWeek(Week week) async {
     final db = await instance.database;
     final id = await db.insert(weeksTable, week.toJson());
@@ -304,54 +318,63 @@ class DatabaseHelper {
     return week.copy(id: id);
   }
 
+  //Креирање навика
   Future<Habit> createHabit(Habit habit) async {
     final db = await instance.database;
     final id = await db.insert(habitsTable, habit.toJson());
     return habit.copy(id: id);
   }
 
+  //Креирање задача
   Future<Task> createTask(Task task) async {
     final db = await instance.database;
     final id = await db.insert(tasksTable, task.toJson());
     return task.copy(id: id);
   }
 
+  //Креирање цел
   Future<Goal> createGoal(Goal goal) async {
     final db = await instance.database;
     final id = await db.insert(goalsTable, goal.toJson());
     return goal.copy(id: id);
   }
 
+  //Креирање weekly habit
   Future<WeeklyHabit> createWeeklyHabit(WeeklyHabit weeklyHabit) async {
     final db = await instance.database;
     final id = await db.insert(weeklyHabitsTable, weeklyHabit.toJson());
     return weeklyHabit.copy(id: id);
   }
 
+  //Креирање weekly task
   Future<WeeklyTask> createWeeklyTask(WeeklyTask weeklyTask) async {
     final db = await instance.database;
     final id = await db.insert(weeklyTasksTable, weeklyTask.toJson());
     return weeklyTask.copy(id: id);
   }
 
-  Future<int> updateTask(Task task) async {
-    final db = await instance.database;
-    return db.update(tasksTable, task.toJson(),
-        where: '${TaskFields.id} = ?', whereArgs: [task.id]);
-  }
-
+  //Ажурирање на навика
   Future<int> updateHabit(Habit habit) async {
     final db = await instance.database;
     return db.update(habitsTable, habit.toJson(),
         where: '${HabitFields.id} = ?', whereArgs: [habit.id]);
   }
 
+  //Ажурирање на задача
+  Future<int> updateTask(Task task) async {
+    final db = await instance.database;
+    return db.update(tasksTable, task.toJson(),
+        where: '${TaskFields.id} = ?', whereArgs: [task.id]);
+  }
+
+  //Ажурирање на цел
   Future<int> updateGoal(Goal goal) async {
     final db = await instance.database;
     return db.update(goalsTable, goal.toJson(),
         where: '${GoalFields.id} = ?', whereArgs: [goal.id]);
   }
 
+  //Бришење на навика
   Future<int> deleteHabit(int id) async {
     final db = await instance.database;
     await db.execute("PRAGMA foreign_keys = ON;");
@@ -359,6 +382,7 @@ class DatabaseHelper {
         .delete(habitsTable, where: '${HabitFields.id} = ?', whereArgs: [id]);
   }
 
+  //Бришење на задача
   Future<int> deleteTask(int id) async {
     final db = await instance.database;
     await db.execute("PRAGMA foreign_keys = ON;");
@@ -366,6 +390,7 @@ class DatabaseHelper {
         .delete(tasksTable, where: '${TaskFields.id} = ?', whereArgs: [id]);
   }
 
+  //Бришење на цел
   Future<int> deleteGoal(int id) async {
     final db = await instance.database;
     await db.execute("PRAGMA foreign_keys = ON;");
@@ -373,12 +398,14 @@ class DatabaseHelper {
         .delete(goalsTable, where: '${GoalFields.id} = ?', whereArgs: [id]);
   }
 
+  //Ажурирање на weekly habit
   Future<int> updateWeeklyHabit(WeeklyHabit weeklyHabit) async {
     final db = await instance.database;
     return db.update(weeklyHabitsTable, weeklyHabit.toJson(),
         where: '${WeeklyHabitFields.id} = ?', whereArgs: [weeklyHabit.id]);
   }
 
+  //Ажурирање на weekly task
   Future<int> updateWeeklyTask(WeeklyTask weeklyTask) async {
     final db = await instance.database;
     return db.update(weeklyTasksTable, weeklyTask.toJson(),

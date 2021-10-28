@@ -1,7 +1,9 @@
 import 'package:diplomska1/Classes/Tables/Task.dart';
 
+//Име на табелата
 final String goalsTable = 'goals';
 
+//Помошна класа со статични променливи за имињата на колоните
 class GoalFields {
   static final List<String> values = [
     id,
@@ -17,6 +19,7 @@ class GoalFields {
   static final String createdTime = 'createdTime';
 }
 
+//Класа која ја претставува табелата Goals
 class Goal {
   int? id;
   String title;

@@ -49,6 +49,7 @@ class _GoalDetailsState extends State<GoalDetails> {
     });
   }
 
+  //Ажурирање на напорот и придобивката
   updateTasksEffortAndBenefit() async {
     tasksEffort = 0;
     tasksBenefit = 0;
@@ -60,6 +61,7 @@ class _GoalDetailsState extends State<GoalDetails> {
     }
   }
 
+  //Штиклирање на задача
   taskCheckChanged(bool isFinished, int effort, int benefit) {
     setState(() {
       if (isFinished) {
@@ -72,6 +74,7 @@ class _GoalDetailsState extends State<GoalDetails> {
     });
   }
 
+  //Едитирање на цел
   Future<void> editGoal() async {
     return await showDialog(
       context: context,
@@ -86,11 +89,13 @@ class _GoalDetailsState extends State<GoalDetails> {
     );
   }
 
+  //Метод кој се повикува откако некоја цел е избришена
   afterDelete() async {
     await widget.refreshParent();
     Navigator.pop(context);
   }
 
+  //Клик на картичка
   Future<void> cardTapFunction(int id) async {
     return await showDialog(
       context: context,
@@ -105,6 +110,7 @@ class _GoalDetailsState extends State<GoalDetails> {
     );
   }
 
+  //Клик на копчето +
   Future<void> floatingButtonClick(BuildContext context) async {
     return await showDialog(
       context: context,

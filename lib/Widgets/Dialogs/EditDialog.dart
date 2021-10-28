@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import '../Shared widgets/DialogButtons.dart';
 import 'AddOrSelectDialog.dart';
 
+//Дијалог за едитирање и бришење на ставка
 class EditDialog extends StatefulWidget {
   final int itemId;
   final Function refreshParent;
@@ -44,6 +45,7 @@ class _EditDialogState extends State<EditDialog> {
     fetchData();
   }
 
+  //Земање на иницијални податоци од базата
   fetchData() async {
     setState(() {
       isLoading = true;
@@ -68,12 +70,14 @@ class _EditDialogState extends State<EditDialog> {
     _controller.onSave();
   }
 
+  //Клик на копчето Delete
   secondButtonClick(BuildContext context) async {
     setState(() {
       isDeleting = true;
     });
   }
 
+  //Бришење на ставка од базата
   delete() async {
     switch (widget.noteType) {
       case NoteType.Habit:
@@ -90,6 +94,7 @@ class _EditDialogState extends State<EditDialog> {
     await widget.afterDelete();
   }
 
+  //Наслов на дијалогот
   String getTitle() {
     if (isLoading) {
       return "Loading";
@@ -104,6 +109,7 @@ class _EditDialogState extends State<EditDialog> {
     }
   }
 
+  //Наслов на Delete дијалогот
   String getDeleteTitle() {
     if (isLoading) {
       return "Loading";
@@ -118,6 +124,7 @@ class _EditDialogState extends State<EditDialog> {
     }
   }
 
+  //Метод кој го враќа дијалогот во завистност од типот на ставката
   Widget getDialog() {
     switch (widget.noteType) {
       case NoteType.Habit:
@@ -141,6 +148,7 @@ class _EditDialogState extends State<EditDialog> {
     }
   }
 
+  //Клик на копчето Cancel
   cancelDeletion(BuildContext context) {
     setState(() {
       isDeleting = false;

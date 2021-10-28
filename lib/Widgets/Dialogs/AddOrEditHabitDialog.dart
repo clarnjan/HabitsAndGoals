@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:numberpicker/numberpicker.dart';
 
+//Дијалог за додавање и едитирање на навика
 class AddOrEditHabitDialog extends StatefulWidget {
   final int? weekId;
   final int? habitId;
@@ -40,6 +41,7 @@ class _AddOrEditHabitDialogState extends State<AddOrEditHabitDialog> {
     fetchData();
   }
 
+  //Земање на иницијални податоци од базата
   fetchData() async {
     setState(() {
       isLoading = true;
@@ -54,6 +56,7 @@ class _AddOrEditHabitDialogState extends State<AddOrEditHabitDialog> {
     });
   }
 
+  //Клик на копчето Save
   onSave() async {
     if (formKey.currentState!.validate()) {
       habit.createdTime = DateTime.now();

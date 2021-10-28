@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
 
+//Картичка за приказ на информации за ставка
 class ClickableCard extends StatefulWidget {
   final String title;
   final String? effortAndBenefit;
   final Function tapFunction;
   final bool isSelectable;
 
-  ClickableCard({required this.tapFunction, required this.title, required this.isSelectable, this.effortAndBenefit});
+  ClickableCard(
+      {required this.tapFunction,
+      required this.title,
+      required this.isSelectable,
+      this.effortAndBenefit});
 
   @override
   _ClickableCardState createState() => _ClickableCardState();
@@ -34,7 +39,9 @@ class _ClickableCardState extends State<ClickableCard> {
         ),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
-          color: widget.isSelectable && isSelected ? Colors.green : Colors.grey.shade600,
+          color: widget.isSelectable && isSelected
+              ? Colors.green
+              : Colors.grey.shade600,
         ),
         constraints: BoxConstraints(minHeight: 45),
         child: Row(

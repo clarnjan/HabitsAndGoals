@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+//Главно мени
 class MainMenu extends StatelessWidget {
   const MainMenu({Key? key}) : super(key: key);
 

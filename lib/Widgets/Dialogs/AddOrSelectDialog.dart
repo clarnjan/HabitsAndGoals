@@ -20,6 +20,7 @@ class AddEditItemController {
   late void Function() onSave;
 }
 
+//Дијалог за додавање или селектирање на ставки
 class AddOrSelectDialog extends StatefulWidget {
   final int? weekId;
   final int? goalId;
@@ -56,6 +57,7 @@ class _AddOrSelectDialogState extends State<AddOrSelectDialog> {
     super.initState();
   }
 
+  //Земање на иницијални податоци од базата
   fetchData() async {
     setState(() {
       isLoading = true;
@@ -91,6 +93,7 @@ class _AddOrSelectDialogState extends State<AddOrSelectDialog> {
     });
   }
 
+  //Селектирање на навика
   selectHabit(Habit habit) {
     if (selectedHabits.contains(habit)) {
       selectedHabits.remove(habit);
@@ -99,6 +102,7 @@ class _AddOrSelectDialogState extends State<AddOrSelectDialog> {
     }
   }
 
+  //Селектирање на задача
   selectTask(Task task) {
     if (selectedTasks.contains(task)) {
       selectedTasks.remove(task);
@@ -107,6 +111,7 @@ class _AddOrSelectDialogState extends State<AddOrSelectDialog> {
     }
   }
 
+  //Клик на копчето Save
   save() async {
     if (widget.canSelect && isSelecting) {
       if (widget.weekId != null && widget.noteType == NoteType.Habit) {
@@ -158,6 +163,7 @@ class _AddOrSelectDialogState extends State<AddOrSelectDialog> {
     }
   }
 
+  //Клик на Select/New копчето
   toggleButton(BuildContext context) async {
     setState(() {
       isSelecting = !isSelecting;
@@ -165,6 +171,7 @@ class _AddOrSelectDialogState extends State<AddOrSelectDialog> {
     if (isSelecting && habits.isEmpty && tasks.isEmpty) fetchData();
   }
 
+  //Метод кој го враќа дијалогот во завистност од типот на ставката
   Widget getSelectDialog() {
     switch (widget.noteType) {
       case NoteType.Habit:
@@ -186,6 +193,7 @@ class _AddOrSelectDialogState extends State<AddOrSelectDialog> {
     }
   }
 
+  //Метод кој го враќа дијалогот во завистност од типот на ставката
   Widget getAddDialog() {
     switch (widget.noteType) {
       case NoteType.Habit:
@@ -210,6 +218,7 @@ class _AddOrSelectDialogState extends State<AddOrSelectDialog> {
     }
   }
 
+  //Наслов на дијалогот
   String getTitle() {
     String result = isSelecting ? "Select " : "Add a new ";
     switch (widget.noteType) {

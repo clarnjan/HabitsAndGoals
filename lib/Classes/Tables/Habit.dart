@@ -1,7 +1,17 @@
+//Име на табелата
 final String habitsTable = 'habits';
 
+//Помошна класа со статични променливи за имињата на колоните
 class HabitFields {
-  static final List<String> values = [id, title, description, effortSingle, benefitSingle, repetitions, createdTime];
+  static final List<String> values = [
+    id,
+    title,
+    description,
+    effortSingle,
+    benefitSingle,
+    repetitions,
+    createdTime
+  ];
   static final String id = '_id';
   static final String title = 'title';
   static final String description = 'description';
@@ -11,6 +21,7 @@ class HabitFields {
   static final String createdTime = 'createdTime';
 }
 
+//Класа која ја претставува табелата Habits
 class Habit {
   int? id;
   String title;
@@ -41,7 +52,13 @@ class Habit {
       };
 
   Habit copy(
-          {int? id, String? title, String? description, int? effortSingle, int? benefitSingle, int? repetitions, DateTime? createdTime}) =>
+          {int? id,
+          String? title,
+          String? description,
+          int? effortSingle,
+          int? benefitSingle,
+          int? repetitions,
+          DateTime? createdTime}) =>
       Habit(
         id: id ?? this.id,
         title: title ?? this.title,

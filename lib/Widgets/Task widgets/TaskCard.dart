@@ -3,6 +3,7 @@ import 'package:diplomska1/Classes/Tables/Task.dart';
 import 'package:diplomska1/Classes/Tables/WeeklyTask.dart';
 import 'package:flutter/material.dart';
 
+//Картичка со информации за дадена задача
 class TaskCard extends StatefulWidget {
   final Task task;
   final WeeklyTask? weeklyTask;
@@ -25,6 +26,7 @@ class _TaskCardState extends State<TaskCard> {
     super.initState();
   }
 
+  //Проверка дали дадената задача е завршена
   bool isFinished() {
     if (!widget.task.isRepeating) {
       return widget.task.isFinished;
@@ -35,6 +37,7 @@ class _TaskCardState extends State<TaskCard> {
     return false;
   }
 
+  //Штиклирање на задача
   checkChanged() async {
     setState(() {
       if (!widget.task.isRepeating) {

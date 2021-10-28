@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+//Копчиња на крајот на дијалогот
 class DialogButtons extends StatelessWidget {
   final String mainButtonText;
   final Function mainButtonFunction;

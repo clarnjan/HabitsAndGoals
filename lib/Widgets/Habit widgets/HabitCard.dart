@@ -4,6 +4,7 @@ import 'package:diplomska1/Classes/Tables/WeeklyHabit.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+//Картичка со информации за дадена навика
 class HabitCard extends StatefulWidget {
   final Habit habit;
   final WeeklyHabit weeklyHabit;
@@ -26,6 +27,7 @@ class _HabitCardState extends State<HabitCard> {
     super.initState();
   }
 
+  //Штиклирање на навика
   checkChanged(int index) async {
     setState(() {
       widget.weeklyHabit.days[index] = !widget.weeklyHabit.days[index];

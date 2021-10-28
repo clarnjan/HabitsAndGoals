@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../Shared widgets/ClickableCard.dart';
 
+//Дијалог за селектирање на навики
 class SelectTasksDialog extends StatefulWidget {
   final List<Task> tasks;
   final Function selectTask;

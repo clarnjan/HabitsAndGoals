@@ -1,8 +1,10 @@
 import 'package:diplomska1/Classes/Tables/WeeklyHabit.dart';
 import 'package:diplomska1/Classes/Tables/WeeklyTask.dart';
 
+//Име на табелата
 final String weeksTable = 'weeks';
 
+//Помошна класа со статични променливи за имињата на колоните
 class WeekFields {
   static final List<String> values = [id, title, startDate, endDate];
   static final String id = '_id';
@@ -11,6 +13,7 @@ class WeekFields {
   static final String endDate = 'endDate';
 }
 
+//Класа која ја претставува табелата Weeks
 class Week {
   int? id;
   String title;

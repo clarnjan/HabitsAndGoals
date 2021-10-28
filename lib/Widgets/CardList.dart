@@ -11,6 +11,7 @@ import 'Shared widgets/ClickableCard.dart';
 import 'Shared widgets/EmptyState.dart';
 import 'Task widgets/TaskList.dart';
 
+//Листа од картички
 class CardList extends StatefulWidget {
   final NoteType noteType;
 
@@ -61,6 +62,7 @@ class _CardListState extends State<CardList> {
     });
   }
 
+  //Метод кој враќа картичка во завистност од типшот на ставката
   Widget getCard(item) {
     switch (widget.noteType) {
       case NoteType.Habit:
@@ -99,6 +101,7 @@ class _CardListState extends State<CardList> {
     }
   }
 
+  //Клик на картичка
   Future<void> cardTapFunction(int id) async {
     return await showDialog(
       context: context,
@@ -113,6 +116,7 @@ class _CardListState extends State<CardList> {
     );
   }
 
+  //Клик на копчето +
   Future<void> floatingButtonClick(BuildContext context) async {
     return await showDialog(
       context: context,
@@ -126,6 +130,7 @@ class _CardListState extends State<CardList> {
     );
   }
 
+  //Метод кој враќа порака при празна листа
   String getEmptyStateText() {
     switch (widget.noteType) {
       case NoteType.Habit:

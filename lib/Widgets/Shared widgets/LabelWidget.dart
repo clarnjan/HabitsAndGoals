@@ -1,11 +1,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+//Помошен виџет за лабела
 class LabelWidget extends StatelessWidget {
   final String text;
   final Color backgroundColor;
   final Color color;
-  const LabelWidget({Key? key, required this.text, required this.backgroundColor, required this.color}) : super(key: key);
+  const LabelWidget(
+      {Key? key,
+      required this.text,
+      required this.backgroundColor,
+      required this.color})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {

@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import '../MainMenu.dart';
 import '../Shared widgets/EmptyState.dart';
 
+//Листа од задачи
 class TaskList extends StatefulWidget {
   const TaskList({Key? key}) : super(key: key);
 
@@ -45,6 +46,7 @@ class _TaskListState extends State<TaskList> {
     });
   }
 
+  //Клик на картичка
   Future<void> cardTapFunction(int id) async {
     return await showDialog(
       context: context,
@@ -59,6 +61,7 @@ class _TaskListState extends State<TaskList> {
     );
   }
 
+  //Клик на копчето +
   Future<void> floatingButtonClick(BuildContext context) async {
     return await showDialog(
       context: context,

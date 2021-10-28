@@ -1,5 +1,4 @@
-enum Position { BottomLeft, BottomRight, BottomCenter }
-
+//Enum за тип на копче
 enum FloatingButtonType {
   AddTask,
   AddHabit,
@@ -8,4 +7,5 @@ enum FloatingButtonType {
   SelectHabits,
 }
 
+//Enum за тип на ставка
 enum NoteType { Habit, Task, Goal }

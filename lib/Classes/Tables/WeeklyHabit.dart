@@ -1,7 +1,21 @@
+//Име на табелата
 final String weeklyHabitsTable = 'weeklyHabits';
 
+//Помошна класа со статични променливи за имињата на колоните
 class WeeklyHabitFields {
-  static final List<String> values = [id, habitFK, weekFK, repetitionsDone, dayOne, dayTwo, dayThree, dayFour, dayFive, daySix, daySeven];
+  static final List<String> values = [
+    id,
+    habitFK,
+    weekFK,
+    repetitionsDone,
+    dayOne,
+    dayTwo,
+    dayThree,
+    dayFour,
+    dayFive,
+    daySix,
+    daySeven
+  ];
   static final String id = '_id';
   static final String habitFK = 'habitFK';
   static final String weekFK = 'weekFK';
@@ -15,6 +29,7 @@ class WeeklyHabitFields {
   static final String daySeven = 'daySeven';
 }
 
+//Класа која ја претставува табелата WeeklyHabits
 class WeeklyHabit {
   int? id;
   int habitFK;
@@ -84,13 +99,20 @@ class WeeklyHabit {
 
   static WeeklyHabit fromJson(Map<String, Object?> json) {
     List<bool> days = [];
-    if (json[WeeklyHabitFields.dayOne] != null) days.add(json[WeeklyHabitFields.dayOne] == 1);
-    if (json[WeeklyHabitFields.dayTwo] != null) days.add(json[WeeklyHabitFields.dayTwo] == 1);
-    if (json[WeeklyHabitFields.dayThree] != null) days.add(json[WeeklyHabitFields.dayThree] == 1);
-    if (json[WeeklyHabitFields.dayFour] != null) days.add(json[WeeklyHabitFields.dayFour] == 1);
-    if (json[WeeklyHabitFields.dayFive] != null) days.add(json[WeeklyHabitFields.dayFive] == 1);
-    if (json[WeeklyHabitFields.daySix] != null) days.add(json[WeeklyHabitFields.daySix] == 1);
-    if (json[WeeklyHabitFields.daySeven] != null) days.add(json[WeeklyHabitFields.daySeven] == 1);
+    if (json[WeeklyHabitFields.dayOne] != null)
+      days.add(json[WeeklyHabitFields.dayOne] == 1);
+    if (json[WeeklyHabitFields.dayTwo] != null)
+      days.add(json[WeeklyHabitFields.dayTwo] == 1);
+    if (json[WeeklyHabitFields.dayThree] != null)
+      days.add(json[WeeklyHabitFields.dayThree] == 1);
+    if (json[WeeklyHabitFields.dayFour] != null)
+      days.add(json[WeeklyHabitFields.dayFour] == 1);
+    if (json[WeeklyHabitFields.dayFive] != null)
+      days.add(json[WeeklyHabitFields.dayFive] == 1);
+    if (json[WeeklyHabitFields.daySix] != null)
+      days.add(json[WeeklyHabitFields.daySix] == 1);
+    if (json[WeeklyHabitFields.daySeven] != null)
+      days.add(json[WeeklyHabitFields.daySeven] == 1);
     return WeeklyHabit(
       id: json[WeeklyHabitFields.id] as int,
       habitFK: json[WeeklyHabitFields.habitFK] as int,
