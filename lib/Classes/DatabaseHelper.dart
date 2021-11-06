@@ -363,8 +363,21 @@ class DatabaseHelper {
   //Ажурирање на задача
   Future<int> updateTask(Task task) async {
     final db = await instance.database;
-    return db.update(tasksTable, task.toJson(),
+    final result = db.update(tasksTable, task.toJson(),
         where: '${TaskFields.id} = ?', whereArgs: [task.id]);
+    if (!task.isRepeating) {
+      final weeklyTasks = await db.query(weeklyTasksTable,
+          columns: WeeklyTaskFields.values,
+          where: '${WeeklyTaskFields.taskFK} = ?',
+          whereArgs: [task.id]);
+      if (weeklyTasks.isNotEmpty) {
+        WeeklyTask wt = WeeklyTask.fromJson(weeklyTasks.first);
+        wt.isFinished = task.isFinished;
+        db.update(weeklyTasksTable, wt.toJson(),
+            where: '${WeeklyTaskFields.id} = ?', whereArgs: [wt.id]);
+      }
+    }
+    return result;
   }
 
   //Ажурирање на цел
